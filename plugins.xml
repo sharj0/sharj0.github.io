@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugins>
-  <pyqgis_plugin name="PETER_ROSOR_mass_importer" version="1.0.2" icon="plugin_icon.png">
+  <pyqgis_plugin name="Mass Import CSV or KMLs" version="1.0.2" icon="plugin_icon.png">
     <name>Mass Import CSV or KMLs</name>
     <version>1.0.2</version>
     <author>Ptotyr Young and Sharjeel Awon</author>
