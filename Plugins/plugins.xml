@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugins>
   <pyqgis_plugin name="Mass Import CSV or KMLs" version="1.0.2">
-    <name>Mass Import CSV or KMLs</name>
-    <version>1.0.2</version>
-    <author>Ptotyr Young and Sharjeel Awon</author>
-    <email>pyotyr@msn.com, pyotyr@rosor.ca</email>
     <description>ROSOR's tool to mass import csv or kml files from a folder, and match the file structure using layer groups.</description>
-    <repository type="git">https://sharj0.github.io/Plugins/PETER_ROSOR_mass_importer.zip</repository>
+    <homepage>rosor.ca</homepage>
+    <file_name>PETER_ROSOR_mass_importer.zip</file_name>
+    <author_name>Ptotyr Young and Sharjeel Awon</author_name>
+    <email>pyotyr@msn.com, pyotyr@rosor.ca</email>
+    <download_url>https://sharj0.github.io/Plugins/PETER_ROSOR_mass_importer.zip</download_url>
     <experimental>false</experimental>
   </pyqgis_plugin>
 </plugins>
