@@ -6,7 +6,7 @@
     <author>Ptotyr Young and Sharjeel Awon</author>
     <email>pyotyr@msn.com, pyotyr@rosor.ca</email>
     <description>ROSOR's tool to mass import csv or kml files from a folder, and match the file structure using layer groups.</description>
-    <download_url>https://github.com/sharj0/sharj0.github.io/blob/main/Plugins/PETER_ROSOR_mass_importer.zip</download_url>
+    <repository type="git">https://github.com/sharj0/sharj0.github.io/blob/main/Plugins/PETER_ROSOR_mass_importer.zip</repository>
     <experimental>false</experimental>
   </pyqgis_plugin>
 </plugins>
