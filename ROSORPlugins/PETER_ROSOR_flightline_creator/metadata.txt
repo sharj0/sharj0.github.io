@@ -1,8 +1,0 @@
-[general]
-name= Flightline Maker
-qgisMinimumVersion=3.0
-description=ROSOR's tools flightline making
-version=1.0
-author=Pyotyr Young
-email=pyotyr@msn.com, pyotyr@rosor.ca
-icon=flightlines.png
