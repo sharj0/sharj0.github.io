@@ -1,15 +1,6 @@
-<plugins>
-  <pyqgis_plugin name="minimal" version="1.0.2">
-    <description>Minimal plugin</description>
-    <about>About this minimal plugin</about>
-    <version>1.0</version>
-    <qgis_minimun_version>3.0</qgis_minimun_version>
-    <author>Martin Dobias</author>
-    <email>wonder.sk@gmail.com</email>
-    <name>minimal</name>
-    <file_name>minimal.zip</file_name>
-    <repository>https://sharj0.github.io</repository>
-    <download_url>https://sharj0.github.io/minimal.zip</download_url>
-    <experimental>false</experimental>
+<plugins> 
+  <pyqgis_plugin name="PluginName" version="2.1.0">
+    <qgis_minimum_version>3.0.0</qgis_minimum_version>
+      <download_url>YourRepositoryURL/FolderName.SomeInfo.zip</download_url>
   </pyqgis_plugin>
 </plugins>
