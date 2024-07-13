@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugins>
-  <pyqgis_plugin name="Mass import CSV or KMLs" version="1.0.2">
+  <pyqgis_plugin name="Mass import CSVs or KMLs" version="1.0.2">
     <description>ROSOR's tool to mass import csv or kml files from a folder, and match the file structure using layer groups.</description>
     <homepage>rosor.ca</homepage>
     <qgis_minimun_version>3.0</qgis_minimun_version>
