@@ -25,7 +25,7 @@
   </pyqgis_plugin>
   <pyqgis_plugin name="Plugin Template" version="1.0">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
-      <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_plugin_templates.zip</download_url>
+      <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_plugin_template.zip</download_url>
   </pyqgis_plugin>
   <pyqgis_plugin name="Slope Analyser" version="1.0">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
