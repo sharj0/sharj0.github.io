@@ -1,6 +1,6 @@
 <plugins> 
   <pyqgis_plugin name="Mass Import CSVs or KMLs" version="1.0.2">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
-      <download_url>https://sharj0.github.io/FolderName.zip</download_url>
+      <download_url>https://sharj0.github.io/PETER_ROSOR_mass_importer.zip</download_url>
   </pyqgis_plugin>
 </plugins>
