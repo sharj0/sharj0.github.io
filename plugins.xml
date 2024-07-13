@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugins>
-  <pyqgis_plugin name="PETER_ROSOR_mass_importer" version="1.0.2">
-    <description>ROSOR's tool to mass import csv or kml files from a folder, and match the file structure using layer groups.</description>
-    <version>1.0.2</version>
+  <pyqgis_plugin name="minimal" version="1.0.2">
+    <description>Minimal plugin</description>
+    <about>About this minimal plugin</about>
+    <version>1.0</version>
     <qgis_minimun_version>3.0</qgis_minimun_version>
-    <name>PETER_ROSOR_mass_importer</name>
-    <download_url>https://sharj0.github.io/PETER_ROSOR_mass_importer.zip</download_url>
+    <author>Martin Dobias</author>
+    <email>wonder.sk@gmail.com</email>
+    <name>minimal</name>
+    <repository>https://sharj0.github.io</repository>
+    <download_url>https://sharj0.github.io/minimal.zip</download_url>
     <experimental>false</experimental>
   </pyqgis_plugin>
 </plugins>
