@@ -1,8 +1,4 @@
 <plugins>
-  <pyqgis_plugin name="Alt Embedder" version="1.0">
-    <qgis_minimum_version>3.0.0</qgis_minimum_version>
-      <download_url>https://drive.google.com/uc?export=download&id=1nRvXL2fNqwkmYdxQ75Li3zN84ZOpVZqg</download_url>
-  </pyqgis_plugin>
   <pyqgis_plugin name="Mass importer of CSVs and KMLs" version="1.0.2">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
       <download_url>https://drive.google.com/uc?export=download&id=1M6xfLVPm30dMy-wrPCk7ayd82yZIDeQ1</download_url>
