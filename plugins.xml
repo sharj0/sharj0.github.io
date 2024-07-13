@@ -1,6 +1,6 @@
 <plugins> 
   <pyqgis_plugin name="Mass Importer" version="1.0.2">
     <qgis_minimum_version>3.0</qgis_minimum_version>
-      <download_url>https://drive.google.com/uc?export=download&id=1M6xfLVPm30dMy-wrPCk7ayd82yZIDeQ1</download_url>
+      <download_url>https://drive.google.com/uc?export=download&id=1OHjqzCiMm-kOfXoInRZr6Gn3ZHRIWRyS</download_url>
   </pyqgis_plugin>
 </plugins>
