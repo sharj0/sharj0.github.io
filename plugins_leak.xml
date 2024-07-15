@@ -1,5 +1,5 @@
 <plugins> 
-  <pyqgis_plugin name="Alt Embedder" version="1.0">
+  <pyqgis_plugin name="Alt Embedder" version="1.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_alt_embedder.zip</download_url>
   </pyqgis_plugin>
