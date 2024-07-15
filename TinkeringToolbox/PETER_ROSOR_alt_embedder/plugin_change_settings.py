@@ -391,17 +391,8 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
                         self._add_radio_buttons(key, value, group_layout)
                     else:
                         self._create_widgets_recursive(value, group_layout)
-                elif not (key.endswith('_VIDEO') and self._is_after_radio_group(key, data_dict)):
+                elif not key.endswith('_VIDEO'):
                     self._add_widget_for_value(key, value, parent_layout)
-
-        def _is_after_radio_group(self, key, data_dict):
-            for k in data_dict.keys():
-                if k.endswith('_RADIO'):
-                    return True
-                if k == key:
-                    return False
-                return False
-
 
         def _add_widget_for_value(self, key, value, layout):
             ellipsis_font = QFont()
@@ -489,7 +480,7 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
             elif "_VIDEO" in key:
                 # Add a button to play the video next to the existing QLineEdit
                 base_key = key.replace("_VIDEO", "")
-                line_edit = self.findChild(plugin_tools.Drag_and_Drop, base_key)
+                line_edit = self.findChild(QLineEdit, base_key)
                 if not line_edit:
                     checkbox = self.findChild(QCheckBox, base_key)
                     if checkbox:
