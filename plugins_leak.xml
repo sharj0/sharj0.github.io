@@ -19,7 +19,7 @@
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_mag_clipper.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name="Mass Import CSVs or KMLs" version="1.0.2">
+  <pyqgis_plugin name="Mass Import CSVs or KMLs" version="1.0.3">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_mass_importer.zip</download_url>
   </pyqgis_plugin>
