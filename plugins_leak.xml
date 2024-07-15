@@ -3,7 +3,7 @@
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_alt_embedder.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name="Base Mag QAQC" version="1.0">
+  <pyqgis_plugin name="Base Mag QAQC" version="1.0.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_base_mag_qaqc.zip</download_url>
   </pyqgis_plugin>
