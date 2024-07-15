@@ -1,9 +1,6 @@
 <plugins> 
   <pyqgis_plugin name="Waypoint Altitude Embedder" version="1.0.2">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
-    <author>Pyotyr Young and Sharjeel Awon</author>
-    <icon>Waypoint_Terrain_Follow.png</icon>
-    <description>ROSOR's tools waypoint alt embedding</description>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_alt_embedder.zip</download_url>
   </pyqgis_plugin>
   <pyqgis_plugin name="Base Mag QAQC" version="1.0.2">
