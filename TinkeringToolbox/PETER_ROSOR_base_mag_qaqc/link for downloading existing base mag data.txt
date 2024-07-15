@@ -1,0 +1,76 @@
+https://imag-data.bgs.ac.uk/GIN_V1/GINForms2
+
+
+
+alert canada
+baker lake
+brandon
+cbb cambidge bay 
+fort churchill
+glenlea 
+iqaluit
+mould bay Canada
+meanook canada
+Newport usa
+ottawa
+Poste-de-la-baleine
+resolute
+sable island
+sait johns
+Victoria
+Yellowkife
+
+
+IAGA | Date       | Number of     | Number  | Percentage | Embargo
+code |            |               | missing | available  | applied
+     |            | data points   |         |            |
+-----+------------+---------------+---------+------------+-------
+ALE  | 07-07-2024 | 0             | 1440    |   0%       | No
+     |            | gap from 00:00:00 to end of day
+-----+------------+---------------+---------+------------+-------
+BLC  | 07-07-2024 | 772           | 668     |  53%       | Yes
+     |            | gap from 12:52:00 to end of day
+-----+------------+---------------+---------+------------+-------
+BRD  | 07-07-2024 | 772           | 668     |  53%       | Yes
+     |            | gap from 12:52:00 to end of day
+-----+------------+---------------+---------+------------+-------
+CBB  | 07-07-2024 | 772           | 668     |  53%       | Yes
+     |            | gap from 12:52:00 to end of day
+-----+------------+---------------+---------+------------+-------
+FCC  | 07-07-2024 | 772           | 668     |  53%       | Yes
+     |            | gap from 12:52:00 to end of day
+-----+------------+---------------+---------+------------+-------
+GLN  | 07-07-2024 | 0             | 1440    |   0%       | No
+     |            | gap from 00:00:00 to end of day
+-----+------------+---------------+---------+------------+-------
+IQA  | 07-07-2024 | 772           | 668     |  53%       | Yes
+     |            | gap from 12:52:00 to end of day
+-----+------------+---------------+---------+------------+-------
+MBC  | 07-07-2024 | 0             | 1440    |   0%       | No
+     |            | gap from 00:00:00 to end of day
+-----+------------+---------------+---------+------------+-------
+MEA  | 07-07-2024 | 772           | 668     |  53%       | Yes
+     |            | gap from 12:52:00 to end of day
+-----+------------+---------------+---------+------------+-------
+OTT  | 07-07-2024 | 772           | 668     |  53%       | Yes
+     |            | gap from 12:52:00 to end of day
+-----+------------+---------------+---------+------------+-------
+PBQ  | 07-07-2024 | 0             | 1440    |   0%       | No
+     |            | gap from 00:00:00 to end of day
+-----+------------+---------------+---------+------------+-------
+RES  | 07-07-2024 | 772           | 668     |  53%       | Yes
+     |            | gap from 12:52:00 to end of day
+-----+------------+---------------+---------+------------+-------
+SBL  | 07-07-2024 | 772           | 668     |  53%       | Yes
+     |            | gap from 12:52:00 to end of day
+-----+------------+---------------+---------+------------+-------
+STJ  | 07-07-2024 | 772           | 668     |  53%       | Yes
+     |            | gap from 12:52:00 to end of day
+-----+------------+---------------+---------+------------+-------
+VIC  | 07-07-2024 | 772           | 668     |  53%       | Yes
+     |            | gap from 12:52:00 to end of day
+-----+------------+---------------+---------+------------+-------
+YKC  | 07-07-2024 | 772           | 668     |  53%       | Yes
+     |            | gap from 12:52:00 to end of day
+
+https://imag-data.bgs.ac.uk/GIN_V1/GINForms2?ddC=ALE&ddC=BLC&ddC=BRD&ddC=CBB&ddC=FCC&ddC=GLN&ddC=IQA&ddC=MBC&ddC=MEA&ddC=OTT&ddC=PBQ&ddC=RES&ddC=SBL&ddC=STJ&ddC=VIC&ddC=YKC&directoryDataStartDate=2024-07-07&directoryPublicationState=Best+available&directoryDataDuration=1&directoryDurationType=Days&directorySamplesPerDay=minute&directoryFormat=Plain&request=DataDirectory&submitValue=View
