@@ -1,36 +1,36 @@
 <plugins> 
-  <pyqgis_plugin name="Waypoint Altitude Embedder" version="1.0.2">
+  <pyqgis_plugin name="ROSOR Waypoint Altitude Embedder" version="1.0.2">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>Waypoint_Terrain_Follow.png</icon>
     <description>ROSOR's tools waypoint alt embedding</description>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_alt_embedder.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name="Base Mag QAQC" version="1.0.2">
+  <pyqgis_plugin name="ROSOR Base Mag QAQC" version="1.0.2">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_base_mag_qaqc.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name="Flightline Creator" version="1.0">
+  <pyqgis_plugin name="ROSOR Flightline Creator" version="1.0">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_flightline_creator.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name="Lines to Flight" version="1.0">
+  <pyqgis_plugin name="ROSOR Lines to Flight" version="1.0">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_lines_to_flights.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name="Mag Clipper" version="1.0.1">
+  <pyqgis_plugin name="ROSOR Mag Clipper" version="1.0.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_mag_clipper.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name="Mass Import CSVs or KMLs" version="1.0.3">
+  <pyqgis_plugin name="ROSOR Mass Import CSVs or KMLs" version="1.0.3">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_mass_importer.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name="Plugin Template" version="1.0">
+  <pyqgis_plugin name="ROSOR Plugin Template" version="1.0">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_plugin_template.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name="Slope Analyzer" version="1.0">
+  <pyqgis_plugin name="ROSOR Slope Analyzer" version="1.0">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_slope_analyser.zip</download_url>
   </pyqgis_plugin>
