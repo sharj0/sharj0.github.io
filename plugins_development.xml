@@ -28,7 +28,7 @@
     <description>ROSOR's tool that takes parallel flightlines and takeoff location points to plan flights</description>
       <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_lines_to_flights.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name=".DEV ROSOR Mag Clipper" version="1.0.2">
+  <pyqgis_plugin name=".DEV ROSOR Mag Clipper" version="1.0.3">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/icons/mag_clipper_icon.png</icon>

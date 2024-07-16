@@ -11,8 +11,8 @@ from PyQt5.QtWidgets import QWidget, QScrollArea, \
     QVBoxLayout, QHBoxLayout, QGridLayout, \
     QLabel, QLineEdit, QCheckBox, QFileDialog, \
     QGroupBox, QPushButton, QComboBox, QRadioButton, QSizePolicy, QButtonGroup, QMenu
-from PyQt5.QtGui import QFont, QIcon, QColor, QPixmap, QDragEnterEvent, QDropEvent
-from qgis.core import QgsProject
+from PyQt5.QtGui import QFont, QIcon, QColor, QPixmap
+from qgis.core import QgsProject, QgsLayerTreeLayer
 from PyQt5.QtCore import Qt, pyqtSignal, QSize, QUrl
 from PyQt5.Qt import QDesktopServices
 import subprocess
@@ -438,6 +438,11 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
                 italic_font.setItalic(True)
                 combobox.setItemData(index, italic_font, Qt.FontRole)
                 combobox.setItemData(index, QColor("grey"), Qt.ForegroundRole)
+
+                """Sharj"""
+                combobox.addItem("selected layer")
+                """Sharj"""
+
                 for layer_name in self.get_available_qgis_layers():
                     combobox.addItem(layer_name)
                 combobox.currentTextChanged.connect(lambda text, k=key: self.update_textfield_from_dropdown(k, text))
@@ -621,16 +626,25 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
             """Retrieve a list of available layer names from the current QGIS project."""
             return [layer.name() for layer in QgsProject.instance().mapLayers().values()]
 
+        """Sharj Modified"""
         def update_textfield_from_dropdown(self, key, selected_value):
             line_edit = self.findChild(QLineEdit, key.replace("_SELECT_LAYER", ""))
             if selected_value == "previous input":
                 path_from_json = plugin_tools.find_key_in_nested_dict(self.data, key.replace("_SELECT_LAYER", ""))
                 line_edit.setText(path_from_json)
+            elif selected_value == "selected layer":
+                layers = QgsProject.instance().mapLayers().values()
+                layer_tree = QgsProject.instance().layerTreeRoot()
+                for layer in layers:
+                    layer_in_tree = layer_tree.findLayer(layer.id())
+                    if layer_in_tree.isVisible():
+                        line_edit.setText(layer.source())
             else:
                 # Assuming layers have an attribute 'source' for full path; adjust if needed
                 layer = next((l for l in QgsProject.instance().mapLayers().values() if l.name() == selected_value),
                              None)
                 if layer:
                     line_edit.setText(layer.source())
+        """Sharj Modified"""
 
     return DynamicGui(parsed_data)
