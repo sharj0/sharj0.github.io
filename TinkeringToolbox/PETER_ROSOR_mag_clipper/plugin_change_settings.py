@@ -632,6 +632,9 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
             if selected_value == "previous input":
                 path_from_json = plugin_tools.find_key_in_nested_dict(self.data, key.replace("_SELECT_LAYER", ""))
                 line_edit.setText(path_from_json)
+
+            #Checks for the selected layer and iterates through the "Tree" to see if a check mark (isVisible()) is enabled
+            #I believe it should return the first option in the for loop, but not exactly sure (anyways there should be only one selection)
             elif selected_value == "selected layer":
                 layers = QgsProject.instance().mapLayers().values()
                 layer_tree = QgsProject.instance().layerTreeRoot()
