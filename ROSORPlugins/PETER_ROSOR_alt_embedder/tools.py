@@ -3,6 +3,7 @@ import re
 import numpy as np
 from osgeo import osr
 from PyQt5.QtWidgets import QMessageBox
+import matplotlib.pyplot as plt
 
 def show_error(mesage):
     msg = QMessageBox()
@@ -44,6 +45,28 @@ def get_next_filename(directory, original_filename):
 
     return os.path.join(directory, new_filename)
 
+
+def remove_steep_angles(in_x, in_y, slope_percent, plot=False):
+    slope = slope_percent / 100
+    big_sqr = np.broadcast_to(in_y, [in_y.shape[0], in_y.shape[0]]).copy()
+    delta_x = np.broadcast_to(in_x, [in_x.shape[0], in_x.shape[0]]).copy()
+    for ind, row in enumerate(delta_x):
+        delta_x[ind, :] = (row - row[ind])
+    delta_y = np.abs(delta_x * slope) * -1
+    all_ys = big_sqr + delta_y
+    result = all_ys.max(axis=1)
+
+    if plot:
+        plt.figure(figsize=(10, 6))
+        plt.plot(in_x, in_y, label='Input')
+        plt.plot(in_x, result, label='Output', linestyle='--')
+        plt.xlabel('X')
+        plt.ylabel('Y')
+        plt.title('Input vs Output with Steep Angles Removed')
+        plt.legend()
+        plt.show()
+
+    return result
 
 def get_new_folder_name(base_path):
     """

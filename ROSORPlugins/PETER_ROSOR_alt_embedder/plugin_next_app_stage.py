@@ -24,7 +24,9 @@ from PETER_ROSOR_alt_embedder.tools import (
     get_extent_coords,
     show_error,
     get_whether_midline,
-    get_new_folder_name)
+    get_new_folder_name,
+    remove_steep_angles)
+
 from PETER_ROSOR_alt_embedder.flight_segment_class import Segment, plot_segment_samples, merge_segments
 from PETER_ROSOR_alt_embedder.package_output import (
     lat_lon_UAValt_turnRad_to_DJI_wp_kmz,
@@ -83,6 +85,7 @@ def main(settings_file_path):
     payload_rope_length = float(settings_dict['payload_rope_length'])
     speed = float(settings_dict['flight_speed'])
     max_turn_radius = float(settings_dict['max_turn_radius'])
+    max_slope_percent = float(settings_dict['max_slope_percent'])
 
     geotiffs_vertical_datum_is_ASL = settings_dict['geotiffs_vertical_datum_is_ASL']
 
@@ -259,6 +262,8 @@ def main(settings_file_path):
         surf_samples_merged = compute_vertical_distances(surf_samples_merged, new_waypoints)
         grnd_samples_merged = compute_vertical_distances(grnd_samples_merged, new_waypoints)
 
+        new_waypoints.T[3] = remove_steep_angles(new_waypoints.T[0], new_waypoints.T[3], max_slope_percent, plot=False)
+
         new_waypoints = add_UAV_alt_col(new_waypoints, payload_rope_length)
 
         # surf / grnd samples_merged and new_waypoints format what each col represents
@@ -288,6 +293,7 @@ def main(settings_file_path):
                                                                                  buffer, min_extent_coord, max_extent_coord)
         surf_arr_smol[surf_arr_smol == surf_nodata_value] = np.nan
         grnd_arr_smol[grnd_arr_smol == grnd_nodata_value] = np.nan
+
 
         skip_plot = False
         if skip_plot or create_ortho_photo_corridor_flight:
