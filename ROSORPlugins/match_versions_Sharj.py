@@ -4,6 +4,7 @@ import os
 import xml.etree.ElementTree as ET
 import pathlib
 from packaging.version import Version
+import autozip_plugins_Sharj
 
 #This function checks the xml stated version for each plugin in the xml and check each the corresponding plugin's metadata version to match them
 #Defaults to plugins_leak xml file name, the current working directory, and no incrementing (note that the plugin folders MUST be in the directory and xml file MUST be in the parent folder/one above)
@@ -145,3 +146,4 @@ def increment_two_decimal_version_string(version="1.0.0", target_index=2):
 
 if __name__ == "__main__":
     match_xml_version_main()
+    autozip_plugins_Sharj.autozip_files_main()
