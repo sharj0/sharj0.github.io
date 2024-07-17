@@ -28,7 +28,7 @@ def autozip_files_main(plugin_prefix="PETER_ROSOR",plugin_dir=os.path.dirname(__
                     #uses the zipfile library to write the plugin folder into an archive with the plugin folder name
                     zip_file(dir_name)
 
-#Compares a zipped folder to an unzipped folder and should return true if any file is different and false when it's compared all the files and fails to find a difference (the default path is current directory)
+#Compares a zipped folder to an unzipped folder and should return true if any file is different and false when it's compared all the files and fails to find a difference (the default path is current directory and both archive and folder need to be in the same directory)
 def is_archive_folder_different(folder, directory=os.path.dirname(__file__)):
 
     #Sets the path to the chosen folder and makes a reference to a .zip archive with the same name
