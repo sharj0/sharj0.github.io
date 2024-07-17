@@ -4,6 +4,9 @@ import filecmp #compares file
 import tempfile #creates temp folder
 import shutil #used to delete temp folder
 
+
+#This defaults to only selecting "PETER_ROSOR" folders, but can be used for other things
+#Default directory is the working one
 def autozip_files_main(plugin_prefix="PETER_ROSOR",plugin_dir=os.path.dirname(__file__)):
 
     #I'm reusing Peter's code
