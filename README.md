@@ -1,1 +1,12 @@
-# sharj0.github.io
+# Welcome to ROSOR's Repository
+The python scripts and XML files in this repo are for the automatic deployment of QGIS Plugins
+(note that the connected repo in QGIS will have ".ROSOR" as the prefix of each plugin)
+
+# Current Plugins:
+- Base Mag Clipper
+- Flightline Creator
+- Lines to Flights
+- Mag Clipper
+- Mass Importer
+- Slope Analyser
+- Waypoint Altitude Embedder
