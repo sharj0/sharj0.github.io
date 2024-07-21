@@ -24,7 +24,9 @@ from PETER_ROSOR_alt_embedder.tools import (
     get_extent_coords,
     show_error,
     get_whether_midline,
-    get_new_folder_name)
+    get_new_folder_name,
+    remove_steep_angles)
+
 from PETER_ROSOR_alt_embedder.flight_segment_class import Segment, plot_segment_samples, merge_segments
 from PETER_ROSOR_alt_embedder.package_output import (
     lat_lon_UAValt_turnRad_to_DJI_wp_kmz,
@@ -35,6 +37,8 @@ from . import plugin_load_settings
 import numpy as np
 import sys
 import re
+from . import temp_gpt
+from . import plot_and_accept_Sharj
 
 # PROFILER CHUNK 1/3 START ////////////////////////////////////////////////////////////////////////////////////
 #import cProfile
@@ -83,6 +87,7 @@ def main(settings_file_path):
     payload_rope_length = float(settings_dict['payload_rope_length'])
     speed = float(settings_dict['flight_speed'])
     max_turn_radius = float(settings_dict['max_turn_radius'])
+    max_slope_percent = float(settings_dict['max_slope_percent'])
 
     geotiffs_vertical_datum_is_ASL = settings_dict['geotiffs_vertical_datum_is_ASL']
 
@@ -241,15 +246,16 @@ def main(settings_file_path):
                                         plot=plot_details)
 
         # TEMP plot buffer line buffer_line and new_waypoints.T[0]
-        #import matplotlib.pyplot as plt
-        #plt.plot(buffer_line[0], buffer_line[1], 'r')
-        #plt.show()
-        #pass
+        # import matplotlib.pyplot as plt
+        # plt.plot(buffer_line[0], buffer_line[1], 'r')
+        # plt.show()
+        # pass
 
         new_waypoints.T[3] = drape_wps_over_buffer.run(buffer_line,
                                                                new_waypoints.T[0],
                                                                plot=plot_details)
 
+        new_waypoints = compute_heading(new_waypoints)
         new_waypoints = compute_heading(new_waypoints)
         # Compute heading for samples
         surf_samples_merged = compute_heading_for_samples(surf_samples_merged, new_waypoints)
@@ -258,6 +264,8 @@ def main(settings_file_path):
         # Compute distances for samples
         surf_samples_merged = compute_vertical_distances(surf_samples_merged, new_waypoints)
         grnd_samples_merged = compute_vertical_distances(grnd_samples_merged, new_waypoints)
+
+        new_waypoints.T[3] = remove_steep_angles(new_waypoints.T[0], new_waypoints.T[3], max_slope_percent, plot=False)
 
         new_waypoints = add_UAV_alt_col(new_waypoints, payload_rope_length)
 
@@ -289,11 +297,12 @@ def main(settings_file_path):
         surf_arr_smol[surf_arr_smol == surf_nodata_value] = np.nan
         grnd_arr_smol[grnd_arr_smol == grnd_nodata_value] = np.nan
 
+
         skip_plot = False
         if skip_plot or create_ortho_photo_corridor_flight:
             accepted = True
         else:
-            accepted = plot_and_accept.run(waypoints=new_waypoints,
+            accepted = plot_and_accept_Sharj.run(waypoints=new_waypoints,
                                            dsm=(surf_arr_smol, surf_x_smol, surf_y_smol),
                                            dem=(grnd_arr_smol, grnd_x_smol, grnd_y_smol),
                                            surf_samples=surf_samples_merged,
