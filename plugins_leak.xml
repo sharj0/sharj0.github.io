@@ -1,5 +1,5 @@
 <plugins> 
-  <pyqgis_plugin name=".ROSOR Waypoint Altitude Embedder">
+  <pyqgis_plugin name=".ROSOR Waypoint Altitude Embedder" version="1.0.5">
     <version>1.0.5</version>
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
@@ -8,7 +8,7 @@
     <description>ROSOR's tool to embed waypoints converting flightlines and surface data into 3D waypoints with given clearance to ensure safe drone navigation</description>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_alt_embedder.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name=".ROSOR Base Mag QAQC">
+  <pyqgis_plugin name=".ROSOR Base Mag QAQC" version="1.0.5">
     <version>1.0.5</version>
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
@@ -16,7 +16,7 @@
     <description>PETER ADD DESCRIPTION HERE PLEASE</description>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_base_mag_qaqc.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name=".ROSOR Flightline Creator">
+  <pyqgis_plugin name=".ROSOR Flightline Creator" version="1.0.3">
     <version>1.0.3</version>
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
@@ -24,7 +24,7 @@
     <description>ROSOR's tool to create flightlines</description>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_flightline_creator.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name=".ROSOR Lines to Flight">
+  <pyqgis_plugin name=".ROSOR Lines to Flight" version="1.0.3">
     <version>1.0.3</version>
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
@@ -32,7 +32,7 @@
     <description>ROSOR's tool that takes parallel flightlines and takeoff location points to plan flights</description>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_lines_to_flights.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name=".ROSOR Mag Clipper">
+  <pyqgis_plugin name=".ROSOR Mag Clipper" version="1.0.5">
     <version>1.0.5</version>
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
@@ -40,7 +40,7 @@
     <description>ROSOR's tool that process proprietary magdata</description>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_mag_clipper.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name=".ROSOR Mass Import CSVs or KMLs">
+  <pyqgis_plugin name=".ROSOR Mass Import CSVs or KMLs" version="1.0.5">
     <version>1.0.5</version>
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
@@ -48,7 +48,7 @@
     <description>ROSOR's tool to mass import csv or kml files from a folder, and match the file structure using layer groups.</description>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_mass_importer.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name=".ROSOR Slope Analyzer">
+  <pyqgis_plugin name=".ROSOR Slope Analyzer" version="1.0.3">
     <version>1.0.3</version>
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
