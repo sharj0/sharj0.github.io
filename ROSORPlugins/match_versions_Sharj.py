@@ -31,7 +31,7 @@ def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.pat
 
         #obtains the download url (used to identify the plugin name) and its corresponding version in the xml file
         plugin_zip_path = plugin.find('download_url').text
-        xml_version = plugin.find('version').text
+        xml_version = plugin.attrib['version']
 
         #uses the download url zip file name to correspond to the plugin and gets creates a path to it in the current directory
         plugin_folder = pathlib.Path(plugin_zip_path).stem
@@ -85,7 +85,7 @@ def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.pat
                     change_xml = True
 
                     #alters the text in the xml "version" attribute to match the metadata version
-                    plugin.find('version').text = metadata_version
+                    plugin.set('version',metadata_version)
 
                     # statement in console to show user that the xml is changed to match the metadata
                     print(f"modified xml for {plugin_folder}\n")
