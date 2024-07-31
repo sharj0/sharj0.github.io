@@ -391,7 +391,7 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
                         self._add_radio_buttons(key, value, group_layout)
                     else:
                         self._create_widgets_recursive(value, group_layout)
-                elif not key.endswith('_VIDEO'):
+                elif key.endswith('_VIDEO'):
                     self._add_widget_for_value(key, value, parent_layout)
 
         def _add_widget_for_value(self, key, value, layout):
@@ -410,6 +410,7 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
             field_font.setPointSize(self.field_font_size)
 
             tooltip = self.tooltips.get(base_key)
+            print(key)
 
             if "_COMMENT" in key:
                 # Display comments as QLabel
@@ -483,6 +484,7 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
                 layout.addLayout(h_layout)
 
             elif "_VIDEO" in key:
+                print("Video")
                 # Add a button to play the video next to the existing QLineEdit
                 base_key = key.replace("_VIDEO", "")
                 line_edit = self.findChild(QLineEdit, base_key)
