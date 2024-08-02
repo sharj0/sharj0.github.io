@@ -37,8 +37,6 @@ from . import plugin_load_settings
 import numpy as np
 import sys
 import re
-from . import temp_gpt
-from . import plot_and_accept_Sharj
 
 # PROFILER CHUNK 1/3 START ////////////////////////////////////////////////////////////////////////////////////
 #import cProfile
@@ -246,16 +244,15 @@ def main(settings_file_path):
                                         plot=plot_details)
 
         # TEMP plot buffer line buffer_line and new_waypoints.T[0]
-        # import matplotlib.pyplot as plt
-        # plt.plot(buffer_line[0], buffer_line[1], 'r')
-        # plt.show()
-        # pass
+        #import matplotlib.pyplot as plt
+        #plt.plot(buffer_line[0], buffer_line[1], 'r')
+        #plt.show()
+        #pass
 
         new_waypoints.T[3] = drape_wps_over_buffer.run(buffer_line,
                                                                new_waypoints.T[0],
                                                                plot=plot_details)
 
-        new_waypoints = compute_heading(new_waypoints)
         new_waypoints = compute_heading(new_waypoints)
         # Compute heading for samples
         surf_samples_merged = compute_heading_for_samples(surf_samples_merged, new_waypoints)
@@ -302,7 +299,7 @@ def main(settings_file_path):
         if skip_plot or create_ortho_photo_corridor_flight:
             accepted = True
         else:
-            accepted = plot_and_accept_Sharj.run(waypoints=new_waypoints,
+            accepted = plot_and_accept.run(waypoints=new_waypoints,
                                            dsm=(surf_arr_smol, surf_x_smol, surf_y_smol),
                                            dem=(grnd_arr_smol, grnd_x_smol, grnd_y_smol),
                                            surf_samples=surf_samples_merged,

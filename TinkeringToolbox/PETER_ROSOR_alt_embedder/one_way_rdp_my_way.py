@@ -64,14 +64,7 @@ def interpolate_points(points, keep_mask):
 
     return list(zip(x, y_interp))
 
-def my_simp(points, epsilon, debug_statements=True, plot_stuff=True):
-    keep_mask = np.ones((len(points)), dtype=bool)
-    points = sort_points_by_x(points)
-    keep_mask = my_simp_recursion(points, epsilon, keep_mask, debug_statements=debug_statements, plot_stuff=plot_stuff)
-    if plot_stuff:
-        points_keep = interpolate_points(points, keep_mask)
-        plot_points(points, points_keep, 0, len(points)-1, 0, keep_mask)
-    return keep_mask
+
 
 def check_for_removed_points(steep_turn_indx, keep_mask):
     removed_point_left, removed_point_right = None, None
@@ -83,6 +76,15 @@ def check_for_removed_points(steep_turn_indx, keep_mask):
 
     return removed_point_left, removed_point_right
 
+
+def my_simp(points, epsilon, debug_statements=True, plot_stuff=True):
+    keep_mask = np.ones((len(points)), dtype=bool)
+    points = sort_points_by_x(points)
+    keep_mask = my_simp_recursion(points, epsilon, keep_mask, debug_statements=debug_statements, plot_stuff=plot_stuff)
+    if plot_stuff:
+        points_keep = interpolate_points(points, keep_mask)
+        plot_points(points, points_keep, 0, len(points)-1, 0, keep_mask)
+    return keep_mask
 
 # Algorithm to simplify a discrete curve recursively but should only create shortcuts to values below the curve
 def my_simp_recursion(points, epsilon, keep_mask, debug_statements=True, plot_stuff=True):

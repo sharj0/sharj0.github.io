@@ -391,6 +391,8 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
                         self._add_radio_buttons(key, value, group_layout)
                     else:
                         self._create_widgets_recursive(value, group_layout)
+                elif not key.endswith('_VIDEO'):
+                    self._add_widget_for_value(key, value, parent_layout)
                 elif key.endswith('_VIDEO'):
                     self._add_widget_for_value(key, value, parent_layout)
 

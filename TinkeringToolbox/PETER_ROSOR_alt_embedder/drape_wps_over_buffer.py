@@ -55,9 +55,7 @@ def plot_clip(original_data, clipped_data):
 
 
 def adjust_drape(x_coords, y_coords, drape_onto, plot=False):
-    drape_x = drape_onto[0]
-    drape_alt = drape_onto[1]
-    ydiff = np.interp(drape_x, x_coords, y_coords) - drape_alt
+    ydiff = np.interp(drape_onto[0], x_coords, y_coords) - drape_onto[1]
 
     # Use broadcasting to create an array of shape (len(drape_onto[0]), len(x_coords)-1) where each row represents
     # whether a drape_onto x-value is between each segment of x_coords.
