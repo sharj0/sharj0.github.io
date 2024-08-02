@@ -58,13 +58,13 @@ def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.pat
                 #isolates the line with the plugin's version that we want to check
                 metadata_version = metadata[4][8:-1]
 
-                #prints the plugin name and metadata version in the console
-                print(f"metadata version for {plugin_folder}: {metadata_version}")
-
                 #if deciding to increment each plugin to save time this calls the function to add one to the right most decimal
                 if increment_all:
-                    increment_two_decimal_version_string(metadata_version, target_index=2)
-                    increment_two_decimal_version_string(xml_version, target_index=2)
+                    metadata_version = increment_two_decimal_version_string(metadata_version, target_index=2)
+                    # increment_two_decimal_version_string(xml_version, target_index=2)
+
+                # prints the plugin name and metadata version in the console
+                print(f"metadata version for {plugin_folder}: {metadata_version}")
 
                 #This if statement compares the versions using packaging.version library and decides which value to change based on the larger version
                 if Version(metadata_version) < Version(xml_version):
@@ -145,5 +145,5 @@ def increment_two_decimal_version_string(version="1.0.0", target_index=2):
 
 
 if __name__ == "__main__":
-    match_xml_version_main(xml_file_name="plugins_development.xml")
+    match_xml_version_main(xml_file_name="plugins_development.xml",increment_all=False)
     autozip_plugins_Sharj.autozip_files_main()

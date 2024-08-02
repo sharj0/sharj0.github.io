@@ -3,7 +3,6 @@ THIS .PY FILE SHOULD BE THE SAME FOR ALL PLUGINS.
 A CHANGE TO THIS .PY IN ONE OF THE PLUGINS SHOULD BE COPPY-PASTED TO ALL THE OTHER ONES
 '''
 
-
 import os
 import sys
 import json
@@ -13,19 +12,24 @@ from PyQt5.QtWidgets import QWidget, QScrollArea, \
     QGroupBox, QPushButton, QComboBox, QRadioButton, QSizePolicy, QButtonGroup, QMenu
 from PyQt5.QtGui import QFont, QIcon, QColor, QPixmap
 from qgis.core import QgsProject, QgsLayerTreeLayer
+from qgis.gui import QgsLayerTreeView
 from PyQt5.QtCore import Qt, pyqtSignal, QSize, QUrl
 from PyQt5.Qt import QDesktopServices
 import subprocess
 
+from qgis.utils import iface
+
 from . import plugin_tools
 from . import plugin_settings_suffixes
 from . import plugin_add_custom_buttons
+
 
 # disable the mouse wheel scrolling through dropdown values. can lead to unintentional value changing
 class NoScrollQComboBox(QComboBox):
     def wheelEvent(self, event):
         # Don't do anything on a wheel event to prevent scrolling
         pass
+
 
 def run(next_app_stage, settings_folder, skip=False, windowtitle=plugin_tools.get_plugin_name()):
     # Get the directory containing the current Python file.
@@ -34,6 +38,7 @@ def run(next_app_stage, settings_folder, skip=False, windowtitle=plugin_tools.ge
     newest_file = plugin_tools.get_newest_file_in(plugin_dir=plugin_dir, folder=settings_folder)
     print(f'loaded newest settings file: {newest_file}')
     change_settings(newest_file, next_app_stage, settings_folder, skip=skip, windowtitle=windowtitle)
+
 
 def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, windowtitle='Change Settings'):
     suffixes = plugin_settings_suffixes.get()
@@ -69,6 +74,11 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
             self.mainLayout = QVBoxLayout(self.mainWidget)
             self.mainWidget.setLayout(self.mainLayout)
             self.radio_buttons = {}  # Store radio buttons groups
+
+            """Sharj"""
+            self.iface = iface
+            """Sharj"""
+
             self.initUI()
 
         def set_icon(self, icon_path):
@@ -103,8 +113,6 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
 
             # Launch the new .py file using the default OS application
             os.startfile(output_path)
-
-
 
         def open_plugin_dir(self):
             plug_dir = os.path.dirname(self.settings_folder_path)
@@ -272,7 +280,6 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
                             new_group[new_checked] = True
                             changes[radio_group_key] = (original_group, new_group)
 
-
             newest_file = plugin_tools.get_newest_file_in(plugin_dir=plugin_dir, folder=settings_folder)
             if os.path.normpath(set_curr_file) == os.path.normpath(newest_file):
                 using_newest = True
@@ -393,8 +400,8 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
                         self._create_widgets_recursive(value, group_layout)
                 elif not key.endswith('_VIDEO'):
                     self._add_widget_for_value(key, value, parent_layout)
-                elif key.endswith('_VIDEO'):
-                    self._add_widget_for_value(key, value, parent_layout)
+                # elif key.endswith('_VIDEO'):
+                #     self._add_widget_for_value(key, value, parent_layout)
 
         def _add_widget_for_value(self, key, value, layout):
             ellipsis_font = QFont()
@@ -431,7 +438,6 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
                 comment_layout.addWidget(comment_label)
                 layout.addLayout(comment_layout)
 
-
             elif "_SELECT_LAYER" in key:
                 h_layout = QHBoxLayout()
                 combobox = NoScrollQComboBox()
@@ -443,7 +449,18 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
                 combobox.setItemData(index, QColor("grey"), Qt.ForegroundRole)
 
                 """Sharj"""
-                combobox.addItem("selected layer")
+                combobox.addItem("highlighted layer")
+                index = combobox.findText("highlighted layer")
+                italic_font = QFont()
+                italic_font.setItalic(True)
+                combobox.setItemData(index, italic_font, Qt.FontRole)
+                combobox.setItemData(index, QColor("grey"), Qt.ForegroundRole)
+                # combobox.addItem("selected layer")
+                # index = combobox.findText("selected layer")
+                # italic_font = QFont()
+                # italic_font.setItalic(True)
+                # combobox.setItemData(index, italic_font, Qt.FontRole)
+                # combobox.setItemData(index, QColor("grey"), Qt.ForegroundRole)
                 """Sharj"""
 
                 for layer_name in self.get_available_qgis_layers():
@@ -630,28 +647,39 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
             """Retrieve a list of available layer names from the current QGIS project."""
             return [layer.name() for layer in QgsProject.instance().mapLayers().values()]
 
+        """Sharj"""
+
+        """Sharj"""
+
         """Sharj Modified"""
+
         def update_textfield_from_dropdown(self, key, selected_value):
             line_edit = self.findChild(QLineEdit, key.replace("_SELECT_LAYER", ""))
             if selected_value == "previous input":
                 path_from_json = plugin_tools.find_key_in_nested_dict(self.data, key.replace("_SELECT_LAYER", ""))
                 line_edit.setText(path_from_json)
 
+            elif selected_value == "highlighted layer":
+                layer = self.iface.activeLayer()
+                if layer:
+                    line_edit.setText(layer.source())
+
             #Checks for the selected layer and iterates through the "Tree" to see if a check mark (isVisible()) is enabled
             #I believe it should return the first option in the for loop, but not exactly sure (anyways there should be only one selection)
-            elif selected_value == "selected layer":
-                layers = QgsProject.instance().mapLayers().values()
-                layer_tree = QgsProject.instance().layerTreeRoot()
-                for layer in layers:
-                    layer_in_tree = layer_tree.findLayer(layer.id())
-                    if layer_in_tree.isVisible():
-                        line_edit.setText(layer.source())
+            # elif selected_value == "selected layer":
+            #     layers = QgsProject.instance().mapLayers().values()
+            #     layer_tree = QgsProject.instance().layerTreeRoot()
+            #     for layer in layers:
+            #         layer_in_tree = layer_tree.findLayer(layer.id())
+            #         if layer_in_tree.isVisible():
+            #             line_edit.setText(layer.source())
             else:
                 # Assuming layers have an attribute 'source' for full path; adjust if needed
                 layer = next((l for l in QgsProject.instance().mapLayers().values() if l.name() == selected_value),
                              None)
                 if layer:
                     line_edit.setText(layer.source())
+
         """Sharj Modified"""
 
     return DynamicGui(parsed_data)
