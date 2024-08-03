@@ -1,16 +1,16 @@
 {
     "Input files": {
-        "Magdata_file_path": "I:\\CONTRACT_Senoa\\debugging stuff\\Raw mag data\\SRVY0-ACQU226 (1)_10Hz.csv",
+        "Magdata_file_path": "D:\\ROSOR\\My_QGIS_Repo\\QAQC\\Mag clipper & QaQc\\TEST DATA FOR MAG CLIPPER\\SRVY0-ACQU109.magdata",
         "Magdata_file_path_SELECT_FILE": "true",
         "Magdata_file_path_COMMENT": "A \".magdata\" file is downloaded from the MagArrow sensor. QaQc is done here.",
-        "Flight_lines_file_path": "I:\\CONTRACT_Senoa\\debugging stuff\\Mag_flights\\Lines for QaQc\\TOF5_mag_flt_lines.shp",
+        "Flight_lines_file_path": "D:\\ROSOR\\My_QGIS_Repo\\QAQC\\Mag clipper & QaQc\\TEST DATA FOR MAG CLIPPER\\Lines_shape_file\\split_extended_mag_all_lines_named.dbf|layername=split_extended_mag_all_lines_named",
         "Flight_lines_file_path_SELECT_LAYER": "true",
         "Flight_lines_file_path_COMMENT": "Select the file that has the flight line",
         "Flight_lines_file_path_VIDEO": "Flight_lines_file_path.mp4"
     },
     "Auto_renaming": {
         "Auto_rename": true,
-        "Provide_path_to_2d_flights": "I:\\CONTRACT_Senoa\\debugging stuff\\Mag_flights\\2D_flights",
+        "Provide_path_to_2d_flights": "D:\\ROSOR\\My_QGIS_Repo\\QAQC\\Mag clipper & QaQc\\TEST DATA FOR MAG CLIPPER\\2d_mag_flts_and_ties_clipped_v3",
         "Provide_path_to_2d_flights_COMMENT": "This will rename the clean csvs to match the names of the provided kml flights",
         "Provide_path_to_2d_flights_SELECT_FOLDER": "true",
         "Provide_path_to_2d_flights_VIDEO": "Provide_path_to_2d_flights_VIDEO.mp4",
@@ -18,13 +18,13 @@
         "If no match, split data_VIDEO": "split_data_if_no_match.mp4"
     },
     "Output folders": {
-        "output_csv_into_input_magdata_folder": false,
+        "output_csv_into_input_magdata_folder": true,
         "output_csv_into_input_magdata_folder_COMMENT": "If checked,the following field will be ignored",
-        "output_csv_folder": "I:\\CLIP_MAG_LINES\\_will_create_automatically_",
+        "output_csv_folder": "D:\\ROSOR\\QAQC\\Mag clipper & QaQc\\TEST DATA FOR MAG CLIPPER\\output\\csv",
         "output_csv_folder_SELECT_FOLDER": "true",
-        "output_pdf_into_input_magdata_folder": false,
+        "output_pdf_into_input_magdata_folder": true,
         "output_pdf_into_input_magdata_folder_COMMENT": "If checked,the following field will be ignored",
-        "output_pdf_folder": "I:\\CLIP_MAG_LINES\\_will_create_automatically_",
+        "output_pdf_folder": "D:\\ROSOR\\QAQC\\Mag clipper & QaQc\\TEST DATA FOR MAG CLIPPER\\output\\pdf",
         "output_pdf_folder_SELECT_FOLDER": "true"
     },
     "Parameters": {
@@ -35,18 +35,20 @@
         "Y_axis_display_range_override_COMMENT": "This will change scale in the magnetic intensity plots. set to 0 for it to be automatically scaled",
         "Y_axis_display_range_override_VIDEO": "Y_axis_display_range_override_VIDEO.mp4",
         "Line Detection": {
-            "line_detection_threshold": 10.0,
+            "line_detection_threshold": 20.0,
             "line_detection_threshold_COMMENT": "The area at the end of each flightline that helps determine which flightline the data belongs to",
-            "filter_out_lines_based_on_direction_thresh_percent": 80.0,
+            "filter_out_lines_based_on_direction_thresh_percent": 40.0,
             "filter_out_lines_based_on_direction_thresh_percent_COMMENT": "Usually 80%. Line is kept if its flying in the same direction 80% of the time. Otherwise rejected."
         },
         "acceptable_deviation_from_flightline": 5.0,
         "acceptable_deviation_from_flightline_COMMENT": "Distance in meters that the mag can fly off-course and not be marked",
+        "acceptable_minimum_velocity": 1.0,
+        "acceptable_minimum_velocity_COMMENT": "The slowest acceptable drone velocity in meters per second. This helps detect when the drone stops mid-flightline.",
         "Noise Detection": {
             "range_noise_threshold": 40.0,
             "range_noise_threshold_COMMENT": "do not change these values without Peter's or Geophysicist's approval. original value 40",
             "range_noise_number_of_points": 20,
-            "range_noise_number_of_points_COMMENT": "do not change these values without  Peter's or Geophysicist's . original value 20"
+            "range_noise_number_of_points_COMMENT": "do not change these values without  Peter's or Geophysicist's approval. original value 20"
         }
     },
     "save_whole_qgis_project_when_done": false,

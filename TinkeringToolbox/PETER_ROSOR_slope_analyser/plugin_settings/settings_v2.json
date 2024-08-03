@@ -1,0 +1,25 @@
+{
+    "Input files": {
+        "Flight_lines": "G:\\Shared drives\\Rosor\\2024 - 2025\\Projects\\project-dlm-senoa-rogue\\Ram\\Mag_flights\\Lines for QaQc\\all_ram_flt_lines.shp",
+        "Flight_lines_SELECT_LAYER": "true",
+        "Flight_lines_COMMENT": "Select a flight lines file or layer. '.shp' and '.kml' are accepted",
+        "Elevation_Data_Raster": "G:\\Shared drives\\Rosor\\2024 - 2025\\Projects\\project-dlm-senoa-rogue\\Ram\\LIDAR_DATA\\COMBINED\\DSM.tif",
+        "Elevation_Data_Raster_SELECT_LAYER": "true",
+        "Elevation_Data_Raster_COMMENT": "This is usually SRTM data. Get the SRTM downloader Plugin. Usually '.hgt' or '.tif'."
+    },
+    "Settings": {
+        "analysis_resolution_meters": 25,
+        "analysis_resolution_meters_COMMENT": "FlightLines will be broken up into sections of this distance upon which the slope calculation will be done.",
+        "slope_percent_threshold": 15.0,
+        "slope_percent_threshold_COMMENT": "If the slope is steeper than this threshold it will be considered to be 'steep' and colored red."
+    },
+    "Output options": {
+        "output_kml_lines_where_steep": true,
+        "output_kml_lines_where_steep_COMMENT": "If checked, a '.kml' file will be made (next to the input lines) that shows where the steep bits are",
+        "output_shp_lines_where_steep": true,
+        "output_shp_lines_where_steep_COMMENT": "If checked, a shapefile'.shp' file will be made (next to the input lines) that shows where the steep bits are",
+        "output_analysis_result_data_to_excel": true,
+        "output_analysis_result_data_to_excel_COMMENT": "If checked, am excel spreadsheet file will be made (next to the input lines) with data."
+    },
+    "Close this window on accept": true
+}

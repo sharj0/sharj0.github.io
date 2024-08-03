@@ -5,39 +5,53 @@ A CHANGE TO THIS .PY IN ONE OF THE PLUGINS SHOULD BE COPPY-PASTED TO ALL THE OTH
 
 import os
 from PyQt5.QtGui import QScreen, QDragEnterEvent, QDropEvent
-from PyQt5.QtCore import QCoreApplication
-from PyQt5.QtWidgets import QMessageBox, QLineEdit
+from PyQt5.QtCore import QCoreApplication, QTimer, QEvent, Qt
+from PyQt5.QtWidgets import QMessageBox, QLineEdit, QApplication
 import re
 
 
-"""Sharj"""
-#This is a drag and drop class based on QLineEdit that allows dragging of files from outside of the plugin into the text box for their path
-class Drag_and_Drop(QLineEdit):
+class CustomLineEdit(QLineEdit):
 
-    #Initialize class to set itself accept drop as true
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAcceptDrops(True)
+        self.double_click_timer = QTimer()
+        self.double_click_timer.setSingleShot(True)
+        self.double_click_timer.timeout.connect(self.reset_click_count)
+        self.click_count = 0
 
-    #Function that runs when a drag to the box event happens and shows the user the file can be dropped into it
-    def dragEnterEvent(self, event: QDragEnterEvent):
+    def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
             event.acceptProposedAction()
 
-    #Function that imports the file path whenever a drop occurs
-    def dropEvent(self, event: QDropEvent):
-
-        #Checks if the dropped file has a path
+    def dropEvent(self, event):
         if event.mimeData().hasUrls():
-
-            #The dropped path is saved into a list
             urls = event.mimeData().urls()
-
-            #Checks the path and only accepts is if it either a folder or one of the accepted types other it will not update
             if urls:
                 file_path = urls[0].toLocalFile()
                 self.setText(file_path)
-"""Sharj"""
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.click_count += 1
+            if self.click_count == 1:
+                self.selectAll()
+                self.double_click_timer.start(QApplication.doubleClickInterval())
+            elif self.click_count == 2:
+                self.double_click_timer.stop()
+                self.reset_click_count()
+            else:
+                super(CustomLineEdit, self).mousePressEvent(event)
+        elif event.button() == Qt.RightButton:
+            self.setCursorPosition(self.cursorPositionAt(event.pos()))
+            super(CustomLineEdit, self).mousePressEvent(event)
+
+    def mouseDoubleClickEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            super(CustomLineEdit, self).mousePressEvent(event)
+
+    def reset_click_count(self):
+        self.click_count = 0
 
 def get_plugin_name():
     # Get the directory containing the current file

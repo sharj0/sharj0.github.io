@@ -145,5 +145,5 @@ def increment_two_decimal_version_string(version="1.0.0", target_index=2):
 
 
 if __name__ == "__main__":
-    match_xml_version_main(xml_file_name="plugins_development.xml",increment_all=False)
+    match_xml_version_main(xml_file_name="plugins_development.xml", increment_all=False)
     autozip_plugins_Sharj.autozip_files_main()

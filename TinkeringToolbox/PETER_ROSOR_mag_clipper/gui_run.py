@@ -480,11 +480,71 @@ def remove_lines_with_multiple_primary_directions(line_to_points, x,y, filter_li
                                key not in lines_with_multiple_directions}
     return filtered_line_to_points
 
+def plot_vels(cumulative_distances, velocities):
+    plt.figure(figsize=(10, 6))
+    plt.plot(cumulative_distances, velocities, marker='o')
+    plt.xlabel('Cumulative Distance Along the Line (m)')
+    plt.ylabel('Velocity (m/s)')
+    plt.title('Velocity vs. Distance Along the Line')
+    plt.grid(True)
+    plt.show()
+
+
+def get_acceptable_velocity(line_to_points, acceptable_minimum_velocity, elapsed_time_minutes_all, utme_all, utmn_all, plot=False):
+    mask_too_slow = np.zeros_like(utme_all)
+
+    for line, indices in line_to_points.items():
+        utme = utme_all.loc[indices['start']:indices['end']].to_numpy()
+        utmn = utmn_all.loc[indices['start']:indices['end']].to_numpy()
+        elapsed_time_minutes = elapsed_time_minutes_all.loc[indices['start']:indices['end']].to_numpy()
+
+        # Calculate the vector from the first to the last point
+        direction_vector = np.array([utme[-1] - utme[0], utmn[-1] - utmn[0]])
+
+        # Calculate the magnitude of the direction vector
+        direction_magnitude = np.linalg.norm(direction_vector)
+
+        # Unit vector in the direction from the first to the last point
+        unit_vector = direction_vector / direction_magnitude
+
+        # Calculate the differences between consecutive coordinates
+        delta_x = np.diff(utme)
+        delta_y = np.diff(utmn)
+
+        # Create displacement vectors
+        displacement_vectors = np.column_stack((delta_x, delta_y))
+
+        # Project each displacement vector onto the unit vector
+        projections = np.dot(displacement_vectors, unit_vector)
+
+        # Calculate cumulative distances along the direction of the unit vector
+        cumulative_distances = np.cumsum(np.insert(projections, 0, 0))  # Insert a 0 at the start for the initial position
+
+        # Convert elapsed time from minutes to seconds
+        elapsed_time_seconds = np.array(elapsed_time_minutes) * 60
+
+        seconds_between_samples = np.diff(elapsed_time_seconds)
+
+        # Calculate velocities (distance/time)
+        velocities = projections / seconds_between_samples  # Ignore the first time point for velocity calculation
+
+        if plot:
+            plot_vels(cumulative_distances[1:], velocities)
+
+        # Create a mask for velocities that are too slow
+        mask_too_slow_line = velocities < acceptable_minimum_velocity
+
+        mask_too_slow[indices['start']:indices['end']] = mask_too_slow_line
+
+    return mask_too_slow
+
+
 def gui_run(df,
             flight_lines,
             grid_line_names,
             noise_detection_params,
             deviation_thresh,
+            acceptable_minimum_velocity,
             export_file_path,
             line_detection_threshold,
             filter_lines_direction_thresh,
@@ -521,6 +581,8 @@ def gui_run(df,
 
     mask_outside_box, box_coords_list = get_acceptable_box(line_to_points, flight_lines, deviation_thresh, df['UTME'], df['UTMN'])
 
+    mask_too_slow = get_acceptable_velocity(line_to_points, acceptable_minimum_velocity, df['elapsed_time_minutes'], df['UTME'], df['UTMN'])
+
     local_grid_line_names = [grid_line_names[key] for key in line_to_points.keys()]
 
     """↓↓ Sharj's Addition ↓↓"""
@@ -534,13 +596,13 @@ def gui_run(df,
     df['Flightline_lkm'] = -1.0
     df['Total_lkm'] = -1.0
 
-    flightline_counter = 1
+
     for line, indices in line_to_points.items():
-        df.loc[indices['start']:indices['end'], 'Flightline'] = flightline_counter
-        df.loc[indices['start']:indices['end'], 'Grid_Flightline'] = local_grid_line_names[flightline_counter-1]
-        df.loc[indices['start']:indices['end'], 'Flightline_lkm'] = float(local_flightline_lkm[flightline_counter - 1])
+        df.loc[indices['start']:indices['end'], 'Flightline'] = line + 1
+        if local_grid_line_names[line]:
+            df.loc[indices['start']:indices['end'], 'Grid_Flightline'] = local_grid_line_names[line]
+        df.loc[indices['start']:indices['end'], 'Flightline_lkm'] = float(local_flightline_lkm[line])
         df.loc[indices['start']:indices['end'], 'Total_lkm'] = float(total_flightline_lkm)
-        flightline_counter += 1  # Increment the flightline counter for the next line
 
     #set colors for the data directly in the df
     colormap = get_custom_spectral_colormap()
@@ -581,6 +643,9 @@ def gui_run(df,
 
     # set r,g,b (color), alpha (transparancy) and size for plotting points outside the accptable deviation from flight line
     df.loc[(mask_outside_box) & (df['Flightline'] > 0), ['r', 'g', 'b', 'a', 'size']] = [1, 0.1, 1, 1, 50]
+
+    # set r,g,b (color), alpha (transparancy) and size for plotting points that are too slow
+    df.loc[(mask_too_slow) & (df['Flightline'] > 0), ['r', 'g', 'b', 'a', 'size']] = [0.8, 0.1, 0.8, 1, 50]
 
     # If 'noise_bad' is 1 and 'Flightline' <= 0, set color to orange and size to 40
     df.loc[(df['noise_bad'] == 1) & (df['Flightline'] <= 0), ['r', 'g', 'b', 'a', 'size']] = [1, 0.65, 0, 1, 40]
