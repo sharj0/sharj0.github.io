@@ -461,7 +461,12 @@ def save_input_layer_as_utm_shapefile(poly_kml_layer, poly_file, convert_to_spec
     else:
         utm_zone = convert_to_specific_UTM_zone
 
-    epsg_code = 'EPSG:326'+str(utm_zone)
+    # Pad the UTM zone to two digits
+    utm_zone_padded = str(utm_zone).zfill(2)
+
+    # Create the EPSG code
+    epsg_code = 'EPSG:326' + utm_zone_padded
+
 
 
     output_shp_path = os.path.splitext(poly_file)[0] + "_UTM.shp"

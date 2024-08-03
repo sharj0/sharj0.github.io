@@ -13,7 +13,7 @@
     <description>PETER ADD DESCRIPTION HERE PLEASE</description>
       <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_base_mag_qaqc.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name=".DEV ROSOR Flightline Creator" version="1.0.5">
+  <pyqgis_plugin name=".DEV ROSOR Flightline Creator" version="1.0.6">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/icons/flightline_creator_icon.png</icon>
