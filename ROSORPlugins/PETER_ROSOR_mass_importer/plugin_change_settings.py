@@ -3,7 +3,6 @@ THIS .PY FILE SHOULD BE THE SAME FOR ALL PLUGINS.
 A CHANGE TO THIS .PY IN ONE OF THE PLUGINS SHOULD BE COPPY-PASTED TO ALL THE OTHER ONES
 '''
 
-
 import os
 import sys
 import json
@@ -17,15 +16,20 @@ from PyQt5.QtCore import Qt, pyqtSignal, QSize, QUrl
 from PyQt5.Qt import QDesktopServices
 import subprocess
 
+from qgis.utils import iface
+
 from . import plugin_tools
 from . import plugin_add_custom_buttons
 from .plugin_settings_suffixes import get_suffixes
+
+import re
 
 # disable the mouse wheel scrolling through dropdown values. can lead to unintentional value changing
 class NoScrollQComboBox(QComboBox):
     def wheelEvent(self, event):
         # Don't do anything on a wheel event to prevent scrolling
         pass
+
 
 def run(next_app_stage, settings_folder, skip=False, windowtitle=plugin_tools.get_plugin_name()):
     # Get the directory containing the current Python file.
@@ -109,11 +113,13 @@ def save_as_json(data, file_path):
     with open(file_path, 'w') as json_file:
         json.dump(data, json_file, indent=4)
 
+
 def get_settings(data):
     suffixes = get_suffixes()
     settings = parse_dict(data, suffixes)
 
     return settings
+
 
 def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, windowtitle='Change Settings'):
     plugin_dir = os.path.dirname(os.path.abspath(__file__))
@@ -129,7 +135,7 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
         # Add this line to create a new signal
         settings_updated = pyqtSignal(str)
 
-        def __init__(self, data):
+        def __init__(self, data, iface):
             super().__init__()
             self.data = data
             self.header_font_size = 13  # Font size for sections like "Files" and "Settings"
@@ -154,6 +160,11 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
             self.mainWidget.setLayout(self.mainLayout)
             self.radio_buttons = {}  # Store radio buttons groups
             self.changes_made = False
+
+            """Sharj"""
+            self.iface = iface
+            """Sharj"""
+
             self.initUI()
 
         def set_icon(self, icon_path):
@@ -188,7 +199,6 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
 
             # Launch the new .py file using the default OS application
             os.startfile(output_path)
-
 
         def open_plugin_dir(self):
             plug_dir = os.path.dirname(self.settings_folder_path)
@@ -259,7 +269,6 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
 
             self.settings = get_settings(self.data)
 
-
             self._create_widgets_recursive(self.settings, self.mainLayout)
 
             # Create an Accept button and connect it to an action
@@ -302,28 +311,37 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
         """Sharj Modified"""
 
         def update_textfield_from_dropdown(self, setting, selected_value):
+
+            #The path delimiters are any garbage QGIS adds in for metadata, having this might break things if the plugins NEED the metadata.
+            #Hopefully any and all plugins don't require the metadata in the path
+            path_delimiters = r"[|?]"
             if selected_value == "Original selection":
-                path_from_json = plugin_tools.find_key_in_nested_dict(self.data, setting.key.replace("_SELECT_LAYER", ""))
+                path_from_json = plugin_tools.find_key_in_nested_dict(self.data,
+                                                                      setting.key.replace("_SELECT_LAYER", ""))
                 setting.line_edit.setText(path_from_json)
 
-            # Checks for the selected layer and iterates through the "Tree" to see if a check mark (isVisible()) is enabled
-            # I believe it should return the first option in the for loop, but not exactly sure (anyways there should be only one selection)
-            elif selected_value == "Highlighted layer":
-                layers = QgsProject.instance().mapLayers().values()
-                layer_tree = QgsProject.instance().layerTreeRoot()
-                for layer in layers:
-                    layer_in_tree = layer_tree.findLayer(layer.id())
-                    if layer_in_tree.isVisible():
-                        setting.line_edit.setText(layer.source())
+            #Checks for the highlighted layer denoted by QGIS API as "activeLayer()"
+            #Note that it only updates when changing settings (it does not live update as you are click a different layer to highlight, you need to swap to another selection and swap back to update)
+            elif selected_value == "Highlighted Layer":
+                layer = self.iface.activeLayer()
+                if layer:
+
+                    #cleans the path to only return the file path and no garbage metadata that might be useful to QGIS
+                    cleaned_path = re.split(path_delimiters,layer.source(),1)[0]
+                    setting.line_edit.setText(cleaned_path)
+
             else:
                 # Assuming layers have an attribute 'source' for full path; adjust if needed
                 layer = next((l for l in QgsProject.instance().mapLayers().values() if l.name() == selected_value),
                              None)
                 if layer:
-                    setting.line_edit.setText(layer.source())
+
+                    # cleans the path to only return the file path and no garbage metadata that might be useful to QGIS
+                    cleaned_path = re.split(path_delimiters, layer.source(), 1)[0]
+                    setting.line_edit.setText(cleaned_path)
+
 
         """Sharj Modified"""
-
 
         def update_textfield_from_file_dialog(self, setting):
 
@@ -444,7 +462,6 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
                 self.changes_made = True
                 print(f"Setting: {setting.key} changed to {setting.attributes['_RADIO']}")
 
-
         def _add_comment(self, layout, comment):
             # Display comments as QLabel
             comment_layout = QHBoxLayout()
@@ -543,7 +560,7 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
                 combobox = NoScrollQComboBox()
                 italic_font = QFont()
                 italic_font.setItalic(True)
-                special_buttons = ["Select Layer:", "Original selection", "Highlighted layer"]
+                special_buttons = ["Select Layer:", "Original selection", "Highlighted Layer"]
                 for index, special_button in enumerate(special_buttons):
                     combobox.addItem(special_button)
                     combobox.setItemData(index, italic_font, Qt.FontRole)
@@ -551,7 +568,8 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
 
                 for layer_name in self.get_available_qgis_layers():
                     combobox.addItem(layer_name)
-                combobox.currentTextChanged.connect(lambda text, k=setting: self.update_textfield_from_dropdown(k, text))
+                combobox.currentTextChanged.connect(
+                    lambda text, k=setting: self.update_textfield_from_dropdown(k, text))
 
                 h_layout.addWidget(combobox, 1)
                 # Adding a "..." button after the dropdown
@@ -579,7 +597,6 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
                 h_layout.addWidget(folder_button)
                 text_entry_layout.addLayout(h_layout)
                 return
-
 
         def _add_video_to_setting_area(self, top_layout, vid_name):
             vid_button = QPushButton()
@@ -619,5 +636,4 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
 
             parent_layout.addLayout(setting_area_layout)
 
-
-    return DynamicGui(parsed_data)
+    return DynamicGui(parsed_data, iface)
