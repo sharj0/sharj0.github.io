@@ -42,6 +42,7 @@ def main(settings_path):
     Y_axis_display_range_override = settings_dict['Y_axis_display_range_override']
     use_parent_folder_as_group_name = settings_dict['use_parent_folder_name_as_layer_group_name']
     deviation_thresh = settings_dict['acceptable_deviation_from_flightline']
+    acceptable_minimum_velocity = settings_dict['acceptable_minimum_velocity']
 
     do_auto_rename = settings_dict['Auto_rename']
     path_to_2d_flights = settings_dict['Provide_path_to_2d_flights']
@@ -50,7 +51,6 @@ def main(settings_path):
     noise_detection_params = {}
     noise_detection_params['range_noise_threshold'] = settings_dict['range_noise_threshold']
     noise_detection_params['range_noise_number_of_points'] = settings_dict['range_noise_number_of_points']
-    keep_raw_subsample_file = settings_dict['keep raw subsampling file']
     save_project_when_done = settings_dict['save_whole_qgis_project_when_done']
     settings_dict = None # don't use settings_dict from here on
 
@@ -98,11 +98,6 @@ def main(settings_path):
             print('Unknown file type. Exiting...')
             exit()
 
-    """ Sharj's Additions"""
-    if not keep_raw_subsample_file:
-        os.remove(raw_csv_file_path)
-    """ Sharj's Additions """
-
     flight_lines, grid_line_names = load_and_transform_vector_lines(Flight_lines_file_path, epsg_target)
 
     outputt = gui_run(df,
@@ -110,6 +105,7 @@ def main(settings_path):
                       grid_line_names,
                       noise_detection_params,
                       deviation_thresh,
+                      acceptable_minimum_velocity,
                       raw_csv_file_path,
                       line_detection_threshold,
                       filter_lines_direction_thresh,

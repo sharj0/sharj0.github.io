@@ -1,5 +1,5 @@
 <plugins> 
-  <pyqgis_plugin name=".ROSOR Waypoint Altitude Embedder" version="1.0.6">
+  <pyqgis_plugin name=".ROSOR Waypoint Altitude Embedder" version="1.2024.8.3.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/icons/alt_embedder_icon.png</icon>
@@ -7,35 +7,35 @@
     <description>ROSOR's tool to embed alt info into waypoints converting flightlines and surface/ground data into 3D waypoints with given clearance to ensure safe drone navigation</description>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_alt_embedder.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name=".ROSOR Base Mag QAQC" version="1.0.6">
+  <pyqgis_plugin name=".ROSOR Base Mag QAQC" version="1.2024.8.3.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/icons/base_mag_qaqc_icon.png</icon>
     <description>ROSOR's tool that compares Base mag and Air mag recording times and other QaQc things.</description>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_base_mag_qaqc.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name=".ROSOR Flightline Creator" version="1.0.5">
+  <pyqgis_plugin name=".ROSOR Flightline Creator" version="1.2024.8.3.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/icons/flightline_creator_icon.png</icon>
     <description>ROSOR's tool to create flightlines within a polygon</description>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_flightline_creator.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name=".ROSOR Mag Clipper" version="1.0.6">
+  <pyqgis_plugin name=".ROSOR Mag Clipper" version="1.2024.8.3.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/icons/mag_clipper_icon.png</icon>
     <description>ROSOR's tool that takes proprietary ".magdata" and converts to csv then clips it and does QaQc.</description>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_mag_clipper.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name=".ROSOR Mass Import CSVs or KMLs" version="1.0.6">
+  <pyqgis_plugin name=".ROSOR Mass Import CSVs or KMLs" version="1.2024.8.3.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/icons/mass_importer_icon.png</icon>
     <description>ROSOR's tool to mass import csv or kml files from a folder, and match the file structure using layer groups.</description>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_mass_importer.zip</download_url>
   </pyqgis_plugin>
-  <pyqgis_plugin name=".ROSOR Slope Analyzer" version="1.0.4">
+  <pyqgis_plugin name=".ROSOR Slope Analyzer" version="1.2024.8.3.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/icons/slope_analyser_icon.png</icon>

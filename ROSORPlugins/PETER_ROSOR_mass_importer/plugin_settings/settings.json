@@ -1,9 +1,9 @@
 {
     "Input_file_type_RADIO": {
         "Mag Data ( .csv )": true,
-        "Mag Data ( .csv )_COMMENT": "",
+        "Mag Data ( .csv )_COMMENT": "Will import all clipped or raw mag data '.csv's from a folder.",
         "2D Flights ( .kml )": false,
-        "2D Flights ( .kml )_COMMENT": ""
+        "2D Flights ( .kml )_COMMENT": "Will import all drone flight paths '.kml's from a folder."
     },
     "Input_file_type_VIDEO": "import_kml_instead_VIDEO.mp4",
     "\ud83d\udcc2 Input folder": "D:/ROSOR/QAQC/Measure in-line kms scripts/Test data for lkm/June 1st_re_organised",
@@ -15,7 +15,7 @@
     },
     "More settings for loading Mag Data ( .csv )": {
         "point_size_multiplier": 0.4,
-        "point_size_over_ride_COMMENT": "Normal size is 1",
+        "point_size_multiplier_COMMENT": "Normal size is 1",
         "Output LKM and metadata": {
             "output lkm file?": true,
             "output lkm file?_COMMENT": "If checked an makes and opens an excel spreadsheet outside the input folder with LKMs."

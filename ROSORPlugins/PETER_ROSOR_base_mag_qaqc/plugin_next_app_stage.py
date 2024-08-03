@@ -18,7 +18,7 @@ def main(settings_path):
     #"First Time Setup"
     mag_data_folder = settings_dict['Mag Data folder']
     color_by_folder = settings_dict['color_by_folder']
-    sub_sample_base_for_calculations_and_display = settings_dict['sub_sample_base_for_calculations_and_display']
+    sub_sample_base_for_calculations_and_display = int(settings_dict['sub_sample_base_for_calculations_and_display'])
     base_mag_ignore_start_end_mins = settings_dict['base_mag_ignore_start_end_mins']
     Check_Forcast = settings_dict['Check_Forcast']
     Check_Forcast_at = settings_dict['Check_Forcast_at']
