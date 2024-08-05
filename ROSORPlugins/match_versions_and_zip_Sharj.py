@@ -227,4 +227,4 @@ def increment_two_decimal_version_string(version="1.0.0", target_index=-1):
 if __name__ == "__main__":
     match_xml_version_main(xml_file_name="plugins_development.xml", increment_all=False)
     autozip_files_main()
-    print("don't forget to push to main" )
+    print("\nDON'T FORGET TO PUSH TO MAIN" )
