@@ -1,8 +1,0 @@
-[general]
-name= Lines to Flights
-qgisMinimumVersion=3.0
-description= Takes parallel flight-lines and take-off location points and creates flights out of them  
-version=1.2024.8.3.2
-author=Pyotyr Young and Sharjeel AWon
-email=pyotyr@msn.com, pyotyr@rosor.ca
-icon=plugin_icon.png
