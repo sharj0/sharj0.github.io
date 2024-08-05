@@ -114,36 +114,31 @@ def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.pat
             tree.write(xml_file_path)
 
 
-#This function increments a given two decimal version in x.x.x format
-#Defaults to 1.0.0 as the version and target index as the right most value (index 2 as its starts at 0)
-def increment_two_decimal_version_string(version="1.0.0", target_index=2):
+#This function increments numerical version strings with periods as delimiters, the default target increment is the right most value
+def increment_two_decimal_version_string(version="1.0.0", target_index=-1):
 
     #ensures the given string is a version (this might cause isssues with different formatted versions)
-    if (not Version(version)) or len(version.split(".")) != 3:
+    if (not Version(version)) or target_index > len(version.split(".")):
         return None
 
-    #splits the version string into three variables based on index
-    major, minor, micro = version.split(".")
+    #splits the version string based on the delimiter "." and converts them into an integer array
+    version_ints = [int(split_number) for split_number in version.split(".")]
 
-    #An if tree (similar to switch case) where the code changes a bit based on which index to increment (there might be a more elegant solution but this is the one I came up with)
-    #It takes the target index (major, minor or micro), converts it to an integer, adds 1 to it, converts it back to a string and stitches it together with the rest using periods
-    if target_index == 2:
-        incremented_value = str(int(micro) + 1)
-        version = major + "." + minor + "." + incremented_value
-    elif target_index == 1:
-        incremented_value = str(int(minor) + 1)
-        version = major + "." + incremented_value + "." + micro
-    elif target_index == 0:
-        incremented_value = str(int(major) + 1)
-        version = incremented_value + "." + minor + "." + micro
-    else:
-        #if target index is not within the range or right type, then return nothing
-        return None
+    #incremets the targeted value in the integer array
+    version_ints[target_index] += 1
+
+    #converts the integer array into a string array with the incremented numerical
+    new_version_str = [str(new_split_number) for new_split_number in version_ints]
+
+    #joins the string array for the new incremented version
+    new_version = '.'.join(new_version_str)
 
     #return the incremented version
-    return version
+    return new_version
 
 
 if __name__ == "__main__":
     match_xml_version_main(xml_file_name="plugins_development.xml", increment_all=False)
     autozip_plugins_Sharj.autozip_files_main()
+
+
