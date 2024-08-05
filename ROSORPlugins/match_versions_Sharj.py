@@ -117,7 +117,7 @@ def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.pat
 #This function increments a given two decimal version in x.x.x format
 #Defaults to 1.0.0 as the version and target index as the right most value (index 2 as its starts at 0)
 def increment_two_decimal_version_string(version="1.0.0", target_index=2):
-    
+
     # ensures the given string is a version (this might cause isssues with different formatted versions)
     if (not Version(version)) or target_index > len(version.split(".")):
         return None
