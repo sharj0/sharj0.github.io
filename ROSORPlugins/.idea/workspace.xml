@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="501dd648-7190-46b1-907a-07dccc55ee45" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/PETER_ROSOR_lines_to_flights.zip" beforeDir="false" afterPath="$PROJECT_DIR$/PETER_ROSOR_lines_to_flights.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PETER_ROSOR_lines_to_flights/metadata.txt" beforeDir="false" afterPath="$PROJECT_DIR$/PETER_ROSOR_lines_to_flights/metadata.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/match_versions_and_zip_Sharj.py" beforeDir="false" afterPath="$PROJECT_DIR$/match_versions_and_zip_Sharj.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,6 +12,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "sharj0"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/sharj0/sharj0.github.io.git",
+    "accountId": "213ab023-ec7c-45e5-9cbc-abc8960170b6"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
 }</component>
@@ -21,16 +32,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.REPLACE_A_FILE_IN_ALL_PLUGINS.executor": "Run",
-    "Python.match_versions_Sharj.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "D:/ROSOR/sharj0.github.io"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.REPLACE_A_FILE_IN_ALL_PLUGINS.executor&quot;: &quot;Run&quot;,
+    &quot;Python.match_versions_Sharj.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/ROSOR/sharj0.github.io&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
