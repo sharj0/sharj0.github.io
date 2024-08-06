@@ -2,65 +2,73 @@
   <pyqgis_plugin name=".DEV ROSOR Waypoint Altitude Embedder" version="1.2024.8.6.3">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
-    <icon>https://sharj0.github.io/ROSORPlugins/icons/alt_embedder_icon.png</icon>
+    <icon>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_alt_embedder/plugin_icon.png</icon>
     <email>pyotyr@rosor.ca</email>
     <description>ROSOR's tool to embed alt info into waypoints converting flightlines and surface/ground data into 3D waypoints with given clearance to ensure safe drone navigation</description>
-      <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_alt_embedder.zip</download_url>
+    <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_alt_embedder.zip</download_url>
   </pyqgis_plugin>
+  
   <pyqgis_plugin name=".DEV ROSOR Base Mag QAQC" version="1.2024.8.6.3">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
-    <icon>https://sharj0.github.io/ROSORPlugins/icons/base_mag_qaqc_icon.png</icon>
+    <icon>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_base_mag_qaqc/plugin_icon.png</icon>
     <description>ROSOR's tool that compares Base mag and Air mag recording times and other QaQc things.</description>
-      <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_base_mag_qaqc.zip</download_url>
+    <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_base_mag_qaqc.zip</download_url>
   </pyqgis_plugin>
+  
   <pyqgis_plugin name=".DEV ROSOR Flightline Creator" version="1.2024.8.6.3">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
-    <icon>https://sharj0.github.io/ROSORPlugins/icons/flightline_creator_icon.png</icon>
+    <icon>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_flightline_creator/plugin_icon.png</icon>
     <description>ROSOR's tool to create flightlines within a polygon</description>
-      <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_flightline_creator.zip</download_url>
+    <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_flightline_creator.zip</download_url>
   </pyqgis_plugin>
+  
   <pyqgis_plugin name=".DEV ROSOR Lines to Flight" version="1.2024.8.6.3">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
-    <icon>https://sharj0.github.io/ROSORPlugins/icons/lines_to_flights_icon.png</icon>
+    <icon>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_lines_to_flights/plugin_icon.png</icon>
     <description>ROSOR's tool that takes parallel flightlines and takeoff location points to plan flights</description>
-      <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_lines_to_flights.zip</download_url>
+    <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_lines_to_flights.zip</download_url>
   </pyqgis_plugin>
+  
   <pyqgis_plugin name=".DEV ROSOR Mag Clipper" version="1.2024.8.6.3">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
-    <icon>https://sharj0.github.io/ROSORPlugins/icons/mag_clipper_icon.png</icon>
+    <icon>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_mag_clipper/plugin_icon.png</icon>
     <description>ROSOR's tool that takes proprietary ".magdata" and converts to csv then clips it and does QaQc.</description>
-      <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_mag_clipper.zip</download_url>
+    <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_mag_clipper.zip</download_url>
   </pyqgis_plugin>
+  
   <pyqgis_plugin name=".DEV ROSOR Mass Import CSVs or KMLs" version="1.2024.8.6.3">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
-    <icon>https://sharj0.github.io/ROSORPlugins/icons/mass_importer_icon.png</icon>
+    <icon>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_mass_importer/plugin_icon.png</icon>
     <description>ROSOR's tool to mass import csv or kml files from a folder, and match the file structure using layer groups.</description>
-      <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_mass_importer.zip</download_url>
+    <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_mass_importer.zip</download_url>
   </pyqgis_plugin>
+  
   <pyqgis_plugin name=".DEV ROSOR Plugin Template" version="1.2024.8.6.3">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
-    <icon>https://sharj0.github.io/ROSORPlugins/icons/plugin_template_icon.png</icon>
+    <icon>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_plugin_template/plugin_icon.png</icon>
     <description>Peter's tool to easily create new plugins through this base template</description>
-      <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_plugin_template.zip</download_url>
+    <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_plugin_template.zip</download_url>
   </pyqgis_plugin>
+  
   <pyqgis_plugin name=".DEV ROSOR Slope Analyzer" version="1.2024.8.6.3">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
-    <icon>https://sharj0.github.io/ROSORPlugins/icons/slope_analyser_icon.png</icon>
-    <description>ROSOR's tool that shows the user how steep the terain is.</description>
-      <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_slope_analyser.zip</download_url>
+    <icon>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_slope_analyser/plugin_icon.png</icon>
+    <description>ROSOR's tool that shows the user how steep the terrain is.</description>
+    <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_slope_analyser.zip</download_url>
   </pyqgis_plugin>
-    <pyqgis_plugin name=".DEV ROSOR Tile Maker" version="1.2024.8.6.3">
+  
+  <pyqgis_plugin name=".DEV ROSOR Tile Maker" version="1.2024.8.6.3">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
-    <icon>https://sharj0.github.io/ROSORPlugins/icons/slope_analyser_icon.png</icon>
-    <description>This plugin accepts a polygon as an input and produces tiles. The tiles can be auto-named, merged, and styled. Photos with geotags can be re-organised (move/copy) according to what tiles they are in.</description>
-      <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_tile_maker.zip</download_url>
+    <icon>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_tile_maker/plugin_icon.png</icon>
+    <description>This plugin accepts a polygon as an input and produces tiles. The tiles can be auto-named, merged, and styled. Photos with geotags can be re-organized (move/copy) according to what tiles they are in.</description>
+    <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_tile_maker.zip</download_url>
   </pyqgis_plugin>
 </plugins>
