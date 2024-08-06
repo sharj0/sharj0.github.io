@@ -1,21 +1,20 @@
-"""THIS FILE NEEDS TO BE ONE FOLDER BELOW THE XML FILE (i.e. sharj0.github.io/ROSORPlugins) OR ELSE IT WON"T FIND THE XML FILE IN THE PARENT FOLDER"""
+"""THIS FILE NEEDS TO BE ONE FOLDER BELOW THE XML FILE (i.e. sharj0.github.io/ROSORPlugins) OR ELSE IT WON"T FIND THE
+XML FILE IN THE PARENT FOLDER"""
 
 import os
 import xml.etree.ElementTree as ET
 import pathlib
 from packaging.version import Version
 
-import os #handles paths
-import zipfile #zipfile is STRONGER than shutil.make_archive (I tested it)
-import filecmp #compares file
-import tempfile #creates temp folder
-import shutil #used to delete temp folder
+import zipfile  #zipfile is STRONGER than shutil.make_archive (I tested it)
+import filecmp  #compares file
+import tempfile  #creates temp folder
+import shutil  #used to delete temp folder
 
 
 #This defaults to only selecting "PETER_ROSOR" folders, but can be used for other things
 #Default directory is the working one
-def autozip_files_main(plugin_prefix="PETER_ROSOR",plugin_dir=os.path.dirname(__file__)):
-
+def autozip_files_main(plugin_prefix="PETER_ROSOR", plugin_dir=os.path.dirname(__file__)):
     #I'm reusing Peter's code
 
     # Check if the provided plugin directory exists
@@ -31,13 +30,12 @@ def autozip_files_main(plugin_prefix="PETER_ROSOR",plugin_dir=os.path.dirname(__
 
                 #Calls separate function in file that checks whether there is a difference between the zipped plugin and the unzipped one in current directory
                 if is_archive_folder_different(dir_name):
-
                     #uses the zipfile library to write the plugin folder into an archive with the plugin folder name
                     zip_file(dir_name)
 
+
 #Compares a zipped folder to an unzipped folder and should return true if any file is different and false when it's compared all the files and fails to find a difference (the default path is current directory)
 def is_archive_folder_different(folder, directory=os.path.dirname(__file__)):
-
     #Sets the path to the chosen folder and makes a reference to a .zip archive with the same name
     folder_path = os.path.join(directory, folder)
     zip_file = folder_path + ".zip"
@@ -61,7 +59,6 @@ def is_archive_folder_different(folder, directory=os.path.dirname(__file__)):
 
         #If any file is different, we need to overite it/rezip the file with updated contents so it returns true for the main function to proceed
         if comparison.left_only or comparison.right_only or comparison.diff_files:
-
             #Delete the temporary folder as it is not necessary at this point
             shutil.rmtree(temp_dir)
 
@@ -76,9 +73,8 @@ def is_archive_folder_different(folder, directory=os.path.dirname(__file__)):
 #Created a dedicated function to zip files as it might be used later
 #Defaults to the folder being in the working directory
 def zip_file(folder, directory=os.path.dirname(__file__)):
-
     #Sets the path to the folder
-    folder_path = os.path.join(directory,folder)
+    folder_path = os.path.join(directory, folder)
 
     #Creates a ZipFile instance that creates a .zip using the folder and path
     with zipfile.ZipFile(folder_path + ".zip", mode="w") as archive:
@@ -86,17 +82,18 @@ def zip_file(folder, directory=os.path.dirname(__file__)):
         #Goes through every file in the chosen folder
         for root, dirs, files in os.walk(folder_path):
             for file in files:
-
                 #writes the file and any parent folder if applicable to the new archive (I got this from stack overflow and it just worked)
-                archive.write(os.path.join(root,file),os.path.relpath(os.path.join(root,file),os.path.join(folder_path, "..")))
+                archive.write(os.path.join(root, file),
+                              os.path.relpath(os.path.join(root, file), os.path.join(folder_path, "..")))
 
     #Prints out that its done its job
     print("zipped: " + folder)
 
+
 #This function checks the xml stated version for each plugin in the xml and check each the corresponding plugin's metadata version to match them
 #Defaults to plugins_leak xml file name, the current working directory, and no incrementing (note that the plugin folders MUST be in the directory and xml file MUST be in the parent folder/one above)
-def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.path.dirname(__file__), increment_all=False):
-
+def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.path.dirname(__file__),
+                           increment_all=False):
     #gets parent directory for xml file path
     parent_dir = os.path.dirname(current_path)
     xml_file_path = os.path.join(parent_dir, xml_file_name)
@@ -172,7 +169,7 @@ def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.pat
                     change_xml = True
 
                     #alters the text in the xml "version" attribute to match the metadata version
-                    plugin.set('version',metadata_version)
+                    plugin.set('version', metadata_version)
 
                     # statement in console to show user that the xml is changed to match the metadata
                     print(f"modified xml for {plugin_folder}\n")
@@ -186,7 +183,6 @@ def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.pat
 
             #Checks boolean to change metadata
             if change_metadata:
-
                 # Overwrites the whole metadata text file with a matched version to the xml using the metadata list from earlier
                 with open(metadata_path, mode="w") as metadata_file:
                     metadata_file.writelines(metadata)
@@ -204,7 +200,6 @@ def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.pat
 #This function increments a given two decimal version in x.x.x format
 #Defaults to 1.0.0 as the version and target index as the right most value (index 2 as its starts at 0)
 def increment_two_decimal_version_string(version="1.0.0", target_index=2):
-
     # ensures the given string is a version (this might cause isssues with different formatted versions)
     if (not Version(version)) or target_index > len(version.split(".")):
         return None
@@ -228,4 +223,4 @@ def increment_two_decimal_version_string(version="1.0.0", target_index=2):
 if __name__ == "__main__":
     match_xml_version_main(xml_file_name="plugins_development.xml", increment_all=False)
     autozip_files_main()
-    print("don't forget to push to main" )
+    print("don't forget to push to main")
