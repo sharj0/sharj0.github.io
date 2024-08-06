@@ -59,7 +59,7 @@
     <pyqgis_plugin name=".DEV ROSOR Tile Maker" version="1.2024.8.6.3">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
-    <icon>https://sharj0.github.io/ROSORPlugins/icons/slope_analyser_icon.png</icon>
+    <icon>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_tile_maker/plugin_icon.png</icon>
     <description>This plugin accepts a polygon as an input and produces tiles. The tiles can be auto-named, merged, and styled. Photos with geotags can be re-organised (move/copy) according to what tiles they are in.</description>
       <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_tile_maker.zip</download_url>
   </pyqgis_plugin>
