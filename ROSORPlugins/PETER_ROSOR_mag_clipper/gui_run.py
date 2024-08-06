@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import pandas as pd
+import matplotlib
 
 from shapely.geometry import LineString, Point
 
@@ -8,6 +9,7 @@ from PyQt5.QtWidgets import QDialog, QPushButton, QVBoxLayout, QLabel, QHBoxLayo
 from PyQt5.QtGui import QIcon
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap, hex2color
 import matplotlib.ticker as ticker
@@ -25,6 +27,8 @@ from matplotlib.patches import Polygon
 from .split_csv_by_flightlines import run_flightline_splitter_gui
 
 from .segment_length_calculation_Sharj import flightline_lkm
+
+
 def darken_color_map(color_map_original, scale_factor = 0.75):
     # Create a new colormap by modifying the original Viridis colors
     # Here we simply scale the RGB values to make them darker
@@ -188,6 +192,8 @@ def plotting_on_canvas(df, title_filename, kml_flt_coords, box_coords_list, loca
     ax1.set_ylabel('UTM North [meters]', fontsize=9, fontweight='bold')
 
     ax1.set_aspect('equal', adjustable='box')
+
+    plt.show()
     return fig
 
 def get_continuous_sections(inds):
@@ -552,6 +558,8 @@ def gui_run(df,
             path_to_2d_flights,
             epsg_target):
 
+    matplotlib.use('Qt5Agg')
+
     # Create the dialog window
     dialog = QDialog()
     dialog.setWindowTitle("QaQc and clip the magnetic data")
@@ -589,6 +597,7 @@ def gui_run(df,
     local_flightline_UTM_pairs = [flight_lines[key] for key in line_to_points.keys()]
     local_flightline_lkm, total_flightline_lkm = flightline_lkm(local_flightline_UTM_pairs)
     """↑↑ Sharj's Addition ↑↑"""
+
     line_to_points = re_name_line_numbers(line_to_points)
 
     # use this info to assign flightlines in the df
@@ -665,9 +674,6 @@ def gui_run(df,
 
     fig = plotting_on_canvas(sorted_df, export_file_path, kml_flt_coords, box_coords_list, local_grid_line_names, flight_line_sort_direction)
 
-    canvas = FigureCanvas(fig)
-    dialog_layout.addWidget(canvas)
-
     # plot line side view to pdf
     output_pdf_path = plot_dataframe_to_pdf.run(df,
                                                 local_grid_line_names,
@@ -676,9 +682,12 @@ def gui_run(df,
                                                 fig,
                                                 Y_axis_display_range_override)
 
+    canvas = FigureCanvas(fig)
+    toolbar = CustomNavigationToolbar(canvas, dialog)
+
     # Bottom bar layout
     bottom_bar_layout = QHBoxLayout()
-    toolbar = CustomNavigationToolbar(canvas, dialog)
+    # toolbar = CustomNavigationToolbar(canvas, dialog)
     btn_accept = QPushButton("Accept and Save", dialog)
 
     font = btn_accept.font()
@@ -687,10 +696,12 @@ def gui_run(df,
     btn_accept.setFixedSize(300, 30)
     btn_accept.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
 
+
     bottom_bar_layout.addWidget(toolbar)
     bottom_bar_layout.addStretch(1)
     bottom_bar_layout.addWidget(btn_accept)
 
+    dialog_layout.addWidget(canvas)
     dialog_layout.addLayout(bottom_bar_layout)
 
     btn_accept.clicked.connect(dialog.accept)
@@ -698,6 +709,12 @@ def gui_run(df,
     # Set the window icon
     plugin_dir = os.path.dirname(os.path.abspath(__file__))
     dialog.setWindowIcon(QIcon(os.path.join(plugin_dir, "plugin_icon.png")))
+
+
+    # toolbar = NavigationToolbar(canvas, dialog)
+
+    # dialog_layout.addWidget(toolbar)
+
 
     # Execute the dialog and wait for the user to close it
     dialog.show()
