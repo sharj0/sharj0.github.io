@@ -11,6 +11,7 @@ import filecmp  #compares file
 import tempfile  #creates temp folder
 import shutil  #used to delete temp folder
 
+from datetime import date
 
 #This defaults to only selecting "PETER_ROSOR" folders, but can be used for other things
 #Default directory is the working one
@@ -127,6 +128,21 @@ def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.pat
         # prints out plugin name and xml version in the console
         print(f"xml version for {plugin_folder}: {xml_version}")
 
+        #creates a version string with today's date using the make_version_todays_date function
+        xml_date_version = make_version_todays_date(xml_version)
+
+        #checks if the written xml_version is different from the todays
+        if Version(xml_version) != Version(xml_date_version):
+
+            #since the xml is different, then the new one needs to be written (setting the boolean to true)
+            change_xml = True
+
+            #replaces the xml version with current date
+            xml_version = xml_date_version
+
+            #notifies user about the updated date version
+            print(f"updated xml version to todays date: {xml_version}")
+
         #setting up a conditional boolean on whether to write to the metadata file
         change_metadata = False
 
@@ -142,13 +158,30 @@ def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.pat
                 #isolates the line with the plugin's version that we want to check
                 metadata_version = metadata[4][8:-1]
 
-                #if deciding to increment each plugin to save time this calls the function to add one to the right most decimal
-                if increment_all:
-                    metadata_version = increment_two_decimal_version_string(metadata_version, target_index=2)
-                    # increment_two_decimal_version_string(xml_version, target_index=2)
-
                 # prints the plugin name and metadata version in the console
                 print(f"metadata version for {plugin_folder}: {metadata_version}")
+
+                # creates a version string with today's date using the make_version_todays_date function
+                metadata_date_version = make_version_todays_date(metadata_version)
+
+                # checks if the written metadata_version is different from the todays
+                if Version(metadata_version) != Version(metadata_date_version):
+
+                    # since the metadata is different, then the new one needs to be written (setting the boolean to true)
+                    change_metadata = True
+
+                    # replaces the xml version with current date
+                    metadata_version = metadata_date_version
+
+                    # notifies user about the updated date version
+                    print(f"updated xml version to todays date: {metadata_version}")
+
+                #if deciding to increment each plugin to save time this calls the function to add one to the right most decimal
+                if increment_all:
+                    metadata_version = increment_two_decimal_version_string(metadata_version, target_index=-1)
+                    xml_version = increment_two_decimal_version_string(xml_version, target_index=-1)
+                    print(f"xml incremented: {xml_version} | metadata incremented: {metadata_version} | (highest is used to write)")
+
 
                 #This if statement compares the versions using packaging.version library and decides which value to change based on the larger version
                 if Version(metadata_version) < Version(xml_version):
@@ -156,8 +189,8 @@ def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.pat
                     # If metadata's version is less than the xml one, then metadata needs to change
                     change_metadata = True
 
-                    #Alters the 4th line in metadata (which should be version=x.x.x in the current template) to match xml version
-                    metadata[4] = metadata[4][:8] + xml_version + "\n"
+                    #sets metadata version the the greater to match
+                    metadata_version = xml_version
 
                     #statement in console to show user that the metadata is changed to match the xml
                     print(f"modified metadata for {plugin_folder}\n")
@@ -168,8 +201,8 @@ def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.pat
                     #If xml's version is less than the metadata one, then xml needs to change
                     change_xml = True
 
-                    #alters the text in the xml "version" attribute to match the metadata version
-                    plugin.set('version', metadata_version)
+                    #sets xml version to the greater to match
+                    xml_version = metadata_version
 
                     # statement in console to show user that the xml is changed to match the metadata
                     print(f"modified xml for {plugin_folder}\n")
@@ -183,6 +216,10 @@ def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.pat
 
             #Checks boolean to change metadata
             if change_metadata:
+
+                # Alters the 4th line in metadata (which should be version=x.x.x in the current template) to match xml version
+                metadata[4] = metadata[4][:8] + metadata_version + "\n"
+
                 # Overwrites the whole metadata text file with a matched version to the xml using the metadata list from earlier
                 with open(metadata_path, mode="w") as metadata_file:
                     metadata_file.writelines(metadata)
@@ -193,13 +230,17 @@ def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.pat
 
         #Checks boolean to change xml
         if change_xml:
+
+            # alters the text in the xml "version" attribute to match the metadata version
+            plugin.set('version', xml_version)
+
             #Overwrites xml file with modified versions for all plugins that have changed (I think this can go outside the for loop so it only writes once, but oh well, I can't be bothered to try and debug)
             tree.write(xml_file_path)
 
 
-#This function increments a given two decimal version in x.x.x format
-#Defaults to 1.0.0 as the version and target index as the right most value (index 2 as its starts at 0)
-def increment_two_decimal_version_string(version="1.0.0", target_index=2):
+#This function increments numerical version strings with periods as delimiters, the default target increment is the right most value
+def increment_two_decimal_version_string(version="1.0.0", target_index=-1):
+
     # ensures the given string is a version (this might cause isssues with different formatted versions)
     if (not Version(version)) or target_index > len(version.split(".")):
         return None
@@ -220,7 +261,60 @@ def increment_two_decimal_version_string(version="1.0.0", target_index=2):
     return new_version
 
 
+def make_version_todays_date(version="1.0.0"):
+
+    # ensures the given string is a version (this might cause isssues with different formatted versions)
+    if not Version(version):
+        return None
+
+    # splits the version string based on the delimiter "." and converts them into an integer array
+    version_ints = [int(split_number) for split_number in version.split(".")]
+
+    #gets todays date as a datetime object
+    todays_date = date.today()
+
+    #checks if the string has at least 4 slots indicating there is a starter and 3 allocations for the date [1, yyyy, mm, dd, version number]
+    if len(version_ints) > 4:
+
+        #if there version has a date, check if its current
+        if version_ints[1:4] == [todays_date.year, todays_date.month, todays_date.day]:
+
+            # #if the version is current then increment the right most version number
+            # new_version = increment_two_decimal_version_string(version)
+
+            #return to stop the function early
+            return version
+        else:
+
+            #if the the date is incorrect, then change year, month and day indexes to todays date and set the right most (array index 4 or the 5th number) to 1 as it is the first instance of todays update
+            version_ints[1:5] = [todays_date.year, todays_date.month, todays_date.day, 1]
+
+    else:
+
+        #if the version does not have enough slots to allocate the [1, yyyy, mm, dd, version] format (an array length of 5 or 4 decimals in the string) then append to increase the array size
+        version_ints.append(0)
+
+        #create the larger array into a an array full of strings
+        new_version_str = [str(new_split_number) for new_split_number in version_ints]
+
+        #join the string array with "." as a delimiter
+        new_version = ".".join(new_version_str)
+
+        #recurse the appended string through until it meets the array size of 5 (it will continue appending zeros until it meets the first if statement in this nest)
+        return make_version_todays_date(new_version)
+
+    # converts the integer array into a string array with the incremented numerical
+    new_version_str = [str(new_split_number) for new_split_number in version_ints]
+
+    # joins the string array for the new incremented version
+    new_version = ".".join(new_version_str)
+
+    # return the incremented version
+    return new_version
+
+
 if __name__ == "__main__":
     match_xml_version_main(xml_file_name="plugins_development.xml", increment_all=False)
     autozip_files_main()
-    print("don't forget to push to main")
+    # print("don't forget to push to main")
+

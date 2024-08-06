@@ -41,4 +41,5 @@
     <icon>https://sharj0.github.io/ROSORPlugins/icons/slope_analyser_icon.png</icon>
     <description>ROSOR's tool that shows the user how steep the terain is.</description>
       <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_slope_analyser.zip</download_url>
+  </pyqgis_plugin>
 </plugins>
