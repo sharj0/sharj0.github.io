@@ -93,7 +93,7 @@ def zip_file(folder, directory=os.path.dirname(__file__)):
 
 #This function checks the xml stated version for each plugin in the xml and check each the corresponding plugin's metadata version to match them
 #Defaults to plugins_leak xml file name, the current working directory, and no incrementing (note that the plugin folders MUST be in the directory and xml file MUST be in the parent folder/one above)
-def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.path.dirname(__file__),
+def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.path.dirname(__file__), update_date=False,
                            increment_all=False):
     #gets parent directory for xml file path
     parent_dir = os.path.dirname(current_path)
@@ -132,7 +132,7 @@ def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.pat
         xml_date_version = make_version_todays_date(xml_version)
 
         #checks if the written xml_version is different from the todays
-        if Version(xml_version) != Version(xml_date_version):
+        if update_date and Version(xml_version) != Version(xml_date_version):
 
             #since the xml is different, then the new one needs to be written (setting the boolean to true)
             change_xml = True
@@ -165,7 +165,7 @@ def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.pat
                 metadata_date_version = make_version_todays_date(metadata_version)
 
                 # checks if the written metadata_version is different from the todays
-                if Version(metadata_version) != Version(metadata_date_version):
+                if update_date and Version(metadata_version) != Version(metadata_date_version):
 
                     # since the metadata is different, then the new one needs to be written (setting the boolean to true)
                     change_metadata = True
@@ -287,7 +287,7 @@ def make_version_todays_date(version="1.0.0"):
         else:
 
             #if the the date is incorrect, then change year, month and day indexes to todays date and set the right most (array index 4 or the 5th number) to 1 as it is the first instance of todays update
-            version_ints[1:5] = [todays_date.year, todays_date.month, todays_date.day, 1]
+            version_ints[1:5] = [todays_date.year, todays_date.month, todays_date.day, 0]
 
     else:
 
@@ -314,7 +314,6 @@ def make_version_todays_date(version="1.0.0"):
 
 
 if __name__ == "__main__":
-    match_xml_version_main(xml_file_name="plugins_development.xml", increment_all=False)
+    match_xml_version_main(xml_file_name="plugins_development.xml", update_date=True, increment_all=True)
     autozip_files_main()
-    # print("don't forget to push to main")
-
+    print("\nDON'T FORGET TO PUSH TO MAIN" )

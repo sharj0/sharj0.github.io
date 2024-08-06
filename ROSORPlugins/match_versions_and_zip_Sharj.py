@@ -287,7 +287,7 @@ def make_version_todays_date(version="1.0.0"):
         else:
 
             #if the the date is incorrect, then change year, month and day indexes to todays date and set the right most (array index 4 or the 5th number) to 1 as it is the first instance of todays update
-            version_ints[1:5] = [todays_date.year, todays_date.month, todays_date.day, 1]
+            version_ints[1:5] = [todays_date.year, todays_date.month, todays_date.day, 0]
 
     else:
 
@@ -314,6 +314,6 @@ def make_version_todays_date(version="1.0.0"):
 
 
 if __name__ == "__main__":
-    match_xml_version_main(xml_file_name="plugins_leak.xml", update_date=True, increment_all=False)
+    match_xml_version_main(xml_file_name="plugins_leak.xml", update_date=True, increment_all=True)
     autozip_files_main()
     print("\nDON'T FORGET TO PUSH TO MAIN" )

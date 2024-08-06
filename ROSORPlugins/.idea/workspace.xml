@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="501dd648-7190-46b1-907a-07dccc55ee45" name="Changes" comment="">
+    <list default="true" id="501dd648-7190-46b1-907a-07dccc55ee45" name="Changes" comment="added bool for date update">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/match_versions_and_zip_Sharj.py" beforeDir="false" afterPath="$PROJECT_DIR$/match_versions_and_zip_Sharj.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TinkeringToolbox/match_versions_and_zip_Sharj.py" beforeDir="false" afterPath="$PROJECT_DIR$/../TinkeringToolbox/match_versions_and_zip_Sharj.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,16 +37,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.REPLACE_A_FILE_IN_ALL_PLUGINS.executor&quot;: &quot;Run&quot;,
-    &quot;Python.match_versions_Sharj.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/ROSOR/sharj0.github.io&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.REPLACE_A_FILE_IN_ALL_PLUGINS.executor": "Run",
+    "Python.match_versions_Sharj.executor": "Run",
+    "Python.match_versions_and_zip_Sharj.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "D:/ROSOR/sharj0.github.io"
   }
-}</component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -58,6 +64,19 @@
       <option name="presentableId" value="Default" />
       <updated>1722385564207</updated>
     </task>
+    <task id="LOCAL-00001" summary="added bool for date update">
+      <option name="closed" value="true" />
+      <created>1722955143833</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1722955143833</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="added bool for date update" />
+    <option name="LAST_COMMIT_MESSAGE" value="added bool for date update" />
   </component>
 </project>
