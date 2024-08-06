@@ -180,6 +180,8 @@ def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.pat
                 if increment_all:
                     metadata_version = increment_two_decimal_version_string(metadata_version, target_index=-1)
                     xml_version = increment_two_decimal_version_string(xml_version, target_index=-1)
+                    change_xml = True
+                    change_metadata = True
                     print(f"xml incremented: {xml_version} | metadata incremented: {metadata_version} | (highest is used to write)")
 
 
