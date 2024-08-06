@@ -4,19 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="501dd648-7190-46b1-907a-07dccc55ee45" name="Changes" comment="added bool for date update">
+    <list default="true" id="501dd648-7190-46b1-907a-07dccc55ee45" name="Changes" comment="added bool for date update (plugins unchanged but versions changed)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/match_versions_and_zip_Sharj.py" beforeDir="false" afterPath="$PROJECT_DIR$/match_versions_and_zip_Sharj.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TinkeringToolbox/PETER_ROSOR_alt_embedder.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../TinkeringToolbox/PETER_ROSOR_alt_embedder.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TinkeringToolbox/PETER_ROSOR_base_mag_qaqc.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../TinkeringToolbox/PETER_ROSOR_base_mag_qaqc.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TinkeringToolbox/PETER_ROSOR_flightline_creator.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../TinkeringToolbox/PETER_ROSOR_flightline_creator.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TinkeringToolbox/PETER_ROSOR_lines_to_flights.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../TinkeringToolbox/PETER_ROSOR_lines_to_flights.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TinkeringToolbox/PETER_ROSOR_mag_clipper.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../TinkeringToolbox/PETER_ROSOR_mag_clipper.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TinkeringToolbox/PETER_ROSOR_mass_importer.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../TinkeringToolbox/PETER_ROSOR_mass_importer.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TinkeringToolbox/PETER_ROSOR_plugin_template.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../TinkeringToolbox/PETER_ROSOR_plugin_template.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TinkeringToolbox/PETER_ROSOR_slope_analyser.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../TinkeringToolbox/PETER_ROSOR_slope_analyser.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TinkeringToolbox/PETER_ROSOR_tile_maker.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../TinkeringToolbox/PETER_ROSOR_tile_maker.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TinkeringToolbox/match_versions_and_zip_Sharj.py" beforeDir="false" afterPath="$PROJECT_DIR$/../TinkeringToolbox/match_versions_and_zip_Sharj.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,11 +78,28 @@
       <option name="project" value="LOCAL" />
       <updated>1722956300863</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="added bool for date update (plugins unchangedbut versions changed)">
+      <option name="closed" value="true" />
+      <created>1722956619575</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1722956619575</updated>
+    </task>
+    <task id="LOCAL-00004" summary="added bool for date update (plugins unchanged but versions changed)">
+      <option name="closed" value="true" />
+      <created>1722956654275</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1722956654275</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="added bool for date update" />
-    <option name="LAST_COMMIT_MESSAGE" value="added bool for date update" />
+    <MESSAGE value="added bool for date update (plugins unchanged but versions changed)" />
+    <option name="LAST_COMMIT_MESSAGE" value="added bool for date update (plugins unchanged but versions changed)" />
   </component>
 </project>
