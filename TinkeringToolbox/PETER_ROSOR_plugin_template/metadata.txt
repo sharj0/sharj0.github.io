@@ -2,7 +2,7 @@
 name= Plugin Template
 qgisMinimumVersion=3.0
 description=ROSOR's template
-version=1.2024.8.6.1
+version=1.2024.8.6.3
 author=Pyotyr Young and Sharjeel Awon
 email=pyotyr@msn.com, pyotyr@rosor.ca
 icon=plugin_icon.png
