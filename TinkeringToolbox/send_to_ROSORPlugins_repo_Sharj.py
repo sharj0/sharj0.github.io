@@ -126,7 +126,7 @@ if __name__ == "__main__":
     chosen_plugin_name = "PETER_ROSOR_plugin_template"
     create_plugin_element_in_official_repo(chosen_plugin_name)
     ROSORPlugins_path = (Path(__file__).parent.parent / "ROSORPlugins").as_posix()
-    match_xml_version_main(xml_file_name="plugins_test.xml", update_date=True, increment_all=True)
+    match_xml_version_main(xml_file_name="plugins_leak.xml", update_date=True, increment_all=True)
     autozip_files_main(plugin_dir=ROSORPlugins_path)
 
     print("\nPlease format xml file to be more legible (either manually or automatically through an IDE like VSCode)")
