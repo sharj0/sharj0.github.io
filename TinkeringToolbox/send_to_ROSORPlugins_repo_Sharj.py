@@ -63,12 +63,12 @@ def create_plugin_element_in_official_repo(plugin_name, xml_file_path=os.path.jo
             version = metadata[4][8:-1]#[line for line in metadata if line.startswith("version")]
             author = metadata[5][7:-1]#[line for line in metadata if line.startswith("author")]
             email = metadata[6][6:-1]#[line for line in metadata if line.startswith("email")]
-            icon = "https://sharj0.github.io" / "ROSORPlugins" / plugin_name / "plugin_icon.jpg").as_posix()
-            # icon = os.path.join(os.path.join(Path(__file__).parent.parent, "ROSORPlugins", plugin_name, "plugin_icon"
+            icon = f"https://sharj0.github.io/ROSORPlugins/{plugin_name}/plugin_icon.jpg"
+            # icon = os.path.join("https://sharj0.github.io", "ROSORPlugins", plugin_name, "plugin_icon"
             #                                                                                             ".jpg"))
 
-            download_url = "https://sharj0.github.io" / "ROSORPlugins" / f"{plugin_name}.zip").as_posix()
-            # download_url = os.path.join(Path(__file__).parent.parent, "ROSORPlugins", plugin_name) + ".zip"
+            download_url = f"https://sharj0.github.io/ROSORPlugins/{plugin_name}.zip"
+            # download_url = os.path.join("https://sharj0.github.io", "ROSORPlugins", plugin_name) + ".zip"
 
         new_xml_plugin = etree.Element("pyqgis_plugin", {
                 "name": name,
