@@ -82,7 +82,7 @@ def create_plugin_element_in_official_repo(plugin_name, xml_file_path=os.path.jo
         etree.SubElement(new_xml_plugin, 'download_url').text = download_url
 
         root.append(new_xml_plugin)
-        write_path = Path(__file__).parent.parent / "plugin_test.xml"
+        write_path = Path(__file__).parent.parent / "plugins_leak.xml"
         write_path = write_path.as_posix()
         tree.write(write_path, pretty_print=True, xml_declaration=False, encoding='UTF-8')
 
