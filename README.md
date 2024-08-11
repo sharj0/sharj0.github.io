@@ -5,8 +5,11 @@ The python scripts and XML files in this repo are for the automatic deployment o
 # Current Plugins:
 - Base Mag Clipper
 - Flightline Creator
-- Lines to Flights
 - Mag Clipper
 - Mass Importer
 - Slope Analyser
 - Waypoint Altitude Embedder
+
+# Current Plugins in development:
+- Lines to Flights
+- Tile maker
