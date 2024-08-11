@@ -51,4 +51,4 @@
     <description>ROSOR's tool that shows the user how steep the terrain is.</description>
     <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_slope_analyser.zip</download_url>
   </pyqgis_plugin>
-<pyqgis_plugin name=".ROSOR Plugin Template" version="1.2024.8.11.1"><qgis_minimum_version>3.0</qgis_minimum_version><author_name>Pyotyr Young and Sharjeel Awon</author_name><icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_plugin_template/plugin_icon.jpg</icon><email>pyotyr@msn.com, pyotyr@rosor.ca</email><description>ROSOR's template</description><download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_plugin_template.zip</download_url></pyqgis_plugin></plugins>
+</plugins>
