@@ -14,7 +14,6 @@
     <icon>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_plugin_template/plugin_icon.png</icon>
     <description>Peter's tool to easily create new plugins through this base template</description>
     <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_plugin_template.zip</download_url>
-	<experimental>True</experimental>
   </pyqgis_plugin>
   
   <pyqgis_plugin name=".DEV ROSOR Tile Maker" version="1.2024.8.6.4">
@@ -23,6 +22,5 @@
     <icon>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_tile_maker/plugin_icon.png</icon>
     <description>This plugin accepts a polygon as an input and produces tiles. The tiles can be auto-named, merged, and styled. Photos with geotags can be re-organized (move/copy) according to what tiles they are in.</description>
     <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_tile_maker.zip</download_url>
-	<experimental>True</experimental>
   </pyqgis_plugin>
 </plugins>
