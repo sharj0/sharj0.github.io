@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Folder><name>tof_10S_flt_11_4</name>
+  <Placemark>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+      <LineString><coordinates>-79.6201076749973,48.1775744894712 -79.6120757932596,48.1771815918987 -79.6117696431136,48.176957883019 -79.6121945220443,48.1612154391337 -79.6122183492787,48.1607622644077 -79.6124172460707,48.1606375541265 -79.6126901434457,48.1606423890507 -79.6128788319233,48.1607739661821 -79.6124541586314,48.1765164144689 -79.612731165315,48.1767378242576 -79.6201132512083,48.1775428315624</coordinates></LineString>
+  </Placemark>
+</Folder>
+</Document></kml>
