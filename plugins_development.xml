@@ -5,7 +5,6 @@
     <icon>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_lines_to_flights/plugin_icon.png</icon>
     <description>ROSOR's tool that takes parallel flightlines and takeoff location points to plan flights</description>
     <download_url>https://sharj0.github.io/TinkeringToolbox/PETER_ROSOR_lines_to_flights.zip</download_url>
-	<experimental>True</experimental>
   </pyqgis_plugin>
   
   <pyqgis_plugin name=".DEV ROSOR Plugin Template" version="1.2024.8.6.4">
