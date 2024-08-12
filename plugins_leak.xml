@@ -9,7 +9,7 @@
     <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_alt_embedder.zip</download_url>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Base Mag QAQC" version="1.2024.8.11.3">
+  <pyqgis_plugin name=".DEV sharj_branch Base Mag QAQC" version="1.2024.8.11.3">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_base_mag_qaqc/plugin_icon.png</icon>

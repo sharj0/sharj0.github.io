@@ -1,26 +1,31 @@
 import os
 from pathlib import Path
-import subprocess
+from lxml import etree
+
+"""CHANGE THIS STRING FOR BRANCH NAME"""
+branch_name_string = "sharj_import_csv_import_kml_split"
 
 
-def get_current_branch():
-    try:
-        # Run the git command to get the current branch name
-        result = subprocess.run(["git", "symbolic-ref", "--short", "HEAD"],
-                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-        # Check if the command was successful
-        if result.returncode == 0:
-            return result.stdout.strip()
-        else:
-            print(f"Error: {result.stderr.strip()}")
-            return None
-    except Exception as e:
-        print(f"An exception occurred: {str(e)}")
+URI_HEAD_STRING = "https://raw.githubusercontent.com"
+REPO_USER_STRING = "sharj0"
+REPO_NAME_STRING = "sharj0.github.io"
+
+branch_URI_directory = "/".join([URI_HEAD_STRING, REPO_USER_STRING, REPO_NAME_STRING, branch_name_string])
+
+def convert_xml_paths_to_branch(xml_file_path=(Path(__file__).parent / "plugins_leak.xml").as_posix(), target_branch_dir=branch_URI_directory):
+
+    if not os.path.exists(xml_file_path):
+        print("given plugin xml doesn't exist in the parent directory")
         return None
 
-    # Example usage:
+    tree = etree.parse(xml_file_path)
+    root = tree.getroot()
+
+    for plugin in root.finall("pyqgis_plugin"):
+
+        plugin_zip_path =
+
+
 if __name__ == "__main__":
-    branch_name = get_current_branch()
-    if branch_name:
-        print(f"Current branch is: {branch_name}")
+    print((Path(__file__).parent / "plugins_leak.xml").as_posix())
