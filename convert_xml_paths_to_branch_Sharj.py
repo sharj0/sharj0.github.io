@@ -26,7 +26,7 @@ def convert_xml_paths_to_branch(xml_file_path=(Path(__file__).parent / "plugins_
 
         old_name = plugin.get("name")
         new_name = old_name
-        
+
         if old_name.startswith(".ROSOR"):
             new_name = old_name.replace(".ROSOR", ".DEV " + branch_name_string, 1)
             plugin.set("name", new_name)
