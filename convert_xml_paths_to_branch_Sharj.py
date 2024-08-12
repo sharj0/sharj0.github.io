@@ -22,10 +22,16 @@ def convert_xml_paths_to_branch(xml_file_path=(Path(__file__).parent / "plugins_
     tree = etree.parse(xml_file_path)
     root = tree.getroot()
 
-    for plugin in root.finall("pyqgis_plugin"):
+    for plugin in root.findall("pyqgis_plugin"):
+        old_name = plugin.get("name")
 
-        plugin_zip_path =
+        if old_name.startswith(".ROSOR"):
+            new_name = old_name.replace(".ROSOR", ".DEV " + branch_name_string, 1)
+            plugin.set("name", new_name)
+        
+
 
 
 if __name__ == "__main__":
-    print((Path(__file__).parent / "plugins_leak.xml").as_posix())
+    # print((Path(__file__).parent / "plugins_leak.xml").as_posix())
+    convert_xml_paths_to_branch()
