@@ -25,7 +25,8 @@ def convert_xml_paths_to_branch(xml_file_path=(Path(__file__).parent / "plugins_
     for plugin in root.findall("pyqgis_plugin"):
 
         old_name = plugin.get("name")
-
+        new_name = old_name
+        
         if old_name.startswith(".ROSOR"):
             new_name = old_name.replace(".ROSOR", ".DEV " + branch_name_string, 1)
             plugin.set("name", new_name)
@@ -41,7 +42,7 @@ def convert_xml_paths_to_branch(xml_file_path=(Path(__file__).parent / "plugins_
 
         plugin.find("download_url").text = new_plugin_zip_path
         plugin.find("icon").text = new_plugin_icon_path
-
+        print(f"XML Name: {new_name}  | ZIP PATH: {new_plugin_zip_path}")
 
     tree.write(xml_file_path, pretty_print=True, xml_declaration=False, encoding="UTF-8")
 
