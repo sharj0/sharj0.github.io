@@ -1,0 +1,61 @@
+{
+    "Input File": {
+        "Polygon_file": "I:\\CONTRACT_Senoa\\Ram\\SHP\\TOF_3_new_dynamic_flights\\poly_v1.shp",
+        "Polygon_file_SELECT_LAYER": "true",
+        "Polygon_file_COMMENT": "Select your boundary area file. '.kml' and '.shp' accepted."
+    },
+    "Output": {
+        "Output_folder": "I:\\CONTRACT_Senoa\\Ram\\SHP\\TOF_3_new_dynamic_flights",
+        "Output_folder_SELECT_FOLDER": "true",
+        "Output_folder_COMMENT": "An output package will be created in this folder. Leave empty for output to be created next to the input Polygon file.",
+        "Convert_to_specific_UTM_Zone": 0.0,
+        "Convert_to_specific_UTM_Zone_COMMENT": "leave as '0' to auto detect UTM_Zone",
+        "Open_KML_files_when_complete": false,
+        "Open_KML_files_when_complete_COMMENT": "This will open all the created kml files in their default app (e.g. Google earth pro)"
+    },
+    "Flight Line Parameters": {
+        "flight_line_angle": 147.0,
+        "flight_line_angle_COMMENT": "degrees CW of North, (tie line angle set automatically to flight_line_angle + 90 degrees)",
+        "flight_line_spacing": 60.0,
+        "flight_line_spacing_COMMENT": "meters, a.k.a. traverse line",
+        "flight_line_buffer_distance": 0.0,
+        "flight_line_buffer_distance_COMMENT": "meters",
+        "flight_line_shift_sideways": 0.0,
+        "flight_line_shift_sideways_COMMENT": "meters"
+    },
+    "Tie Line Parameters": {
+        "tie_line_spacing": 0.0,
+        "tie_line_spacing_COMMENT": "meters, set to '0' to not create tie lines",
+        "tie_line_buffer_distance": 15.0,
+        "tie_line_buffer_distance_COMMENT": "meters",
+        "tie_lines_shift_sideways": 0.0,
+        "tie_lines_shift_sideways_COMMENT": "meters"
+    },
+    "Tie Line Buffering Parameters": {
+        "flight_line_overshoot_after_intersection": 1.0,
+        "flight_line_overshoot_after_intersection_COMMENT": "this value (in meters) indicates how far the flight lines should extend past the tie lines."
+    },
+    "Parameters that apply to all lines": {
+        "anchor_coordinates": 0.0,
+        "anchor_coordinates_COMMENT": "set to '0' to auto-generate. If anchor shifts from previous iteration it can be set manually here. Format: X,Y ",
+        "merge_gaps_smaller_than": 100.0,
+        "merge_gaps_smaller_than_COMMENT": "meters, this is the size of the gap bewtween lines that will be merged. set to '0' disable",
+        "delete_lines_smaller_than": 1.0,
+        "delete_lines_smaller_than_COMMENT": "meters, set to '0' to not delete any lines"
+    },
+    "Output Sensor Type_RADIO": {
+        "Mag": false,
+        "Mag_COMMENT": "This will NOT output swaths. It will append '_MAG' to the output package.",
+        "Lidar": true,
+        "Lidar_COMMENT": "This will output swaths. It will append '_LIDAR' to the output package.",
+        "Ortho": false,
+        "Ortho_COMMENT": "This will output swaths. It will append '_ORTHO' to the output package.",
+        "None": false,
+        "None_COMMENT": "This will output swaths. It will not append anything to the output package."
+    },
+    "Swath Settings": {
+        "swath_width": 169.0,
+        "swath_width_COMMENT": "The width of the rectangles that are placed around the output lines"
+    },
+    "Close this window on accept": false
+}
