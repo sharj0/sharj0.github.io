@@ -1,0 +1,501 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<kml:kml xmlns:kml="http://www.opengis.net/kml/2.2" nsmap="{'': 'http://www.opengis.net/kml/2.2', 'gx': 'http://www.google.com/kml/ext/2.2', 'kml': 'http://www.opengis.net/kml/2.2', 'atom': 'http://www.w3.org/2005/Atom'}"><kml:Document><kml:name>Combined_kmls_priority 1 extra_MAG_v15</kml:name><kml:Folder><kml:name>LINES_priority 1 extra_MAG_v15</kml:name><kml:Style id="redLine">
+        <kml:LineStyle>
+            <kml:color>ff0000ff</kml:color>
+            <kml:width>2</kml:width>
+        </kml:LineStyle>
+    </kml:Style>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.65915550806332,61.43512008542052 -130.6598717816431,61.44859674280261</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.6600924194953,61.435108667829034 -130.66080909709586,61.4485853188438</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.6610293301406,61.43509724379495 -130.66174641176082,61.448573888438816</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.66196623999878,61.43508581331832 -130.66292275551555,61.45304921334986</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.66290314906936,61.435074376399115 -130.66386020320164,61.453037767927896</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.66384005735196,61.43506293303741 -130.66479765009822,61.453026316058626</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.66477696484608,61.43505148323314 -130.66573509620488,61.453014857742055</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.6657138715513,61.435040026986336 -130.66667254152114,61.45300339297817</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.6666507774672,61.43502856429704 -130.6676099860466,61.45299192176697</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.6675876825933,61.43501709516525 -130.6685474297808,61.45298044410849</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.66852458692918,61.435005619590946 -130.66924490066685,61.448482213138384</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.66946149047436,61.43499413757419 -130.67018220822175,61.44847072471842</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.67039839322848,61.43498264911495 -130.67111951498444,61.44845922985238</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.67133529519103,61.43497115421326 -130.67205682095442,61.44844772854034</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.67227219636155,61.43495965286911 -130.6729941261313,61.44843622078222</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.67296876937527,61.430461394769516 -130.6739314305146,61.448424706578095</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.67390553454433,61.430449882677095 -130.67535037283233,61.45738665049561</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.67484229892042,61.430438364143406 -130.676287944858,61.457375119118424</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.6757790625031,61.430426839168526 -130.67722551608804,61.45736358129285</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.67671582529192,61.43041530775245 -130.67816308652198,61.4573520370189</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.6776525872865,61.430403769895165 -130.678135543352,61.43939357731327</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.67837582417775,61.443863978155946 -130.67910065615945,61.4573404862966</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.67858934848633,61.43039222559673 -130.67907257391428,61.43938202872135</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.67931298875337,61.44385242742806 -130.68003822499992,61.45732892912595</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.679526108891,61.43038067485711 -130.6800096036806,61.43937047368585</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.68025015253272,61.443840870255436 -130.68097579304296,61.457317365506945</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.68046286850006,61.430369117676314 -130.68094663265057,61.439358912206835</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.68142895723852,61.44831602922564 -130.68191336028818,61.457305795439616</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.68236625397006,61.448304457015574 -130.6828509267351,61.45729421892397</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.68330354990363,61.448292878359595 -130.68378849238334,61.45728263596002</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.6582185958451,61.43513149656943 -130.65893446540298,61.448608160315246</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.6575198036096,61.43962968420967 -130.65799714837596,61.44861957138172</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.65658275535316,61.43964108458906 -130.6570598305625,61.44863097600198</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.65564570631136,61.439652478524636 -130.65612251196302,61.44864237417605</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.6547086564848,61.43966386601639 -130.65518519257793,61.4486537659039</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.6537716058738,61.439675247064315 -130.65424787240778,61.44866515118552</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.65283455447886,61.43968662166839 -130.65331055145288,61.448676530020904</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.65166018833997,61.43521119421859 -130.65237322971376,61.44868790241004</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.65072326984776,61.43522255382644 -130.65143590719083,61.44869926835292</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.64978635057327,61.43523390699163 -130.65049858388454,61.44871062784953</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.64884943051698,61.43524525371409 -130.64956125979535,61.448721980899855</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.64791250967932,61.43525659399389 -130.64862393492368,61.448733327503916</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.64697558806074,61.435267927830964 -130.64768660927,61.44874466766167</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.64603866566168,61.43527925522533 -130.64674928283472,61.448756001373106</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.64510174248255,61.43529057617694 -130.64581195561834,61.44876732863821</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.64416481852382,61.43530189068584 -130.64487462762122,61.44877864945701</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.64322789378596,61.435313198751956 -130.64393729884387,61.448789963829455</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.6422909682694,61.43532450037534 -130.6429999692867,61.44880127175555</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.64111828497923,61.430848973310304 -130.64206263895016,61.448812573235294</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.64018149233559,61.43086025995336 -130.6411253078347,61.44882386826864</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.63924469891492,61.43087154015479 -130.6401879759408,61.44883515685562</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.63830790471764,61.43088281391463 -130.6392506432688,61.4488464389962</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.63737110974427,61.43089408123282 -130.63831330981927,61.4488577146904</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.6361993066737,61.426418505897175 -130.63737597559256,61.448868983938176</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.6352626445359,61.42642975824393 -130.63643864058915,61.4488802467395</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.6343259816237,61.426441004150185 -130.63550130480948,61.44889150309442</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.63338931793749,61.42645224361601 -130.634563968254,61.44890275300289</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.6324526534777,61.426463476641324 -130.63362663092315,61.44891399646489</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.63151598824484,61.426474703226155 -130.63268929281736,61.44892523348043</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.63057932223927,61.42648592337051 -130.63151744340405,61.44444962934285</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.62964265546145,61.426497137074335 -130.63058023831584,61.444460851382004</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.62870598791187,61.42650834433764 -130.6296430324544,61.44447206697586</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.62776931959093,61.42651954516042 -130.62823784382198,61.43550958372015</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.6268326504991,61.42653073954266 -130.6273009054168,61.43552078226547</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.62589598063678,61.426541927484344 -130.62636396624043,61.43553197436785</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.62495931000444,61.42655310898547 -130.62542702629332,61.43554316002726</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.62402263860255,61.42656428404602 -130.6244900855759,61.435554339243694</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.6230859664315,61.426575452666 -130.62355314408865,61.435565512017185</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.68100051008173,61.44383978340311 -130.62889265371447,61.44447287099877</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.68405401408103,61.44829177429732 -130.63193880737884,61.448926054661904</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.68429611258335,61.45277848732592 -130.6743589376619,61.45290097517154</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.66929713491456,61.4529630891656 -130.66217217439882,61.45305020142643</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.68453829100181,61.45726519681974 -130.67459968888497,61.45738770740964</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.68169600289193,61.43934149022867 -130.62865859737886,61.439986026955495</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.68145441282795,61.434854762298926 -130.65746931147942,61.43514878907783</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.6524103419898,61.43521026558811 -130.62280297865271,61.435566281741515</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.68121290244216,61.43036803083544 -130.67221960644426,61.430478767998416</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.64186833509558,61.43084810311556 -130.62256988330645,61.43107941824765</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:coordinates>-130.63694925099682,61.42641766317257 -130.62233686483012,61.42659255125792</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+</kml:Folder><kml:Folder><kml:name>POLY_priority 1 extra_MAG_v15</kml:name><kml:Style id="orangeOutline">
+        <kml:LineStyle>
+            <kml:color>ff00a5ff</kml:color> 
+            <kml:width>2</kml:width>
+        </kml:LineStyle>
+        <kml:PolyStyle>
+            <kml:fill>0</kml:fill> 
+        </kml:PolyStyle>
+    </kml:Style>
+    <kml:Placemark>
+        <kml:styleUrl>#orangeOutline</kml:styleUrl>
+        <kml:Polygon>
+            <kml:outerBoundaryIs>
+                <kml:LinearRing>
+                    <kml:coordinates>-130.67766721517881,61.43939934688446 -130.67790742902451,61.443869748794235 -130.68071892155626,61.443835086939615 -130.68096049603315,61.44832181060027 -130.68377238503004,61.44828708429737 -130.68425746242073,61.45727683974203 -130.67488139900672,61.45739241607103 -130.67439989494787,61.4484189493629 -130.66877643405414,61.448487952634714 -130.6690163388396,61.45297470056471 -130.6624538438869,61.45305493593086 -130.662214881335,61.44856817310639 -130.63222043600624,61.44893085181689 -130.63198585821718,61.444444018152 -130.62917424179253,61.44447767459762 -130.62870612534772,61.4355039842724 -130.623084485668,61.43557109822106 -130.62261744272308,61.4265810367932 -130.63666782478427,61.42641287505688 -130.63690289932578,61.43089971022413 -130.6415868683679,61.43084332531457 -130.64182269260448,61.43533014651194 -130.65212883467612,61.43520550972544 -130.65236621589796,61.43969230428037 -130.65798814003375,61.439623983884914 -130.65774995205868,61.435137202008875 -130.67274045926962,61.43495390208268 -130.67250019914036,61.43046715070142 -130.68093143535785,61.430363334357786 -130.68141533424244,61.4393531267374 -130.67766721517881,61.43939934688446</kml:coordinates>
+                </kml:LinearRing>
+            </kml:outerBoundaryIs>
+        </kml:Polygon>
+    </kml:Placemark>
+</kml:Folder></kml:Document></kml:kml>

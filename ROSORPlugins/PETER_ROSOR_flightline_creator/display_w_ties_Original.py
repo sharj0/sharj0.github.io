@@ -1,13 +1,14 @@
 import os
 
-from PETER_ROSOR_flightline_creator.my_class_definitions import (EndPoint, FltLine, TieLine)
-from PETER_ROSOR_flightline_creator.functions import get_anchor_xy, show_information
-from PETER_ROSOR_flightline_creator.generate_lines import generate_lines
+from .my_class_definitions import (EndPoint, FltLine, TieLine)
+from .functions import get_anchor_xy, show_information
+from .generate_lines import generate_lines
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import matplotlib.ticker as ticker
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 import matplotlib
 
 from shapely.geometry import Polygon, MultiPolygon
@@ -21,6 +22,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5 import QtWidgets
 
 from qgis.core import QgsGeometry, QgsWkbTypes, QgsVectorLayer, QgsUnitTypes, QgsProject, QgsFeature
+
 
 class CustomNavigationToolbar(NavigationToolbar):
     def __init__(self, canvas, parent, coordinates=True):
@@ -48,6 +50,7 @@ class CustomNavigationToolbar(NavigationToolbar):
         else:
             self._actions_disabled = False
 
+
 def get_closest_tie_intersection(flt_line, tie_line_list, from_line_start_perspective=True):
     closest_distance = float('inf')  # Initialize with infinity
     closest_intersection = None
@@ -72,10 +75,15 @@ def get_closest_tie_intersection(flt_line, tie_line_list, from_line_start_perspe
 
     return closest_intersection, closest_tie_line, closest_distance
 
-def plotting(flt_lines, tie_lines, polygon_coords, new_flt_lines, debug_working_flt_line_list, new_tie_lines, new_poly, anchor_xy):
+
+def plotting(flt_lines, tie_lines, polygon_coords, new_flt_lines, debug_working_flt_line_list, new_tie_lines, new_poly,
+             anchor_xy):
     # Create the figure
-    fig = plt.figure(figsize=(12, 10))
-    ax = plt.subplot2grid((12, 12), (0, 0), rowspan=12, colspan=12)
+    # fig = plt.figure(figsize=(12, 10))
+    # ax = plt.subplot2grid((12, 12), (0, 0), rowspan=12, colspan=12)
+
+    fig = Figure(figsize=(12, 10))
+    ax = fig.add_subplot(111)
 
     #for extended_flt_line in debug_working_flt_line_list[:10]:
     #    extended_flt_line.intersections[0].plot(ax, 'bx')
@@ -102,6 +110,7 @@ def plotting(flt_lines, tie_lines, polygon_coords, new_flt_lines, debug_working_
     ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:,.0f}'))
     ax.set_aspect('equal', adjustable='box')
     return fig
+
 
 def convert_shapely_poly_to_layer(shapely_poly):
     """
@@ -136,6 +145,7 @@ def convert_shapely_poly_to_layer(shapely_poly):
 
     return layer
 
+
 def extract_polygon_coords(multi_polygon_geom):
     coords = []
     for polygon in multi_polygon_geom.asMultiPolygon():
@@ -145,6 +155,7 @@ def extract_polygon_coords(multi_polygon_geom):
             ring_coords = [(pt.x(), pt.y()) for pt in ring]
             coords.append(ring_coords)
     return coords
+
 
 def get_line_coords(lines):
     coords = []
@@ -158,6 +169,7 @@ def get_line_coords(lines):
                 coords.append([(point.x(), point.y()) for point in line])
     return coords
 
+
 def convert_lines_to_my_format(new_lines_qgis_format):
     new_lines = []
     for new_line in new_lines_qgis_format:
@@ -166,9 +178,11 @@ def convert_lines_to_my_format(new_lines_qgis_format):
         new_lines.append(TieLine(start, end))
     return new_lines
 
+
 def convert_and_list_polygons(geometry):
     polygons = [poly for poly in geometry.geoms]
     return polygons
+
 
 def gui(poly_layer,
         flt_lines,
@@ -186,7 +200,6 @@ def gui(poly_layer,
     dialog = QDialog()
     dialog.setWindowTitle("Check and Accept Flight Lines")
 
-
     # QVBoxLayout for dialog
     dialog_layout = QVBoxLayout(dialog)
 
@@ -198,7 +211,7 @@ def gui(poly_layer,
     polygon_feature = next(poly_layer.getFeatures())
     polygon_coords = extract_polygon_coords(polygon_feature.geometry())
 
-    flt_lines = [FltLine(EndPoint(*coord[0]),EndPoint(*coord[1])) for coord in flt_lines_coords]
+    flt_lines = [FltLine(EndPoint(*coord[0]), EndPoint(*coord[1])) for coord in flt_lines_coords]
     tie_lines = [TieLine(EndPoint(*coord[0]), EndPoint(*coord[1])) for coord in tie_lines_coords]
 
     extended_flt_lines = []
@@ -293,7 +306,8 @@ def gui(poly_layer,
     new_tie_lines = convert_lines_to_my_format(new_tie_lines_qgis_format)
 
     # plot on the matplotlib canvas
-    fig = plotting(flt_lines, tie_lines, polygon_coords, new_flt_lines, debug_working_flt_line_list, new_tie_lines, new_poly, anchor_xy)
+    fig = plotting(flt_lines, tie_lines, polygon_coords, new_flt_lines, debug_working_flt_line_list, new_tie_lines,
+                   new_poly, anchor_xy)
 
     canvas = FigureCanvas(fig)
     dialog_layout.addWidget(canvas)
@@ -311,8 +325,10 @@ def gui(poly_layer,
     class G():
         def __init__(self):
             pass
+
     g = G()
     g.anchor_xy = anchor_xy
+
     def copy_anchor_coords_to_clipboard():
         clipboard = QApplication.clipboard()
         if not generated_anchor_coordinates:
