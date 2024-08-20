@@ -74,6 +74,9 @@ class InteractivePlotWidget(QWidget):
         # self.new_flt_lines = None
         # self.new_tie_lines = None
 
+        #store the original poly_layer
+        self.original_poly_layer = poly_layer
+
         # Initialization parameters
         self.the_rest_of_the_flt_line_gen_params = the_rest_of_the_flt_line_gen_params
         self.the_rest_of_the_tie_line_gen_params = the_rest_of_the_tie_line_gen_params
@@ -101,7 +104,6 @@ class InteractivePlotWidget(QWidget):
         self.cid_release = self.canvas.mpl_connect('button_release_event', self.on_release)
         self.cid_motion = self.canvas.mpl_connect('motion_notify_event', self.on_motion)
 
-
     #plot the
     def plot(self, flt_lines, tie_lines, new_flt_lines, new_tie_lines, new_poly, anchor_xy, poly_layer):
 
@@ -121,6 +123,8 @@ class InteractivePlotWidget(QWidget):
         self.new_poly = new_poly
         self.anchor_xy = anchor_xy
 
+        new_poly_x, new_poly_y = new_poly.exterior.xy
+
         # Example plotting logic
         self.ax.clear()  # Clear previous plot
 
@@ -131,14 +135,43 @@ class InteractivePlotWidget(QWidget):
         for new_tie_line in new_tie_lines:
             new_tie_line.plot(self.ax, color='red', linestyle='-', linewidth=0.5)
 
+        x, y = Polygon(polygon_coords[0]).exterior.xy
+        self.ax.plot(x, y, color='black', linestyle=':', marker=".", linewidth=2, markersize=10, alpha=1)
+
         # Plotting the poly_layer data
-        for ring_coords in polygon_coords:
-            x, y = zip(*ring_coords)
-            self.ax.plot(x, y, color='black', linestyle='-', linewidth=2, alpha=0.3)
-        for flt_line in flt_lines:
-            flt_line.plot(self.ax, color='black', linestyle='-', linewidth=2, alpha=0.3)
-        for tie_line in tie_lines:
-            tie_line.plot(self.ax, color='black', linestyle='-', linewidth=2, alpha=0.3)
+        # for ring_coords in polygon_coords:
+        #     x, y = zip(*ring_coords)
+        #     self.ax.plot(x, y, color='black', linestyle=':', marker=".", linewidth=2, markersize=10, alpha=0.5)
+        #
+        # for flt_line in flt_lines:
+        #     flt_line.plot(self.ax, color='black', linestyle='-', linewidth=2, alpha=0.3)
+        # for tie_line in tie_lines:
+        #     tie_line.plot(self.ax, color='black', linestyle='-', linewidth=2, alpha=0.3)
+
+        original_poly_coords = extract_polygon_coords(next(self.original_poly_layer.getFeatures()).geometry())
+
+        x, y = Polygon(original_poly_coords[0]).exterior.xy
+        self.ax.plot(x, y, color='darkgreen', linestyle='-', linewidth=2, alpha=1)
+        self.ax.fill(x, y, color="red", alpha=1)
+
+        intersection = Polygon(original_poly_coords[0]).intersection(new_poly)
+
+        if not intersection.is_empty:
+            x_int, y_int = intersection.exterior.xy
+            self.ax.fill(x_int, y_int, color="white", alpha=1)
+        else:
+            pass
+
+        # difference = Polygon(original_poly_coords[0]).difference(intersection)
+        #
+        # if not difference.is_empty:
+        #     if difference.geom_type == 'Polygon':
+        #         x_diff, y_diff = difference.exterior.xy
+        #         self.ax.fill(x_diff, y_diff, color='red', alpha=1)  # Fill the non-intersecting area
+        #     elif difference.geom_type == 'MultiPolygon':
+        #         for poly in difference.geoms:
+        #             x_diff, y_diff = poly.exterior.xy
+        #             self.ax.fill(x_diff, y_diff, color='red', alpha=1)
 
         self.ax.text(*anchor_xy, '⚓', fontsize=15, ha='center', va='center')
         self.ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x:,.0f}'))
@@ -147,7 +180,6 @@ class InteractivePlotWidget(QWidget):
 
         # Draw the canvas to update the plot
         self.canvas.draw()
-
 
     # This function checks to see if a click is near any of the vertices in the grey poly_layer to set the dragging boolean on for the on_motion function
     def on_press(self, event, threshold=100):
@@ -214,7 +246,6 @@ class InteractivePlotWidget(QWidget):
         #     poly_layer=updated_poly_layer
         # )
 
-
         # Update the flight lines and tie lines live
         self.update_flight_lines()
 
@@ -230,40 +261,39 @@ class InteractivePlotWidget(QWidget):
         """Calls the update_flight_lines function with current parameters."""
         null, self.new_flt_lines_qgis_format, self.new_tie_lines_qgis_format, self.new_poly = \
             update_flight_lines(
-            the_rest_of_the_flt_line_gen_params=self.the_rest_of_the_flt_line_gen_params,
-            the_rest_of_the_tie_line_gen_params=self.the_rest_of_the_tie_line_gen_params,
-            anchor_xy=self.anchor_xy,
-            poly_layer=self.poly_layer,
-            flt_line_buffer_distance=self.flt_line_buffer_distance,
-            tie_line_buffer_distance=self.tie_line_buffer_distance,
-            tie_line_box_buffer=self.tie_line_box_buffer,
-            flt_line_spacing=self.flt_line_spacing,
-            tie_line_spacing=self.tie_line_spacing,
-            interactive_plot_widget=self,
-            flt_lines=None,
-            tie_lines=None
-        )
+                the_rest_of_the_flt_line_gen_params=self.the_rest_of_the_flt_line_gen_params,
+                the_rest_of_the_tie_line_gen_params=self.the_rest_of_the_tie_line_gen_params,
+                anchor_xy=self.anchor_xy,
+                poly_layer=self.poly_layer,
+                flt_line_buffer_distance=self.flt_line_buffer_distance,
+                tie_line_buffer_distance=self.tie_line_buffer_distance,
+                tie_line_box_buffer=self.tie_line_box_buffer,
+                flt_line_spacing=self.flt_line_spacing,
+                tie_line_spacing=self.tie_line_spacing,
+                interactive_plot_widget=self,
+                flt_lines=None,
+                tie_lines=None
+            )
 
     #modifies the input parameters for update flight lines and reruns said function with newly stored values in the class
-    def update_params_through_sliders(self, new_flt_line_translation, new_tie_line_translation):
-        self.the_rest_of_the_flt_line_gen_params=(
+    def update_params_through_sliders(self, new_flt_line_angle, new_flt_line_translation, new_tie_line_translation):
+        self.the_rest_of_the_flt_line_gen_params = (
             self.the_rest_of_the_flt_line_gen_params[0],
-            self.the_rest_of_the_flt_line_gen_params[1],
+            new_flt_line_angle,
             new_flt_line_translation,
             self.the_rest_of_the_flt_line_gen_params[3],
             self.the_rest_of_the_flt_line_gen_params[4],
             self.the_rest_of_the_flt_line_gen_params[5]
-            )
-        self.the_rest_of_the_tie_line_gen_params=(
+        )
+        self.the_rest_of_the_tie_line_gen_params = (
             self.the_rest_of_the_tie_line_gen_params[0],
-            self.the_rest_of_the_tie_line_gen_params[1],
+            new_flt_line_angle + 90,
             new_tie_line_translation,
             self.the_rest_of_the_tie_line_gen_params[3],
             self.the_rest_of_the_tie_line_gen_params[4],
             self.the_rest_of_the_tie_line_gen_params[5]
-            )
+        )
         self.update_flight_lines()
-
 
     # this returns the desired output variables so that an outside function can access the desired values
     def get_results(self):
@@ -443,6 +473,7 @@ def convert_lines_to_my_format(new_lines_qgis_format):
 def convert_and_list_polygons(geometry):
     polygons = [poly for poly in geometry.geoms]
     return polygons
+
 
 # This function regenerates flight and tie lines using all the input parameters that are passed through it
 # It does not require flt_lines and tie_lines input as it will generate them if they don't exist
@@ -685,57 +716,97 @@ def gui(poly_layer,
     # The slider has a set range (I'm thinking of changing it to the min and max distance from anchor but that is beyond my pay grade)
     # The slider DOES NOT WORK with floating point values, so I have to use integers (damn you QWidgets)
     # Live readings of the value are shown to the user (I might change that to an input box later)
-    flt_line_translation_label = QLabel("Flight Line Translation:", dialog)
-    flt_line_translation_label.setFixedSize(150, 20)
-    dialog_layout.addWidget(flt_line_translation_label)
+
+    # angle_label = QLabel("Flight Line Angle:", dialog)
+    # angle_label.setFixedSize(150, 20)
+    # dialog_layout.addWidget(angle_label)
+
+    angle_slider = QSlider(Qt.Horizontal, dialog)
+    angle_slider.setMinimum(-180)
+    angle_slider.setMaximum(180)
+    angle_slider.setValue(
+        int(the_rest_of_the_flt_line_gen_params[1]))  # Assuming flight_line_angle is the second element
+    angle_slider.setFixedSize(400, 20)
+
+    angle_value_label = QLabel(f"Flight Line Angle: {angle_slider.value()} degrees", dialog)
+    angle_value_label.setFixedSize(150, 20)
+
+    dialog_layout.addWidget(angle_value_label)
+    dialog_layout.addWidget(angle_slider)
+
+    # flt_line_translation_label = QLabel("Flight Line Translation:", dialog)
+    # flt_line_translation_label.setFixedSize(150, 20)
+    # dialog_layout.addWidget(flt_line_translation_label)
 
     flt_line_translation_slider = QSlider(Qt.Horizontal, dialog)
     flt_line_translation_slider.setMinimum(-500)
     flt_line_translation_slider.setMaximum(500)
-    flt_line_translation_slider.setValue(int(the_rest_of_the_flt_line_gen_params[2]))  # Assuming flight_line_angle is the second element
+    flt_line_translation_slider.setValue(
+        int(the_rest_of_the_flt_line_gen_params[2]))  # Assuming flt_shift is third element
     flt_line_translation_slider.setFixedSize(400, 20)
+    flt_line_translation_value_label = QLabel(f"Flight Line Translation: {flt_line_translation_slider.value()} m",
+                                              dialog)
+    flt_line_translation_value_label.setFixedSize(150, 20)
+
+    dialog_layout.addWidget(flt_line_translation_value_label)
     dialog_layout.addWidget(flt_line_translation_slider)
 
-    flt_line_translation_value_label = QLabel(f"flight line shift value: {flt_line_translation_slider.value()} m", dialog)
-    dialog_layout.addWidget(flt_line_translation_value_label)
-
-
-    tie_line_translation_label = QLabel("Tie Line Translation:", dialog)
-    tie_line_translation_label.setFixedSize(150, 20)
-    dialog_layout.addWidget(tie_line_translation_label)
+    # tie_line_translation_label = QLabel("Tie Line Translation:", dialog)
+    # tie_line_translation_label.setFixedSize(150, 20)
+    # dialog_layout.addWidget(tie_line_translation_label)
 
     tie_line_translation_slider = QSlider(Qt.Horizontal, dialog)
     tie_line_translation_slider.setMinimum(-500)
     tie_line_translation_slider.setMaximum(500)
-    tie_line_translation_slider.setValue(int(the_rest_of_the_tie_line_gen_params[2]))  # Assuming flight_line_angle is the second element
+    tie_line_translation_slider.setValue(
+        int(the_rest_of_the_tie_line_gen_params[2]))  # Assuming tie_shift is the third element
     tie_line_translation_slider.setFixedSize(400, 20)
+
+    tie_line_translation_value_label = QLabel(f"Tie Line Translation: {tie_line_translation_slider.value()} m",
+                                              dialog)
+    tie_line_translation_value_label.setFixedSize(150, 20)
+
+    dialog_layout.addWidget(tie_line_translation_value_label)
     dialog_layout.addWidget(tie_line_translation_slider)
 
-    tie_line_translation_value_label = QLabel(f"tie line shift value: {tie_line_translation_slider.value()} m", dialog)
-    dialog_layout.addWidget(tie_line_translation_value_label)
-
     # The sliders are connected to the parameter change function in the class for live changes
+    angle_slider.valueChanged.connect(
+        lambda value: interactive_plot_widget.update_params_through_sliders(
+            new_flt_line_angle=value,
+            new_flt_line_translation=flt_line_translation_slider.value(),
+            new_tie_line_translation=tie_line_translation_slider.value()
+        )
+    )
+
     flt_line_translation_slider.valueChanged.connect(
         lambda value: interactive_plot_widget.update_params_through_sliders(
-        new_flt_line_translation=value,
-        new_tie_line_translation=tie_line_translation_slider.value()  # Assuming you want to use the current tie line slider value
+            new_flt_line_angle=angle_slider.value(),
+            new_flt_line_translation=value,
+            new_tie_line_translation=tie_line_translation_slider.value()
+            # Assuming you want to use the current tie line slider value
         )
     )
 
     tie_line_translation_slider.valueChanged.connect(
         lambda value: interactive_plot_widget.update_params_through_sliders(
-            new_flt_line_translation=flt_line_translation_slider.value(), # Assuming you want to use the current flight line slider value
+            new_flt_line_angle=angle_slider.value(),
+            new_flt_line_translation=flt_line_translation_slider.value(),
+            # Assuming you want to use the current flight line slider value
             new_tie_line_translation=value
         )
     )
 
     #Live monitoring of the values
+    def update_angle_label(value):
+        angle_value_label.setText(f"Flight Line Angle: {value} degrees")
+
     def update_flt_label(value):
-        flt_line_translation_value_label.setText(f"flight line shift value: {value} m")
+        flt_line_translation_value_label.setText(f"Flight Line Translation: {value} m")
 
     def update_tie_label(value):
-        tie_line_translation_value_label.setText(f"tie line shift value: {value} m")
+        tie_line_translation_value_label.setText(f"Tie Line Translation: {value} m")
 
+    angle_slider.valueChanged.connect(update_angle_label)
     flt_line_translation_slider.valueChanged.connect(update_flt_label)
     tie_line_translation_slider.valueChanged.connect(update_tie_label)
     """Sharj"""
