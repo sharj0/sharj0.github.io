@@ -154,11 +154,17 @@ class InteractivePlotWidget(QWidget):
         self.ax.plot(x, y, color='darkgreen', linestyle='-', linewidth=2, alpha=1)
         self.ax.fill(x, y, color="red", alpha=1)
 
-        intersection = Polygon(Polygon(original_poly_coords[0]).intersection(new_poly))
+        intersection = Polygon(original_poly_coords[0]).intersection(new_poly)
 
         if not intersection.is_empty:
-            x_int, y_int = intersection.exterior.xy
-            self.ax.fill(x_int, y_int, color="white", alpha=1)
+            # If the intersection is a MultiPolygon, iterate over each Polygon
+            if isinstance(intersection, MultiPolygon):
+                for polygon in intersection:
+                    x_int, y_int = polygon.exterior.xy
+                    self.ax.fill(x_int, y_int, color="white", alpha=1)
+            else:  # If the intersection is a single Polygon
+                x_int, y_int = intersection.exterior.xy
+                self.ax.fill(x_int, y_int, color="white", alpha=1)
         else:
             pass
 
