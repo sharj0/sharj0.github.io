@@ -1,5 +1,5 @@
 <plugins>
-  <pyqgis_plugin name=".DEV sharj_make_interactive_flightline_creator Waypoint Altitude Embedder" version="1.2024.8.20.3">
+  <pyqgis_plugin name=".DEV sharj_make_interactive_flightline_creator Waypoint Altitude Embedder" version="1.2024.8.20.4">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_make_interactive_flightline_creator/ROSORPlugins/PETER_ROSOR_alt_embedder/plugin_icon.png</icon>
@@ -9,7 +9,7 @@
     <download_url>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_make_interactive_flightline_creator/ROSORPlugins/PETER_ROSOR_alt_embedder.zip</download_url>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".DEV sharj_make_interactive_flightline_creator Base Mag QAQC" version="1.2024.8.20.3">
+  <pyqgis_plugin name=".DEV sharj_make_interactive_flightline_creator Base Mag QAQC" version="1.2024.8.20.4">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_make_interactive_flightline_creator/ROSORPlugins/PETER_ROSOR_base_mag_qaqc/plugin_icon.png</icon>
@@ -18,7 +18,7 @@
     <download_url>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_make_interactive_flightline_creator/ROSORPlugins/PETER_ROSOR_base_mag_qaqc.zip</download_url>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".DEV sharj_make_interactive_flightline_creator Flightline Creator" version="1.2024.8.20.3">
+  <pyqgis_plugin name=".DEV sharj_make_interactive_flightline_creator Flightline Creator" version="1.2024.8.20.4">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_make_interactive_flightline_creator/ROSORPlugins/PETER_ROSOR_flightline_creator/plugin_icon.png</icon>
@@ -26,7 +26,7 @@
     <download_url>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_make_interactive_flightline_creator/ROSORPlugins/PETER_ROSOR_flightline_creator.zip</download_url>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".DEV sharj_make_interactive_flightline_creator Mag Clipper" version="1.2024.8.20.3">
+  <pyqgis_plugin name=".DEV sharj_make_interactive_flightline_creator Mag Clipper" version="1.2024.8.20.4">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_make_interactive_flightline_creator/ROSORPlugins/PETER_ROSOR_mag_clipper/plugin_icon.png</icon>
@@ -35,7 +35,7 @@
     <download_url>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_make_interactive_flightline_creator/ROSORPlugins/PETER_ROSOR_mag_clipper.zip</download_url>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".DEV sharj_make_interactive_flightline_creator Mass Import CSVs or KMLs" version="1.2024.8.20.3">
+  <pyqgis_plugin name=".DEV sharj_make_interactive_flightline_creator Mass Import CSVs or KMLs" version="1.2024.8.20.4">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_make_interactive_flightline_creator/ROSORPlugins/PETER_ROSOR_mass_importer/plugin_icon.png</icon>
@@ -44,7 +44,7 @@
     <download_url>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_make_interactive_flightline_creator/ROSORPlugins/PETER_ROSOR_mass_importer.zip</download_url>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".DEV sharj_make_interactive_flightline_creator Slope Analyzer" version="1.2024.8.20.3">
+  <pyqgis_plugin name=".DEV sharj_make_interactive_flightline_creator Slope Analyzer" version="1.2024.8.20.4">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_make_interactive_flightline_creator/ROSORPlugins/PETER_ROSOR_slope_analyser/plugin_icon.png</icon>

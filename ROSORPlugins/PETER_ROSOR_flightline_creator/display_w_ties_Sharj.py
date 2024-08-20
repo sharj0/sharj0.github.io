@@ -159,7 +159,7 @@ class InteractivePlotWidget(QWidget):
         if not intersection.is_empty:
             # If the intersection is a MultiPolygon, iterate over each Polygon
             if isinstance(intersection, MultiPolygon):
-                for polygon in intersection:
+                for polygon in intersection.geoms:
                     x_int, y_int = polygon.exterior.xy
                     self.ax.fill(x_int, y_int, color="white", alpha=1)
             else:  # If the intersection is a single Polygon
