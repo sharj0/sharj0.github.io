@@ -1,5 +1,5 @@
 <plugins>
-  <pyqgis_plugin name=".ROSOR Waypoint Altitude Embedder" version="1.2024.8.20.5">
+  <pyqgis_plugin name=".ROSOR Waypoint Altitude Embedder" version="1.2024.8.20.7">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_alt_embedder/plugin_icon.png</icon>
@@ -9,7 +9,7 @@
     <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_alt_embedder.zip</download_url>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Base Mag QAQC" version="1.2024.8.20.5">
+  <pyqgis_plugin name=".ROSOR Base Mag QAQC" version="1.2024.8.20.7">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_base_mag_qaqc/plugin_icon.png</icon>
@@ -18,7 +18,7 @@
     <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_base_mag_qaqc.zip</download_url>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Flightline Creator" version="1.2024.8.20.5">
+  <pyqgis_plugin name=".ROSOR Flightline Creator" version="1.2024.8.20.7">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_flightline_creator/plugin_icon.png</icon>
@@ -27,7 +27,7 @@
   </pyqgis_plugin>
 
 
-  <pyqgis_plugin name=".ROSOR Mag Clipper" version="1.2024.8.20.5">
+  <pyqgis_plugin name=".ROSOR Mag Clipper" version="1.2024.8.20.7">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_mag_clipper/plugin_icon.png</icon>
@@ -36,7 +36,7 @@
     <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_mag_clipper.zip</download_url>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Mass Import CSVs or KMLs" version="1.2024.8.20.5">
+  <pyqgis_plugin name=".ROSOR Mass Import CSVs or KMLs" version="1.2024.8.20.7">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_mass_importer/plugin_icon.png</icon>
@@ -45,7 +45,7 @@
     <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_mass_importer.zip</download_url>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Slope Analyzer" version="1.2024.8.20.5">
+  <pyqgis_plugin name=".ROSOR Slope Analyzer" version="1.2024.8.20.7">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_slope_analyser/plugin_icon.png</icon>
