@@ -184,6 +184,21 @@ class TieLine(Line):
     def __repr__(self):
         return f"Tie Line (start={repr(self.start_point)}, end={repr(self.end_point)})"
 
+    def get_xy_data(self):
+        """Returns the x and y coordinates as separate lists."""
+        x_data = [self.start_point.x, self.end_point.x]
+        y_data = [self.start_point.y, self.end_point.y]
+        return x_data, y_data
+
+    def set_xy_data(self, x_data, y_data):
+        """Sets the start and end points based on new x and y coordinates."""
+        if len(x_data) == 2 and len(y_data) == 2:
+            self.start_point.x, self.end_point.x = x_data
+            self.start_point.y, self.end_point.y = y_data
+        else:
+            raise ValueError("x_data and y_data must each have exactly 2 elements.")
+
+
 class FltLine(Line):
     def __init__(self, start_point, end_point):
         super().__init__(start_point, end_point)

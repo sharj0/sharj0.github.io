@@ -2,7 +2,7 @@
 name= Mass import CSVs or KMLs
 qgisMinimumVersion=3.0
 description=ROSOR's tool to mass import csv or kml files from a folder, and match the file structure using layer groups.
-version=1.2024.8.11.3
+version=1.2024.8.20.7
 author=Pyotyr Young and Sharjeel Awon
 email=pyotyr@msn.com, pyotyr@rosor.ca
 icon=plugin_icon.png

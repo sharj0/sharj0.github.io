@@ -4,8 +4,8 @@ This is where the substance of the plugin begins. In main()
 '''
 
 import os
-from PETER_ROSOR_flightline_creator import load_data, display_w_ties, display_no_ties
-from PETER_ROSOR_flightline_creator.functions import \
+from . import load_data, display_w_ties_Sharj, display_no_ties
+from .functions import \
     get_name, \
     get_crs,\
     save_excel_file,\
@@ -20,9 +20,9 @@ from PETER_ROSOR_flightline_creator.functions import \
     combine_kml_files,\
     open_different_kinds_of_input_polys
 
-from PETER_ROSOR_flightline_creator.generate_lines import generate_lines
-from PETER_ROSOR_flightline_creator.make_swaths import make_swaths
-from PETER_ROSOR_flightline_creator.output_to_kml import \
+from .generate_lines import generate_lines
+from .make_swaths import make_swaths
+from .output_to_kml import \
     output_swaths_to_kml, \
     line_geometries_to_kml,\
     save_kml_polygon
@@ -100,11 +100,12 @@ def main(settings_file_path):
                        merge_gaps_smaller_than,
                        delete_lines_smaller_than,
                        anchor_xy)
+
         tie_lines = generate_lines(poly_layer,
                                    tie_line_box_buffer,# this is set to buffer the shape differently
                                    *the_rest_of_the_tie_line_gen_params)
 
-        results = display_w_ties.gui(poly_layer,
+        results = display_w_ties_Sharj.gui(poly_layer,
                                      flt_lines,
                                      tie_lines,
                                      flight_line_spacing,
