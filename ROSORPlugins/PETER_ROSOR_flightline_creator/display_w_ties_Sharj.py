@@ -154,7 +154,7 @@ class InteractivePlotWidget(QWidget):
         self.ax.plot(x, y, color='darkgreen', linestyle='-', linewidth=2, alpha=1)
         self.ax.fill(x, y, color="red", alpha=1)
 
-        intersection = Polygon(original_poly_coords[0]).intersection(new_poly)
+        intersection = Polygon(Polygon(original_poly_coords[0]).intersection(new_poly))
 
         if not intersection.is_empty:
             x_int, y_int = intersection.exterior.xy
