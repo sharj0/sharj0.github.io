@@ -78,7 +78,7 @@ def zip_file(folder, directory=os.path.dirname(__file__)):
     folder_path = os.path.join(directory, folder)
 
     #Creates a ZipFile instance that creates a .zip using the folder and path
-    with zipfile.ZipFile(folder_path + ".zip", mode="w") as archive:
+    with zipfile.ZipFile(folder_path + ".zip", mode="w", compression=zipfile.ZIP_LZMA) as archive:
 
         #Goes through every file in the chosen folder
         for root, dirs, files in os.walk(folder_path):
