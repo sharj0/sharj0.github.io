@@ -51,4 +51,28 @@
     <description>ROSOR's tool that shows the user how steep the terrain is.</description>
     <download_url>https://raw.githubusercontent.com/sharj0/sharj0.github.io/peter_test_branch/ROSORPlugins/PETER_ROSOR_slope_analyser.zip</download_url>
   </pyqgis_plugin>
+
+  <pyqgis_plugin name=".DEV peter_test_branch Lines To Flights" version="1.2024.8.11.3" experimental="True">
+    <qgis_minimum_version>3.0.0</qgis_minimum_version>
+    <author_name>Pyotyr Young and Sharjeel Awon</author_name>
+    <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/peter_test_branch/ROSORPlugins/PETER_ROSOR_lines_to_flights/plugin_icon.png</icon>
+    <description>ROSOR's tool that shows the user how steep the terrain is.</description>
+    <download_url>https://raw.githubusercontent.com/sharj0/sharj0.github.io/peter_test_branch/ROSORPlugins/PETER_ROSOR_lines_to_flights.zip</download_url>
+  </pyqgis_plugin>
+
+  <pyqgis_plugin name=".DEV peter_test_branch Plugin Template" version="1.2024.8.11.3" experimental="True">
+    <qgis_minimum_version>3.0.0</qgis_minimum_version>
+    <author_name>Pyotyr Young and Sharjeel Awon</author_name>
+    <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/peter_test_branch/ROSORPlugins/PETER_ROSOR_plugin_template/plugin_icon.png</icon>
+    <description>ROSOR's tool that shows the user how steep the terrain is.</description>
+    <download_url>https://raw.githubusercontent.com/sharj0/sharj0.github.io/peter_test_branch/ROSORPlugins/PETER_ROSOR_plugin_template.zip</download_url>
+  </pyqgis_plugin>
+
+  <pyqgis_plugin name=".DEV peter_test_branch Tile Maker" version="1.2024.8.11.3" experimental="True">
+    <qgis_minimum_version>3.0.0</qgis_minimum_version>
+    <author_name>Pyotyr Young and Sharjeel Awon</author_name>
+    <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/peter_test_branch/ROSORPlugins/PETER_ROSOR_tile_maker/plugin_icon.png</icon>
+    <description>ROSOR's tool that shows the user how steep the terrain is.</description>
+    <download_url>https://raw.githubusercontent.com/sharj0/sharj0.github.io/peter_test_branch/ROSORPlugins/PETER_ROSOR_tile_maker.zip</download_url>
+  </pyqgis_plugin>
 </plugins>
