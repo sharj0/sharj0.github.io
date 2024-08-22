@@ -6,7 +6,8 @@ The python scripts and XML files in this repo are for the automatic deployment o
 - Base Mag Clipper
 - Flightline Creator
 - Mag Clipper
-- Mass Importer
+- Import CSVs
+- Import KMLs
 - Slope Analyser
 - Waypoint Altitude Embedder
 
