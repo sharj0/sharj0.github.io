@@ -3,7 +3,7 @@ The python scripts and XML files in this repo are for the automatic deployment o
 (note that the connected repo in QGIS will have ".ROSOR" as the prefix of each plugin)
 
 # Current Plugins:
-- Base Mag Clipper
+- Base Mag QAQC
 - Flightline Creator
 - Mag Clipper
 - Import CSVs
