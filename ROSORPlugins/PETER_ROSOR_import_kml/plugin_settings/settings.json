@@ -1,0 +1,12 @@
+{
+    "\ud83d\udcc2 Input folder": "D:\\ROSOR\\My_QGIS_Repo\\QAQC\\Alt embeder test data\\2D flights",
+    "\ud83d\udcc2 Input folder_SELECT_FOLDER": "true",
+    "\ud83d\udcc2 Input folder_COMMENT": "This is the folder that will be imported. All it's sub-folders too (recursively) and how they are structured.",
+    "Use Test Data": false,
+    "Use Test Data_COMMENT": "This will override the input folder to point to the test data in the plugin folder",
+    "Collapse groups_RADIO": {
+        "Completely": true,
+        "Only bottom level": false
+    },
+    "Close this window on accept": false
+}
