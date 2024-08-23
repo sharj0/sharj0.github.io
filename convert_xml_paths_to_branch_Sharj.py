@@ -3,7 +3,7 @@ from pathlib import Path
 from lxml import etree
 
 """CHANGE THIS STRING FOR BRANCH NAME (DO NOT PUT ANY SLASHES)"""
-branch_name_string = "sharj_import_csv_import_kml_split"
+branch_name_string = "sharj_slight_modifications_to_flightline_creator"
 
 
 
