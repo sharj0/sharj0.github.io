@@ -99,10 +99,15 @@ class InteractivePlotWidget(QWidget):
         self.new_tie_lines_qgis_format = None
         self.new_poly = None
 
+        self.plot_x_lims = None
+        self.plot_y_lims = None
+
         # Connect event handlers
         self.cid_press = self.canvas.mpl_connect('button_press_event', self.on_press)
         self.cid_release = self.canvas.mpl_connect('button_release_event', self.on_release)
         self.cid_motion = self.canvas.mpl_connect('motion_notify_event', self.on_motion)
+
+
 
     #plot the
     def plot(self, flt_lines, tie_lines, new_flt_lines, new_tie_lines, new_poly, anchor_xy, poly_layer):
@@ -123,10 +128,14 @@ class InteractivePlotWidget(QWidget):
         self.new_poly = new_poly
         self.anchor_xy = anchor_xy
 
-        new_poly_x, new_poly_y = new_poly.exterior.xy
-
         # Example plotting logic
         self.ax.clear()  # Clear previous plot
+
+        if self.plot_x_lims:
+            self.ax.set_xlim(self.plot_x_lims)
+
+        if self.plot_y_lims:
+            self.ax.set_ylim(self.plot_y_lims)
 
         # Plotting the new data
         self.ax.plot(*new_poly.exterior.xy, '-')
@@ -137,16 +146,6 @@ class InteractivePlotWidget(QWidget):
 
         x, y = Polygon(polygon_coords[0]).exterior.xy
         self.ax.plot(x, y, color='black', linestyle=':', marker=".", linewidth=2, markersize=10, alpha=1)
-
-        # Plotting the poly_layer data
-        # for ring_coords in polygon_coords:
-        #     x, y = zip(*ring_coords)
-        #     self.ax.plot(x, y, color='black', linestyle=':', marker=".", linewidth=2, markersize=10, alpha=0.5)
-        #
-        # for flt_line in flt_lines:
-        #     flt_line.plot(self.ax, color='black', linestyle='-', linewidth=2, alpha=0.3)
-        # for tie_line in tie_lines:
-        #     tie_line.plot(self.ax, color='black', linestyle='-', linewidth=2, alpha=0.3)
 
         original_poly_coords = extract_polygon_coords(next(self.original_poly_layer.getFeatures()).geometry())
 
@@ -168,16 +167,6 @@ class InteractivePlotWidget(QWidget):
         else:
             pass
 
-        # difference = Polygon(original_poly_coords[0]).difference(intersection)
-        #
-        # if not difference.is_empty:
-        #     if difference.geom_type == 'Polygon':
-        #         x_diff, y_diff = difference.exterior.xy
-        #         self.ax.fill(x_diff, y_diff, color='red', alpha=1)  # Fill the non-intersecting area
-        #     elif difference.geom_type == 'MultiPolygon':
-        #         for poly in difference.geoms:
-        #             x_diff, y_diff = poly.exterior.xy
-        #             self.ax.fill(x_diff, y_diff, color='red', alpha=1)
 
         self.ax.text(*anchor_xy, '⚓', fontsize=15, ha='center', va='center')
         self.ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x:,.0f}'))
@@ -186,6 +175,7 @@ class InteractivePlotWidget(QWidget):
 
         # Draw the canvas to update the plot
         self.canvas.draw()
+
 
     # This function checks to see if a click is near any of the vertices in the grey poly_layer to set the dragging boolean on for the on_motion function
     def on_press(self, event, threshold=100):
@@ -265,6 +255,10 @@ class InteractivePlotWidget(QWidget):
     # It stores the desired output variables back into the class as they were initialized as None
     def update_flight_lines(self):
         """Calls the update_flight_lines function with current parameters."""
+
+        self.plot_x_lims = self.ax.get_xlim()
+        self.plot_y_lims = self.ax.get_ylim()
+
         null, self.new_flt_lines_qgis_format, self.new_tie_lines_qgis_format, self.new_poly = \
             update_flight_lines(
                 the_rest_of_the_flt_line_gen_params=self.the_rest_of_the_flt_line_gen_params,
@@ -359,42 +353,6 @@ def get_closest_tie_intersection(flt_line, tie_line_list, from_line_start_perspe
     return closest_intersection, closest_tie_line, closest_distance
 
 
-def plotting(flt_lines, tie_lines, polygon_coords, new_flt_lines, debug_working_flt_line_list, new_tie_lines, new_poly,
-             anchor_xy):
-    # Create the figure
-    # fig = plt.figure(figsize=(12, 10))
-    # ax = plt.subplot2grid((12, 12), (0, 0), rowspan=12, colspan=12)
-
-    fig = Figure(figsize=(12, 10))
-    ax = fig.add_subplot(111)
-
-    #for extended_flt_line in debug_working_flt_line_list[:10]:
-    #    extended_flt_line.intersections[0].plot(ax, 'bx')
-    #    extended_flt_line.intersections[1].plot(ax, 'rx')
-
-    # plot the new data
-    ax.plot(*new_poly.exterior.xy, '-')
-    for new_flt_line in new_flt_lines:
-        new_flt_line.plot(ax, color='blue', linestyle='-', linewidth=0.5)
-    for new_tie_line in new_tie_lines:
-        new_tie_line.plot(ax, color='red', linestyle='-', linewidth=0.5)
-
-    #plot the old data
-    for ring_coords in polygon_coords:
-        x, y = zip(*ring_coords)
-        ax.plot(x, y, color='black', linestyle='-', linewidth=2, alpha=0.3)
-    for flt_line in flt_lines:
-        flt_line.plot(ax, color='black', linestyle='-', linewidth=2, alpha=0.3)
-    for tie_line in tie_lines:
-        tie_line.plot(ax, color='black', linestyle='-', linewidth=2, alpha=0.3)
-
-    ax.text(*anchor_xy, '⚓', fontsize=15, ha='center', va='center')
-    ax.xaxis.set_major_formatter(ticker.StrMethodFormatter('{x:,.0f}'))
-    ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:,.0f}'))
-    ax.set_aspect('equal', adjustable='box')
-    return fig, ax
-
-
 def convert_shapely_poly_to_layer(shapely_poly):
     """
     Convert a Shapely Polygon to a QGIS layer without adding it to the Layers Panel.
@@ -431,20 +389,6 @@ def convert_shapely_poly_to_layer(shapely_poly):
 
 def extract_polygon_coords(multi_polygon_geom):
     coords = []
-    # if multi_polygon_geom.type() == QgsWkbTypes.Polygon:
-    #     print("true")
-    #     rings = multi_polygon_geom.asPolygon()
-    #
-    #     rings_with_z = []
-    #     for ring in rings:
-    #         ring_with_z = [QgsPoint(point.x(), point.y(), 0) for point in ring]
-    #         rings_with_z.append(ring_with_z)
-    #
-    #     multi_polygon_geom = QgsGeometry.fromMultiPolygonZ([rings_with_z])
-    #     print(multi_polygon_geom)
-
-    #     multi_polygon_geom = QgsGeometry.fromWkt(f'MULTIPOLYGON(({multi_polygon_geom.asWkt()[8:-1]}))')
-
     for polygon in multi_polygon_geom.asMultiPolygon():
         # Each polygon is a list of rings (first ring is exterior, others are holes)
         for ring in polygon:
@@ -728,10 +672,18 @@ def gui(poly_layer,
     # dialog_layout.addWidget(angle_label)
 
     angle_slider = QSlider(Qt.Horizontal, dialog)
-    angle_slider.setMinimum(-180)
+    angle_slider.setMinimum(0)
     angle_slider.setMaximum(180)
-    angle_slider.setValue(
-        int(the_rest_of_the_flt_line_gen_params[1]))  # Assuming flight_line_angle is the second element
+
+    def convert_to_0_180(degree):
+        normalized_degree = (int(degree) + 360) % 360  # Normalize to the range [0, 360)
+        if normalized_degree > 180:
+            return normalized_degree - 180
+        return normalized_degree
+
+    normalized_degree = convert_to_0_180(the_rest_of_the_flt_line_gen_params[1])
+
+    angle_slider.setValue(int(normalized_degree))  # Assuming flight_line_angle is the second element
     angle_slider.setFixedSize(400, 20)
 
     angle_value_label = QLabel(f"Flight Line Angle: {angle_slider.value()} degrees", dialog)
@@ -745,10 +697,18 @@ def gui(poly_layer,
     # dialog_layout.addWidget(flt_line_translation_label)
 
     flt_line_translation_slider = QSlider(Qt.Horizontal, dialog)
-    flt_line_translation_slider.setMinimum(-500)
-    flt_line_translation_slider.setMaximum(500)
-    flt_line_translation_slider.setValue(
-        int(the_rest_of_the_flt_line_gen_params[2]))  # Assuming flt_shift is third element
+    flt_line_translation_slider.setMinimum(0)
+    flt_line_translation_slider.setMaximum(int(flt_line_spacing))
+
+    def wrap_around(value, min_val=0, max_val=100):
+        range_width = max_val - min_val
+        # Normalize value to be within the range [0, range_width)
+        normalized_value = (value - min_val) % range_width
+        return normalized_value + min_val
+
+    flt_translation_value = wrap_around(int(the_rest_of_the_flt_line_gen_params[2]),0,int(flt_line_spacing))
+
+    flt_line_translation_slider.setValue(int(flt_translation_value))  # Assuming flt_shift is third element
     flt_line_translation_slider.setFixedSize(400, 20)
     flt_line_translation_value_label = QLabel(f"Flight Line Translation: {flt_line_translation_slider.value()} m",
                                               dialog)
@@ -762,10 +722,12 @@ def gui(poly_layer,
     # dialog_layout.addWidget(tie_line_translation_label)
 
     tie_line_translation_slider = QSlider(Qt.Horizontal, dialog)
-    tie_line_translation_slider.setMinimum(-500)
-    tie_line_translation_slider.setMaximum(500)
-    tie_line_translation_slider.setValue(
-        int(the_rest_of_the_tie_line_gen_params[2]))  # Assuming tie_shift is the third element
+    tie_line_translation_slider.setMinimum(0)
+    tie_line_translation_slider.setMaximum(int(tie_line_spacing))
+
+    tie_translation_value = wrap_around(int(the_rest_of_the_tie_line_gen_params[2]),0,int(tie_line_spacing))
+
+    tie_line_translation_slider.setValue(int(tie_translation_value))  # Assuming tie_shift is the third element
     tie_line_translation_slider.setFixedSize(400, 20)
 
     tie_line_translation_value_label = QLabel(f"Tie Line Translation: {tie_line_translation_slider.value()} m",
