@@ -1,7 +1,7 @@
 import os
 import shutil
 
-file_to_spread = r"D:\ROSOR\sharj0.github.io\ROSORPlugins\plugin_change_settings.py"
+file_to_spread = r"C:\Users\pyoty\Documents\GitHub\sharj0.github.io\ROSORPlugins\PETER_ROSOR_import_kml\plugin_change_settings.py"
 
 def replace_file_in_all_plugins(file_to_spread,
                                 plugin_prefix='PETER_ROSOR_',
