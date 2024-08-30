@@ -23,6 +23,7 @@ def lat_lon_UAValt_to_mp_wp(output_file_path,
     print(output_file_path)
 
 def lat_lon_UAValt_turnRad_to_DJI_wp_kmz(lat, lon,
+                                         settings_description,
                                          UAValtAsl, UAValtEll,
                                          turnRad,
                                          output_file_path,
@@ -31,6 +32,7 @@ def lat_lon_UAValt_turnRad_to_DJI_wp_kmz(lat, lon,
     kml_text = f'''
                 <kml xmlns="http://www.opengis.net/kml/2.2" xmlns:wpml="http://www.dji.com/wpmz/1.0.0">
                <Document>
+                  <description>{settings_description}</description>
                   <wpml:createTime>1690230952508</wpml:createTime>
                   <wpml:updateTime>1690230952508</wpml:updateTime>
                   <wpml:missionConfig>
@@ -108,11 +110,10 @@ def lat_lon_UAValt_turnRad_to_DJI_wp_kmz(lat, lon,
 
 
     base_file_path = Path(output_file_path).parent
-    out_file = Path(output_file_path).name
     new_temp_dir_path_1 = os.path.join(base_file_path, 'pyotyrs_temp_will_be_deleted')
     if os.path.exists(new_temp_dir_path_1):
         shutil.rmtree(new_temp_dir_path_1)
-    os.mkdir(new_temp_dir_path_1)
+    os.makedirs(new_temp_dir_path_1, exist_ok=True)
     new_temp_dir_path_2 = os.path.join(new_temp_dir_path_1, 'wpmz')
     os.mkdir(new_temp_dir_path_2)
     out_file_path = os.path.join(new_temp_dir_path_2, 'template.kml')

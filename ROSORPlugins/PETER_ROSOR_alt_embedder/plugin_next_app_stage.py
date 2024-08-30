@@ -94,7 +94,10 @@ def main(settings_file_path):
     create_ortho_photo_waypoint_flight = settings_dict['DJI Ortho Photo Flight']
     create_as_mission_planner_waypoints = settings_dict['Ardupilot 3D Waypoints']
 
+    auto_accept = settings_dict['No manual checking']
+
     create_ortho_photo_corridor_flight = False
+    settings_description = settings_dict.copy()
     settings_dict = None # don't use settings_dict from here on
 
     plot_details = False
@@ -296,7 +299,7 @@ def main(settings_file_path):
 
 
         skip_plot = False
-        if skip_plot or create_ortho_photo_corridor_flight:
+        if skip_plot or create_ortho_photo_corridor_flight or auto_accept:
             accepted = True
         else:
             accepted = plot_and_accept.run(waypoints=new_waypoints,
@@ -369,13 +372,20 @@ def main(settings_file_path):
         if not run_file_not_folder:
             if not os.path.exists(new_waypoint_folder):
                 os.mkdir(new_waypoint_folder)
-            new_waypoint_filepath = os.path.join(new_waypoint_folder, new_waypoint_filename)
+
+            # Extract the relative path from the waypoint_file by removing the waypoint_folder part
+            relative_path = os.path.relpath(waypoint_file, waypoint_folder)
+
+            # Combine the new_waypoint_folder with the relative path and new filename
+            new_waypoint_filepath = os.path.join(new_waypoint_folder, os.path.dirname(relative_path), new_waypoint_filename)
+
         else:
             input_waypoint_file_parent_dir = os.path.dirname(os.path.dirname(input_waypoint_file))
             new_waypoint_filepath = os.path.join(input_waypoint_file_parent_dir,new_waypoint_filename)
 
         if create_mag_flight:
             lat_lon_UAValt_turnRad_to_DJI_wp_kmz(output_file_path=new_waypoint_filepath,
+                                                 settings_description=settings_description,
                                                  lat=new_waypoints.T[11],
                                                  lon=new_waypoints.T[12],
                                                  UAValtAsl=new_waypoints.T[10],
