@@ -1,8 +1,8 @@
 [general]
-name= Import KML Flight Data
+name= Import KML
 qgisMinimumVersion=3.0
 description=ROSOR's tool to mass import kml flight data from a folder and match the file structure using layer groups.
-version=1.2024.9.9.8
+version=1.2024.9.9.9
 author=Pyotyr Young and Sharjeel Awon
 email=pyotyr@msn.com, pyotyr@rosor.ca
 icon=plugin_icon.png

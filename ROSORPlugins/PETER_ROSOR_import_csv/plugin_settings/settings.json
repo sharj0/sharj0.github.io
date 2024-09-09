@@ -1,9 +1,7 @@
 {
-    "\ud83d\udcc2 Input folder": "D:\\ROSOR\\My_QGIS_Repo\\QAQC\\Mass import kml or csv\\Test data for mass importer\\June 5th_re_organised",
+    "\ud83d\udcc2 Input folder": "G:\\Shared drives\\Rosor\\2024 - 2025\\Projects\\project-dlm-equity-bmc-kzk\\priority_1_area\\MAG_DATA_clean\\Sept07",
     "\ud83d\udcc2 Input folder_SELECT_FOLDER": "true",
     "\ud83d\udcc2 Input folder_COMMENT": "This is the folder that will be imported. All it's sub-folders too (recursively) and how they are structured.",
-    "Use Test Data": false,
-    "Use Test Data_COMMENT": "This will override the input folder to point to the test data in the plugin folder",
     "Collapse groups_RADIO": {
         "Completely": true,
         "Only bottom level": false
@@ -12,11 +10,11 @@
         "point_size_multiplier": 0.4,
         "point_size_multiplier_COMMENT": "Normal size is 1",
         "Output LKM and metadata": {
-            "output lkm file?": false,
+            "output lkm file?": true,
             "output lkm file?_COMMENT": "If checked an makes and opens an excel spreadsheet outside the input folder with LKMs."
         },
         "Sub sample displayed points": {
-            "sub_sample_csv_displayed_points": 25.0,
+            "sub_sample_csv_displayed_points": 25,
             "sub_sample_csv_displayed_points_COMMENT": "If set to 10, every tenth point will be shown. \nThis does not affect the file, just how it is displayed. Set to 1 or 0 to show full.",
             "clean_out_sub_sampled_csv": false,
             "clean_out_sub_sampled_csv_COMMENT": "This will clean out existing sampled csvs. \nIt's recommended to set setting 'sub_sample_csv_displayed_points' to 0 so that new ones are not created too.",
@@ -32,5 +30,5 @@
             "Split_up_files_with_no_match": true
         }
     },
-    "Close this window on accept": false
+    "Close this window on accept": true
 }

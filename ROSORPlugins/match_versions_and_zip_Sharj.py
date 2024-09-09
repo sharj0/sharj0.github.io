@@ -406,6 +406,6 @@ if __name__ == "__main__":
     print()
     if folders_that_need_updating:
         save_hashes(get_all_current_hashes(), HASH_FILE)
-        print("\nDON'T FORGET TO PUSH TO MAIN" )
+        print("\n DON'T FORGET TO PUSH TO MAIN" )
     else:
-        print("\nNo changes detected in any of the input folders.")
+        print("\n No changes detected in any of the input folders.")
