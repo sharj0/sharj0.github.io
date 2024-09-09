@@ -13,9 +13,83 @@ import shutil  #used to delete temp folder
 
 from datetime import date
 
+import hashlib
+import json
+
+HASH_FILE = "detect_changes_with_folder_hashes.json"
+
+# Function to calculate the hash of a folder
+def calculate_folder_hash(folder_path):
+    sha256 = hashlib.sha256()
+    for root, dirs, files in os.walk(folder_path):
+        for file in sorted(files):  # Sort files to ensure consistent order
+            file_path = os.path.join(root, file)
+            with open(file_path, 'rb') as f:
+                while True:
+                    chunk = f.read(4096)
+                    if not chunk:
+                        break
+                    sha256.update(chunk)
+    return sha256.hexdigest()
+
+
+# Function to get all current hashes for folders that start with plugin_prefix
+def get_all_current_hashes(plugin_prefix="PETER_ROSOR", plugin_dir=os.path.dirname(__file__)):
+    current_hashes = {}
+
+    # Iterate through all the folders in the directory
+    for root, dirs, files in os.walk(plugin_dir):
+        for dir_name in dirs:
+            if dir_name.startswith(plugin_prefix):
+                folder_path = os.path.join(root, dir_name)
+
+                # Calculate current hash for the folder
+                current_hash = calculate_folder_hash(folder_path)
+                current_hashes[dir_name] = current_hash
+
+    return current_hashes
+
+# Function to load saved hashes from a file
+def load_saved_hashes(hash_file):
+    if os.path.exists(hash_file):
+        with open(hash_file, 'r') as f:
+            outp = json.load(f)
+            print(f"loaded hashes from '{os.path.basename(hash_file)}'")
+            print()
+            return outp
+
+    return {}
+
+# Function to save hashes to a file
+def save_hashes(hashes, hash_file):
+    print(f"updating '{os.path.basename(hash_file)}'")
+    with open(hash_file, 'w') as f:
+        json.dump(hashes, f, indent=4)
+
+# Function to check for changes and update versions if needed
+def check_for_changes_and_update_versions(plugin_prefix="PETER_ROSOR"):
+    saved_hashes = load_saved_hashes(HASH_FILE)
+
+    # Get all current hashes for the relevant folders
+    current_hashes = get_all_current_hashes()
+
+    folders_that_need_updating = []
+
+    # Compare saved hashes with current hashes
+    for dir_name, current_hash in current_hashes.items():
+        if saved_hashes.get(dir_name) != current_hash:
+            print(f"Changes detected in {dir_name}. Need to update version")
+            folders_that_need_updating.append(dir_name)
+        else:
+            print(f"No changes detected in {dir_name}.")
+
+    return folders_that_need_updating
+
 #This defaults to only selecting "PETER_ROSOR" folders, but can be used for other things
 #Default directory is the working one
-def autozip_files_main(plugin_prefix="PETER_ROSOR", plugin_dir=os.path.dirname(__file__)):
+def autozip_files_main(folders_that_need_updating,
+                       plugin_prefix="PETER_ROSOR",
+                       plugin_dir=os.path.dirname(__file__)):
     #I'm reusing Peter's code
 
     # Check if the provided plugin directory exists
@@ -28,12 +102,12 @@ def autozip_files_main(plugin_prefix="PETER_ROSOR", plugin_dir=os.path.dirname(_
         for dir_name in dirs:
             #Check if directory has the prefix which is our indicator/standard for plugins
             if dir_name.startswith(plugin_prefix):
-
-                #Calls separate function in file that checks whether there is a difference between the zipped plugin and the unzipped one in current directory
-                if is_archive_folder_different(dir_name):
-                    #uses the zipfile library to write the plugin folder into an archive with the plugin folder name
-                    zip_file(dir_name)
-
+                if dir_name in folders_that_need_updating:
+                    print(f'zipping folder {dir_name} ... ')
+                    #Calls separate function in file that checks whether there is a difference between the zipped plugin and the unzipped one in current directory
+                    if is_archive_folder_different(dir_name):
+                        #uses the zipfile library to write the plugin folder into an archive with the plugin folder name
+                        zip_file(dir_name)
 
 #Compares a zipped folder to an unzipped folder and should return true if any file is different and false when it's compared all the files and fails to find a difference (the default path is current directory)
 def is_archive_folder_different(folder, directory=os.path.dirname(__file__)):
@@ -93,7 +167,10 @@ def zip_file(folder, directory=os.path.dirname(__file__)):
 
 #This function checks the xml stated version for each plugin in the xml and check each the corresponding plugin's metadata version to match them
 #Defaults to plugins_leak xml file name, the current working directory, and no incrementing (note that the plugin folders MUST be in the directory and xml file MUST be in the parent folder/one above)
-def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.path.dirname(__file__), update_date=False,
+def match_xml_version_main(folders_that_need_updating,
+                           xml_file_name="plugins_leak.xml",
+                           current_path=os.path.dirname(__file__),
+                           update_date=False,
                            increment_all=False):
     #gets parent directory for xml file path
     parent_dir = os.path.dirname(current_path)
@@ -120,6 +197,8 @@ def match_xml_version_main(xml_file_name="plugins_leak.xml", current_path=os.pat
 
         #uses the download url zip file name to correspond to the plugin and gets creates a path to it in the current directory
         plugin_folder = pathlib.Path(plugin_zip_path).stem
+        if not plugin_folder in folders_that_need_updating:
+            continue
         plugin_folder_path = os.path.join(current_path, plugin_folder)
 
         # creates a metadata.txt path by appending it to the plugin folder path above as every plugin should have a metadata text file
@@ -314,8 +393,19 @@ def make_version_todays_date(version="1.0.0"):
     # return the incremented version
     return new_version
 
+# Sample function for version update logic
+def update_version_logic(plugin_folder):
+    print(f"Running version update logic for {plugin_folder}")
 
 if __name__ == "__main__":
-    match_xml_version_main(xml_file_name="plugins_leak.xml", update_date=True, increment_all=True)
-    autozip_files_main()
-    print("\nDON'T FORGET TO PUSH TO MAIN" )
+    folders_that_need_updating = check_for_changes_and_update_versions()
+    print()
+    match_xml_version_main(folders_that_need_updating, xml_file_name="plugins_leak.xml", update_date=True, increment_all=True)
+
+    autozip_files_main(folders_that_need_updating)
+    print()
+    if folders_that_need_updating:
+        save_hashes(get_all_current_hashes(), HASH_FILE)
+        print("\nDON'T FORGET TO PUSH TO MAIN" )
+    else:
+        print("\nNo changes detected in any of the input folders.")

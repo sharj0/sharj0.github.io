@@ -1,7 +1,7 @@
 import os
 
-import numpy as np
 import xml.etree.ElementTree as ET
+
 
 # for apply_style func
 from qgis.core import QgsSymbolLayer, QgsProperty
@@ -10,13 +10,16 @@ from qgis.PyQt.QtCore import QVariant
 from PyQt5.QtGui import QColor
 from qgis.utils import iface
 
+
 import csv
 import re
+
 
 """↓↓ Sharj's Additions ↓↓"""
 from .Global_Singleton import Global_Singleton #THE MOST SINGLEST POINT OF SUCCESS AND FAILURE
 from . import output_lkm_distance_calculation_Sharj
 """↑↑ Sharj's Additions ↑↑"""
+
 
 def clean_subbed_csvs(folder):
     pattern = re.compile(r'subed\d+csv$')
