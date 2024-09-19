@@ -414,11 +414,10 @@ def lat_lon_UAValt_turnRad_heading_to_DJI_with_P1_wp_kmz(lat, lon,
 </kml>'''
 
     base_file_path = Path(output_file_path).parent
-    out_file = Path(output_file_path).name
     new_temp_dir_path_1 = os.path.join(base_file_path, 'pyotyrs_temp_will_be_deleted')
     if os.path.exists(new_temp_dir_path_1):
         shutil.rmtree(new_temp_dir_path_1)
-    os.mkdir(new_temp_dir_path_1)
+    os.makedirs(new_temp_dir_path_1, exist_ok=True)
     new_temp_dir_path_2 = os.path.join(new_temp_dir_path_1, 'wpmz')
     os.mkdir(new_temp_dir_path_2)
     out_file_path = os.path.join(new_temp_dir_path_2, 'template.kml')
