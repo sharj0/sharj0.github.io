@@ -10,6 +10,8 @@ from PyQt5.QtWidgets import QDialog, QVBoxLayout, QPushButton, QSizePolicy, QHBo
 
 from .plugin_tools import get_plugin_name
 
+
+
 class CustomNavigationToolbar(NavigationToolbar):
     def __init__(self, canvas, parent, coordinates=True):
         super().__init__(canvas, parent, coordinates)

@@ -22,7 +22,7 @@ def main(settings_path):
     settings_dict = plugin_load_settings.run(settings_path)
 
     input_folder = settings_dict['📂 Input folder']
-    use_test_data = settings_dict["Use Test Data"]
+    use_test_data = False
     insert_at_bottom_instead_of_top = False
     get_group_name_from_parent_dir = False
     collapse_groups = settings_dict['Completely']
