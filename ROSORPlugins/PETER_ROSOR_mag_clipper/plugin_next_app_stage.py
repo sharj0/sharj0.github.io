@@ -7,17 +7,19 @@ import os
 import csv
 import pandas as pd
 import shutil
+from pathlib import Path
 
-from PETER_ROSOR_mag_clipper.surveymanger_automation import automated_survey_manager
-from PETER_ROSOR_mag_clipper import plugin_load_settings
-from PETER_ROSOR_mag_clipper.tools import mag_arrow_parse_to_df, load_and_transform_vector_lines, load_csv_data_to_qgis
-from PETER_ROSOR_mag_clipper.gui_run import gui_run
-from PETER_ROSOR_mag_clipper.plugin_tools import show_error
-
+from .surveymanger_automation import automated_survey_manager
+from . import plugin_load_settings
+from .tools import mag_arrow_parse_to_df, load_and_transform_vector_lines, load_csv_data_to_qgis
+from .gui_run import gui_run
+from .plugin_tools import show_error
 
 from qgis.core import QgsProject
 
 from .split_csv_by_flightlines import run_flightline_splitter_gui
+
+from . import pdf_export_setting_json_Sharj
 
 def main(settings_path):
     settings_dict = plugin_load_settings.run(settings_path)
@@ -28,12 +30,6 @@ def main(settings_path):
     #"Input files"
     magdata_path = settings_dict['Magdata_file_path']
     Flight_lines_file_path = settings_dict['Flight_lines_file_path']
-
-    #"Output folders"
-    output_csv_into_input_magdata_folder = settings_dict['output_csv_into_input_magdata_folder']
-    output_csv_folder = settings_dict['output_csv_folder']
-    output_pdf_into_input_magdata_folder = settings_dict['output_pdf_into_input_magdata_folder']
-    output_pdf_folder = settings_dict['output_pdf_folder']
 
     #"Parameters"
     epsg_target = int(settings_dict['EPSG_code_of_area'])
@@ -52,7 +48,30 @@ def main(settings_path):
     noise_detection_params['range_noise_threshold'] = settings_dict['range_noise_threshold']
     noise_detection_params['range_noise_number_of_points'] = settings_dict['range_noise_number_of_points']
     save_project_when_done = settings_dict['save_whole_qgis_project_when_done']
+
+
+    settings_pdf_output_path = Path(Path(magdata_path).parent,Path("json_settings.pdf")).as_posix()
+
+    pdf_export_setting_json_Sharj.create_settings_json_pdf_page(settings_pdf_output_path=settings_pdf_output_path,settings_dict=settings_dict)
+
     settings_dict = None # don't use settings_dict from here on
+
+
+    #In case we ever want to change the folders in the future
+    raw_folder_name_string = "Raw_CSV_folder"
+    clean_folder_name_string = "clean"
+
+    # Creating folder path, file name strings for easy reference
+    raw_folder_path = Path(Path(magdata_path).parent,raw_folder_name_string).as_posix()
+    raw_csv_file_path = Path(raw_folder_path, Path(magdata_path).stem + "_10Hz_RAW.csv").as_posix()
+    survey_manager_csv_target = Path(Path(magdata_path).parent, Path(magdata_path).stem + "_10Hz_RAW.csv").as_posix()
+
+    # Defaulting csv boolean to be false (if the limiter is csv and there is no .csv the if tree will raise an error)
+    import_csv_file_instead_of_magdata = False
+
+    # Create string for output csv folder
+    output_csv_folder = Path(Path(magdata_path).parent, clean_folder_name_string).as_posix()
+
 
     #gui_instance = run_flightline_splitter_gui('yrs', 'yrs')
     #print(gui_instance)
@@ -68,19 +87,71 @@ def main(settings_path):
     else:
         show_error('"EPSG_code_of_area" must be either 326XX or 327XX')
 
-    if magdata_path.endswith(".csv"):
-        import_csv_file_instead_of_magdata = True
-    elif magdata_path.endswith(".magdata"):
-        import_csv_file_instead_of_magdata = False
-    else:
-        raise "ERROR UNRECOGNISED FILE INPUT"
 
-    if import_csv_file_instead_of_magdata:
-        raw_csv_file_path = magdata_path
+    if Path(magdata_path).suffix == ".magdata":
+
+        # Checks if a "Raw" folder exists within the magdata working directory (where the file is)
+        if Path(raw_folder_path).exists():
+
+            # Checks to see if the raw csv file exists, otherwise move on
+            if Path(raw_csv_file_path).exists():
+
+                # Sets the boolean to true if it finds the csv file
+                import_csv_file_instead_of_magdata = True
+
+                # This might cause CONFUSION in the input json string settings (and the user).
+                # NOt sure if I should rename it (overwriting), having two of the same instances, or not modifying the name at all
+                # Alternatively, I would need to figure out a way to modify the latest json settings through here
+
+                # Checks if the file name has a check mark, if it does move on. Otherwise it should append to the beginning of the magdata file.
+                if not Path(magdata_path).stem.startswith("✅ "):
+                    try:
+                        magdata_path.rename(Path(magdata_path).parent, "✅ " + Path(magdata_path).stem + Path(magdata_path).suffix)
+                    except:
+                        "ERROR GO BOOM (RENAMING NOT ALLOWED BY OS AT THE MOMENT)"
+
+        # If there is no "Raw" folder, create it and move on
+        else:
+            Path(raw_folder_path).mkdir(parents=True, exist_ok=True)
+
+    # Checks if the user input a raw csv and then if it follows the folder structure
+    elif Path(magdata_path).suffix == ".csv":
+
+        #Checks if there is a raw csv file
+        if Path(magdata_path).stem.endswith("_RAW"):
+            import_csv_file_instead_of_magdata = True
+
+            #Checks if the raw csv file's directory is called "raw", because the raw file should not be in the same folder as the magdata
+            if not Path(magdata_path).parent.stem == raw_folder_name_string:
+
+                #Creates the "raw" folder since it doesn't exist
+                new_path = Path(Path(magdata_path).parent + raw_folder_name_string).as_posix()
+                Path(new_path).mkdir(parents=True, exist_ok=True)
+
+                #Copies the raw csv
+                shutil.copy(Path(magdata_path).as_posix(), Path(new_path, Path(magdata_path).stem + Path(magdata_path).suffix))
+
+                input_file = Path(magdata_path).as_posix()
+                magdata_path = Path(Path(new_path), Path(input_file).stem + Path(input_file).suffix).as_posix()
+
+                Path(input_file).unlink()
+
+        else:
+            raise "If this is a raw file please have it start with RAW_ (double check)"
     else:
-        raw_csv_file_path = ''.join(magdata_path.split('.')[:-1]) + '_10Hz.csv'
+        raise "ERROR UNRECOGNIZED FILE INPUT"
+
+
+    #If the raw csv file doesn't exist, then start the proprietary software, which currently saves the raw csv to the same folder as the magdata (work in progress)
+    if not import_csv_file_instead_of_magdata:
         if not os.path.exists(raw_csv_file_path):
-            automated_survey_manager(executable_path, magdata_path, raw_csv_file_path)
+            if not os.path.exists(survey_manager_csv_target):
+                automated_survey_manager(executable_path, magdata_path, survey_manager_csv_target)
+
+            shutil.copy(survey_manager_csv_target, raw_csv_file_path)
+            os.remove(survey_manager_csv_target)
+
+
 
     with open(raw_csv_file_path, mode='r', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile)
@@ -98,7 +169,10 @@ def main(settings_path):
             print('Unknown file type. Exiting...')
             exit()
 
+
     flight_lines, grid_line_names = load_and_transform_vector_lines(Flight_lines_file_path, epsg_target)
+
+    csv_output_path = Path(magdata_path).as_posix()
 
     outputt = gui_run(df,
                       flight_lines,
@@ -106,7 +180,7 @@ def main(settings_path):
                       noise_detection_params,
                       deviation_thresh,
                       acceptable_minimum_velocity,
-                      raw_csv_file_path,
+                      csv_output_path,
                       line_detection_threshold,
                       filter_lines_direction_thresh,
                       Y_axis_display_range_override,
@@ -124,16 +198,16 @@ def main(settings_path):
 
     # create output csv path
     file_basen_no_ex = os.path.basename(csv_out_file_path).split('.')[0]
-    if output_csv_into_input_magdata_folder:
-        output_csv_path_no_ex = os.path.join(os.path.dirname(csv_out_file_path), file_basen_no_ex)
-    else:
+    # if output_csv_into_input_magdata_folder:
+    #     output_csv_path_no_ex = os.path.join(os.path.dirname(csv_out_file_path), file_basen_no_ex)
+    # else:
+    if not os.path.exists(output_csv_folder):
+        # the user specified folder does not exist.
+        # their intention to put it in a folder is clear lets make one for them
+        output_csv_folder = os.path.join(os.path.dirname(csv_out_file_path), 'Clean_CSV_Folder')
         if not os.path.exists(output_csv_folder):
-            # the user specified folder does not exist.
-            # their intention to put it in a folder is clear lets make one for them
-            output_csv_folder = os.path.join(os.path.dirname(csv_out_file_path), 'Clean_CSV_Folder')
-            if not os.path.exists(output_csv_folder):
-                os.makedirs(output_csv_folder)
-        output_csv_path_no_ex = os.path.join(output_csv_folder, file_basen_no_ex)
+            os.makedirs(output_csv_folder)
+    output_csv_path_no_ex = os.path.join(output_csv_folder, file_basen_no_ex)
     version = ""  # Start with an empty version for the first file
     output_csv_path = f"{output_csv_path_no_ex}{version}.csv"
     # If the base file exists, start the versioning from 2
@@ -152,17 +226,9 @@ def main(settings_path):
         gui_instance = run_flightline_splitter_gui(output_csv_path, flightline_splitter_data)
         print(gui_instance)
 
-    # create output pdf path
-    if output_pdf_into_input_magdata_folder:
-        output_pdf_path_no_ex = os.path.join(os.path.dirname(csv_out_file_path), file_basen_no_ex)
-    else:
-        if not os.path.exists(output_pdf_folder):
-            # the user specified folder does not exist.
-            # their intention to put it in a folder is clear lets make one for them
-            output_pdf_folder = os.path.join(os.path.dirname(csv_out_file_path), 'QaQc_Report_Folder')
-            if not os.path.exists(output_pdf_folder):
-                os.makedirs(output_pdf_folder)
-        output_pdf_path_no_ex = os.path.join(output_pdf_folder, file_basen_no_ex)
+    # create output pdf path (always output by default)
+    output_pdf_path_no_ex = os.path.join(os.path.dirname(csv_out_file_path), file_basen_no_ex)
+
     version = ""  # Start with an empty version for the first file
     output_pdf_path = f"{output_pdf_path_no_ex}{version}.pdf"
     # If the base file exists, start the versioning from 2
@@ -175,8 +241,13 @@ def main(settings_path):
             version = f"_v{version_number}"
             output_pdf_path = f"{output_pdf_path_no_ex}{version}.pdf"
     shutil.copyfile(temp_pdf_out_path, output_pdf_path)
-    print(f"Output .pdf saved: {output_pdf_path}")
 
+    pdf_export_setting_json_Sharj.append_pdf_page(pdf_path_existing=output_pdf_path,pdf_path_to_append=settings_pdf_output_path,pdf_path_merged=output_pdf_path)
+
+    if os.path.exists(settings_pdf_output_path):
+        os.remove(settings_pdf_output_path)
+
+    print(f"Output .pdf saved: {output_pdf_path}")
 
     if use_parent_folder_as_group_name:
         group_name = os.path.basename(os.path.dirname(csv_out_file_path))

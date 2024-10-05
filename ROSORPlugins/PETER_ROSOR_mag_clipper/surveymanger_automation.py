@@ -1,7 +1,9 @@
 import time
 import os
 from subprocess import Popen
-from PETER_ROSOR_mag_clipper.plugin_tools import show_error
+from .plugin_tools import show_error
+
+from pathlib import Path
 
 import sys
 # IMPORT 3rd PARTY libraries
@@ -76,6 +78,7 @@ def wait_for_win_to_open(partial_window_title):
         time.sleep(0.1)
 
 def automated_survey_manager(executable_path,magdata_path,export_file_path):
+
     # Close all 'Geometrics Survey Manager' windows before opening a new instance
     close_all_windows('Geometrics Survey Manager')
 
@@ -105,14 +108,14 @@ def automated_survey_manager(executable_path,magdata_path,export_file_path):
     press('tab')
     press('enter')
     wait_for_win_to_open("Choose MagArrow data file")
-    write(magdata_path)
+    write(Path(Path(magdata_path).stem + Path(magdata_path).suffix).as_posix())
     press('enter')
     wait_for_win_to_open("MagArrow Export Options")
     press('tab')
     press('home')
     press('enter')
     wait_for_win_to_open("Choose a name for the CSV file")
-    write(export_file_path)
+    write(Path(Path(export_file_path).stem + Path(export_file_path).suffix).as_posix())
     press('enter')
     exception = wait_for_win_to_open_with_exception('Completion',
                                                     'Choose a name for the CSV file',

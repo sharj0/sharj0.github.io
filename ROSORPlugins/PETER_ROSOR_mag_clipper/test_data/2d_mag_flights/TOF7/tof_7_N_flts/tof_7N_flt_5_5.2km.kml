@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Folder><name>tof_7N_flt_5_5</name>
+  <Placemark>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+      <LineString><coordinates>-79.6560993286363,48.1702626024231 -79.6482964696103,48.1744888991859 -79.6481500148898,48.1746894842735 -79.6477360458126,48.1904279224418 -79.6477359558957,48.1908815466067 -79.6479281687187,48.1910108508069 -79.6482012026823,48.191012453201 -79.6483967993153,48.1908854249944 -79.6488105626434,48.1751469825385 -79.6489303968388,48.1749621892431 -79.6561313945766,48.1702867819862</coordinates></LineString>
+  </Placemark>
+</Folder>
+</Document></kml>

@@ -17,16 +17,6 @@
         "If no match, split data": true,
         "If no match, split data_VIDEO": "split_data_if_no_match.mp4"
     },
-    "Output folders": {
-        "output_csv_into_input_magdata_folder": true,
-        "output_csv_into_input_magdata_folder_COMMENT": "If checked,the following field will be ignored",
-        "output_csv_folder": "D:\\ROSOR\\QAQC\\Mag clipper & QaQc\\TEST DATA FOR MAG CLIPPER\\output\\csv",
-        "output_csv_folder_SELECT_FOLDER": "true",
-        "output_pdf_into_input_magdata_folder": true,
-        "output_pdf_into_input_magdata_folder_COMMENT": "If checked,the following field will be ignored",
-        "output_pdf_folder": "D:\\ROSOR\\QAQC\\Mag clipper & QaQc\\TEST DATA FOR MAG CLIPPER\\output\\pdf",
-        "output_pdf_folder_SELECT_FOLDER": "true"
-    },
     "Parameters": {
         "EPSG_code_of_area": 32609.0,
         "EPSG_code_of_area_COMMENT": "This app needs to know what UTM_zone to convert the data to",
