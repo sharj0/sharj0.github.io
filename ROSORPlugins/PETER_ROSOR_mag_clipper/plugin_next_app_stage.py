@@ -99,16 +99,6 @@ def main(settings_path):
                 # Sets the boolean to true if it finds the csv file
                 import_csv_file_instead_of_magdata = True
 
-                # This might cause CONFUSION in the input json string settings (and the user).
-                # NOt sure if I should rename it (overwriting), having two of the same instances, or not modifying the name at all
-                # Alternatively, I would need to figure out a way to modify the latest json settings through here
-
-                # Checks if the file name has a check mark, if it does move on. Otherwise it should append to the beginning of the magdata file.
-                if not Path(magdata_path).stem.startswith("✅ "):
-                    try:
-                        magdata_path.rename(Path(magdata_path).parent, "✅ " + Path(magdata_path).stem + Path(magdata_path).suffix)
-                    except:
-                        "ERROR GO BOOM (RENAMING NOT ALLOWED BY OS AT THE MOMENT)"
 
         # If there is no "Raw" folder, create it and move on
         else:
@@ -226,8 +216,17 @@ def main(settings_path):
         gui_instance = run_flightline_splitter_gui(output_csv_path, flightline_splitter_data)
         print(gui_instance)
 
+    # Checks if the file name has a check mark, if it does move on. Otherwise it should append to the beginning of the magdata file.
+    if not Path(magdata_path).stem.startswith("✅ "):
+        Path(magdata_path).rename(Path(magdata_path).with_name("✅ " + Path(magdata_path).stem + Path(magdata_path).suffix))
+        print(f"Renamed magdata file to {Path(magdata_path).stem + Path(magdata_path).suffix}")
+
     # create output pdf path (always output by default)
-    output_pdf_path_no_ex = os.path.join(os.path.dirname(csv_out_file_path), file_basen_no_ex)
+    output_pdf_folder = Path(Path(csv_out_file_path).parent, "QAQC Report").as_posix()
+    if not os.path.exists(output_pdf_folder):
+        Path(output_pdf_folder).mkdir(parents=True,exist_ok=True)
+
+    output_pdf_path_no_ex = os.path.join(os.path.dirname(csv_out_file_path), "QAQC Report", file_basen_no_ex)
 
     version = ""  # Start with an empty version for the first file
     output_pdf_path = f"{output_pdf_path_no_ex}{version}.pdf"

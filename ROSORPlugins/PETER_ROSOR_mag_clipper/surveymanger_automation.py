@@ -108,7 +108,7 @@ def automated_survey_manager(executable_path,magdata_path,export_file_path):
     press('tab')
     press('enter')
     wait_for_win_to_open("Choose MagArrow data file")
-    write(Path(Path(magdata_path).stem + Path(magdata_path).suffix).as_posix())
+    write(magdata_path)
     press('enter')
     wait_for_win_to_open("MagArrow Export Options")
     press('tab')

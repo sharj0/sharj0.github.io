@@ -12,7 +12,7 @@ def create_settings_json_pdf_page(settings_pdf_output_path, settings_dict):
 
     # One inch is 72 points in the reportlab library, so the new page for settings is 10 inches, this is not necessary but I kept it
     page_height = 10 * 72
-    page_width = 20 * 72
+    page_width = 10 * 72
 
     #This creates a blank document with the above page size (you can import standardized pages (like A4 and letter through reportlab or make your own custom one)
     doc = SimpleDocTemplate(settings_pdf_output_path, pagesize=(page_width, page_height))
