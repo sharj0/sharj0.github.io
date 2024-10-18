@@ -1,5 +1,5 @@
 <plugins>
-  <pyqgis_plugin name=".ROSOR Waypoint Altitude Embedder" version="1.2024.9.19.1">
+  <pyqgis_plugin name=".ROSOR Waypoint Altitude Embedder" version="1.2024.10.18.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_alt_embedder/plugin_icon.png</icon>
@@ -10,7 +10,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Base Mag QAQC" version="1.2024.9.9.8">
+  <pyqgis_plugin name=".ROSOR Base Mag QAQC" version="1.2024.10.18.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_base_mag_qaqc/plugin_icon.png</icon>
@@ -20,7 +20,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Flightline Creator" version="1.2024.9.19.2">
+  <pyqgis_plugin name=".ROSOR Flightline Creator" version="1.2024.10.18.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_flightline_creator/plugin_icon.png</icon>
@@ -30,7 +30,7 @@
   </pyqgis_plugin>
 
 
-  <pyqgis_plugin name=".ROSOR Mag Clipper" version="1.2024.9.20.1">
+  <pyqgis_plugin name=".ROSOR Mag Clipper" version="1.2024.10.18.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_mag_clipper/plugin_icon.png</icon>
@@ -49,7 +49,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Import CSVs" version="1.2024.9.9.10">
+  <pyqgis_plugin name=".ROSOR Import CSVs" version="1.2024.10.18.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_import_csv/plugin_icon.png</icon>
@@ -59,7 +59,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Import KMLs" version="1.2024.9.9.9">
+  <pyqgis_plugin name=".ROSOR Import KMLs" version="1.2024.10.18.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_import_kml/plugin_icon.png</icon>
@@ -69,7 +69,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Lines To Flights" version="1.2024.9.9.8">
+  <pyqgis_plugin name=".ROSOR Lines To Flights" version="1.2024.10.18.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_lines_to_flights/plugin_icon.png</icon>
