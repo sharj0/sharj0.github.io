@@ -1,31 +1,21 @@
 {
     "Input files": {
-        "Magdata_file_path": "G:\\Shared drives\\Rosor\\2024 - 2025\\Projects\\project-dlm-senoa-rogue\\Liv\\MAG DATA\\z_July24th_raw\\SRVY0-ACQU398.magdata",
+        "Magdata_file_path": "D:\\ROSOR\\My_QGIS_Repo\\Temporary Testing\\test_data\\SRVY0-ACQU109.magdata",
         "Magdata_file_path_SELECT_FILE": "true",
         "Magdata_file_path_COMMENT": "A \".magdata\" file is downloaded from the MagArrow sensor. QaQc is done here.",
-        "Flight_lines_file_path": "G:\\Shared drives\\Rosor\\2024 - 2025\\Projects\\project-dlm-senoa-rogue\\Liv\\Mag_flights\\Lines_for_QaQc\\Lines_for_QaQc.shp",
+        "Flight_lines_file_path": "D:\\ROSOR\\My_QGIS_Repo\\Temporary Testing\\test_data\\mag_Lines\\split_extended_mag_all_lines_named.dbf",
         "Flight_lines_file_path_SELECT_LAYER": "true",
         "Flight_lines_file_path_COMMENT": "Select the file that has the flight line",
         "Flight_lines_file_path_VIDEO": "Flight_lines_file_path.mp4"
     },
     "Auto_renaming": {
         "Auto_rename": false,
-        "Provide_path_to_2d_flights": "G:\\Shared drives\\Rosor\\2024 - 2025\\Projects\\project-dlm-senoa-rogue\\Liv\\Mag_flights",
+        "Provide_path_to_2d_flights": "C:\\Users\\Sharj\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_mag_clipper\\test_data\\2d_mag_flights",
         "Provide_path_to_2d_flights_COMMENT": "This will rename the clean csvs to match the names of the provided kml flights",
         "Provide_path_to_2d_flights_SELECT_FOLDER": "true",
         "Provide_path_to_2d_flights_VIDEO": "Provide_path_to_2d_flights_VIDEO.mp4",
         "If no match, split data": true,
         "If no match, split data_VIDEO": "split_data_if_no_match.mp4"
-    },
-    "Output folders": {
-        "output_csv_into_input_magdata_folder": false,
-        "output_csv_into_input_magdata_folder_COMMENT": "If checked,the following field will be ignored",
-        "output_csv_folder": "D:\\ROSOR\\QAQC\\Mag clipper & QaQc\\TEST DATA FOR MAG CLIPPER\\output\\csv",
-        "output_csv_folder_SELECT_FOLDER": "true",
-        "output_pdf_into_input_magdata_folder": false,
-        "output_pdf_into_input_magdata_folder_COMMENT": "If checked,the following field will be ignored",
-        "output_pdf_folder": "D:\\ROSOR\\QAQC\\Mag clipper & QaQc\\TEST DATA FOR MAG CLIPPER\\output\\pdf",
-        "output_pdf_folder_SELECT_FOLDER": "true"
     },
     "Parameters": {
         "EPSG_code_of_area": 32609.0,
