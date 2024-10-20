@@ -1,0 +1,32 @@
+from qgis.core import QgsApplication, QgsVectorLayer, QgsProject, QgsRasterLayer
+from >>>PLUGIN_BASE_NAME<<< import plugin_common_module
+import sys
+
+# USE IN C:\Users\pyoty\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins
+
+if __name__ == '__main__':
+    app = QgsApplication([], False)
+    app.initQgis()
+
+    poly_sqr_layer_path = r"I:\Qgis_discovering\qgis_flight_line_creator\aaa_SHP\poly_in_sqr.shp"
+    wps_layer = QgsVectorLayer(poly_sqr_layer_path, "poly_sqr", "ogr")
+    if not wps_layer.isValid():
+        print("Lines layer failed to load!")
+    else:
+        QgsProject.instance().addMapLayer(wps_layer)
+
+    poly_layer_path = r"I:\Qgis_discovering\qgis_flight_line_creator\aaa_SHP\poly utm_v3.shp"
+    wps_layer = QgsVectorLayer(poly_layer_path, "poly", "ogr")
+    if not wps_layer.isValid():
+        print("Lines layer failed to load!")
+    else:
+        QgsProject.instance().addMapLayer(wps_layer)
+
+    outp = plugin_common_module.run(skip=False)
+
+    # Start the event loop
+    exit_code = app.exec_()
+
+    # Proper cleanup
+    QgsApplication.exitQgis()
+    sys.exit(exit_code)

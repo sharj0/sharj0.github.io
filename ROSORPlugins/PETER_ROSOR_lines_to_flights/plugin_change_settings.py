@@ -167,6 +167,31 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
 
             self.initUI()
 
+            # After initializing UI, set the width dynamically
+            self.adjust_window_width()
+
+        def adjust_window_width(self):
+            """Dynamically adjust the window width to fit all content with minimal horizontal scrolling."""
+            self.mainWidget.adjustSize()
+            content_width = self.mainWidget.sizeHint().width() + self.spacer
+
+            # Add a buffer to minimize scrolling
+            buffer = 50  # You can adjust this value as needed
+            content_width += buffer
+
+            # Get the current width of the window
+            current_width = self.width()
+
+            # Only increase the width if the content width is greater
+            if content_width > current_width:
+                screen_width = self.screen().availableGeometry().width()
+
+                # Ensure the window does not exceed the screen width
+                if content_width > screen_width:
+                    content_width = screen_width - self.offset_from_corner * 2
+
+                self.resize(content_width, self.height())
+
         def set_icon(self, icon_path):
             self.setWindowIcon(QIcon(icon_path))
 

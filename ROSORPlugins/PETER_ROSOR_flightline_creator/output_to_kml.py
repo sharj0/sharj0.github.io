@@ -113,7 +113,7 @@ def line_geometries_to_kml(geometries, output_kml_path, crs):
     <Style id="redLine">
         <LineStyle>
             <color>ff0000ff</color>
-            <width>2</width>
+            <width>4</width>
         </LineStyle>
     </Style>'''
 
@@ -165,7 +165,7 @@ def save_kml_polygon(new_poly_shapley, output_kml_path, crs):
     <Style id="orangeOutline">
         <LineStyle>
             <color>ff00a5ff</color> <!-- Orange color -->
-            <width>2</width>
+            <width>4</width>
         </LineStyle>
         <PolyStyle>
             <fill>0</fill> <!-- No fill -->
