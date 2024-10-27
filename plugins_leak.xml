@@ -30,7 +30,7 @@
   </pyqgis_plugin>
 
 
-  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Mag Clipper" version="1.2024.10.27.1">
+  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Mag Clipper" version="1.2024.10.27.2">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_alter_mag_clipper_settings/ROSORPlugins/PETER_ROSOR_mag_clipper/plugin_icon.png</icon>
