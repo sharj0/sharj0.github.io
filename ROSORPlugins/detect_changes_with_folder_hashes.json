@@ -1,12 +1,12 @@
 {
-    "PETER_ROSOR_alt_embedder": "b6e1d1042d50915796f03d71a818e2d4faea6b2101240b553d9e423daa6cce46",
-    "PETER_ROSOR_base_mag_qaqc": "98e8f8be9ec0c7db737770849fb05f5939929069e6cc9e6a59129a67d877abfe",
-    "PETER_ROSOR_flightline_creator": "8fb70f2ae126cf23242967b4f15cd3a4de243988b3a5bef5fae6b35e93b97d8f",
-    "PETER_ROSOR_import_csv": "8056453fece8e8c67535b36e603c871c779fb741fb9c7d067c829dc704d47e4a",
-    "PETER_ROSOR_import_kml": "28cc4aa0d879063fec4f058e7974b65c02a432e4090f796ea105a088c06d22e7",
-    "PETER_ROSOR_lines_to_flights": "1eba4808d15dc9b77619e12cb9a227f929a58a2d73f7b4f7c655357f7f79908f",
-    "PETER_ROSOR_mag_clipper": "08aeae54b0dd71de35e8ed1f01f3d4b8baea03a4d6989e88b6a21792be2181fb",
-    "PETER_ROSOR_plugin_template": "098c3664830c63fbe4b1f4a93cf49a72fb28ab821497d9967e2ddb3f85ccf3a5",
-    "PETER_ROSOR_slope_analyser": "bc662449662382e68197498959e88a042aaac287dd2d790f4630bf12b2d6ae25",
-    "PETER_ROSOR_tile_maker": "ef4bca266b8b40a659c7fb0613339f0e8812a5f6795654e9da1148cd91508923"
+    "PETER_ROSOR_alt_embedder": "f143c755c45247abaef29972f153d5c66c0e68ab59d394fc2817efc4c134712d",
+    "PETER_ROSOR_base_mag_qaqc": "76154279c7f7de27a53599625a4dfac739452c814aaa10b9c79174ad11fa850f",
+    "PETER_ROSOR_flightline_creator": "4d27c87601f5f559af34c44e98746d12c21b7a336a903db2e3a80450dbd6409e",
+    "PETER_ROSOR_import_csv": "1343fde40da1f7d6241617291a2b7638671d7af0b8c3d792061725c4c06017ac",
+    "PETER_ROSOR_import_kml": "792102067cd402d5deeae3bdf01a542897dd6ab84935582da101c07c394176fd",
+    "PETER_ROSOR_lines_to_flights": "6793e7bab8e628381ad1bb1399240c146ad9efd646bba70db5ddfa72eb045771",
+    "PETER_ROSOR_mag_clipper": "f9874d7ab7830480359665297f6694cf11aa791b70263f21c7164cababf9a408",
+    "PETER_ROSOR_plugin_template": "043b49407cfc2352a6436f96e49318bf6f7f37844530ce5eb5cf0c1e69bbf198",
+    "PETER_ROSOR_slope_analyser": "0b341a021b502c07fdbc742846f8b8110f78596d4ada692d7db9a67a475f4857",
+    "PETER_ROSOR_tile_maker": "41ebfe79eb8fbaf411d9c5be47fefc85bf6f18ceb8b913f7c2f9e51da825e2b5"
 }
