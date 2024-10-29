@@ -4,13 +4,11 @@ A CHANGE TO THIS .PY IN ONE OF THE PLUGINS SHOULD BE COPPY-PASTED TO ALL THE OTH
 '''
 
 import os
-from pathlib import Path
 from PyQt5.QtGui import QScreen, QDragEnterEvent, QDropEvent
 from PyQt5.QtCore import QCoreApplication, QTimer, QEvent, Qt
 from PyQt5.QtWidgets import QMessageBox, QLineEdit, QApplication
 import re
 
-NUMBER_OF_SETTINGS_JSON_FILES_TO_KEEP = 10
 
 class CustomLineEdit(QLineEdit):
 
@@ -119,19 +117,7 @@ def get_next_filename(directory, original_filename):
     if parts[-1].startswith('v') and parts[-1][1:].isdigit():
         # Increment the last part if it's a version number
         version = int(parts[-1][1:])
-
-        if version > NUMBER_OF_SETTINGS_JSON_FILES_TO_KEEP:
-            directory_to_purge = Path(directory).as_posix()
-            # file_to_keep = Path(original_filename).as_posix()
-
-            for file in Path(directory_to_purge).iterdir():
-                if file.is_file():
-                    file.unlink()
-
-            parts = parts[:-1]
-        else:
-            parts[-1] = f"v{version + 1}"
-
+        parts[-1] = f"v{version + 1}"
     else:
         # Append '_v2' if no version number found
         parts.append('v2')
