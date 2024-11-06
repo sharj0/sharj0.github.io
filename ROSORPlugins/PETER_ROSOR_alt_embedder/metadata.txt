@@ -2,7 +2,7 @@
 name= Waypoint alt embedder
 qgisMinimumVersion=3.0
 description=ROSOR's tools waypoint alt embedding
-version=1.2024.10.28.1
+version=1.2024.11.6.1
 author=Pyotyr Young and Sharjeel Awon
 email=pyotyr@msn.com, pyotyr@rosor.ca
 icon=Waypoint_Terrain_Follow.png
