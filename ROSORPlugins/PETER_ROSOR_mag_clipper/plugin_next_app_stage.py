@@ -115,7 +115,7 @@ def main(settings_path):
             if not Path(magdata_path).parent.stem == raw_folder_name_string:
 
                 #Creates the "raw" folder since it doesn't exist
-                new_path = Path(Path(magdata_path).parent + raw_folder_name_string).as_posix()
+                new_path = Path(Path(magdata_path).parent.joinpath(raw_folder_name_string)).as_posix()
                 Path(new_path).mkdir(parents=True, exist_ok=True)
 
                 #Copies the raw csv
