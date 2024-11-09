@@ -1,16 +1,4 @@
 {
-<<<<<<< HEAD
-    "PETER_ROSOR_alt_embedder": "f143c755c45247abaef29972f153d5c66c0e68ab59d394fc2817efc4c134712d",
-    "PETER_ROSOR_base_mag_qaqc": "76154279c7f7de27a53599625a4dfac739452c814aaa10b9c79174ad11fa850f",
-    "PETER_ROSOR_flightline_creator": "4d27c87601f5f559af34c44e98746d12c21b7a336a903db2e3a80450dbd6409e",
-    "PETER_ROSOR_import_csv": "1343fde40da1f7d6241617291a2b7638671d7af0b8c3d792061725c4c06017ac",
-    "PETER_ROSOR_import_kml": "792102067cd402d5deeae3bdf01a542897dd6ab84935582da101c07c394176fd",
-    "PETER_ROSOR_lines_to_flights": "6793e7bab8e628381ad1bb1399240c146ad9efd646bba70db5ddfa72eb045771",
-    "PETER_ROSOR_mag_clipper": "4e8ad365fb1596eafe15ac77a68cef13ee291a615492205012d9a028ddb19b8d",
-    "PETER_ROSOR_plugin_template": "043b49407cfc2352a6436f96e49318bf6f7f37844530ce5eb5cf0c1e69bbf198",
-    "PETER_ROSOR_slope_analyser": "0b341a021b502c07fdbc742846f8b8110f78596d4ada692d7db9a67a475f4857",
-    "PETER_ROSOR_tile_maker": "41ebfe79eb8fbaf411d9c5be47fefc85bf6f18ceb8b913f7c2f9e51da825e2b5"
-=======
     "PETER_ROSOR_alt_embedder": "88c598a5718cd1b95bf6e2bd8e3cb4875e7f3e9a76e29929bda26f9557f3a49f",
     "PETER_ROSOR_base_mag_qaqc": "b18bf82dec9e5667bd83beff1ac64d947b25de4998909d1ebd78472a47db5446",
     "PETER_ROSOR_flightline_creator": "daf733ba7749854a340183d224ea55694298e4e8737fc89c6739946b1e92a935",
@@ -21,5 +9,4 @@
     "PETER_ROSOR_plugin_template": "2d292a040797120f6d961555551d98d3b91ba554a5ed7382ea5cc44a9566dc53",
     "PETER_ROSOR_slope_analyser": "3e1dbffb934194ddef7d3ea787b023d4a93a0cd92b37b390d1dd26ec7bec586c",
     "PETER_ROSOR_tile_maker": "82e42df0f19fec7228678925270e7d3f96b54c1f5f9e00c64aa50abb0ed77433"
->>>>>>> parent of f3b2eb3 (base mag update)
 }
