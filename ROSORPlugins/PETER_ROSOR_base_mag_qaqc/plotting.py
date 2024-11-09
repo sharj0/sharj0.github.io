@@ -10,7 +10,6 @@ from PyQt5.QtWidgets import QDialog, QVBoxLayout, QPushButton, QSizePolicy, QHBo
 
 # standard libs
 import os
-import re
 import sys
 from datetime import datetime
 
@@ -105,21 +104,7 @@ def plot_stuff(mag_data_folder,
         if parent_folder not in color_map:
             color_map[parent_folder] = colors[len(color_map) % len(colors)]
         color = color_map[parent_folder]
-        # Define a dictionary to map known serial numbers to their corresponding row values
-        gnss_row_map = {
-            '1X': 17,  # Example values; update as needed
-            'VM': 30,
-            'TM': 40  # Update with actual values as per your requirements
-        }
-
-        # Extract the serial number from the file name dynamically
-        flight_basename = os.path.basename(flight_name)
-        match = re.search(r'107(\w+)_B1', flight_basename)
-
-        # Default row if serial not found in the map
-        default_row = 30
-        serial_number = match.group(1) if match else None
-        gnss_row = gnss_row_map.get(serial_number, default_row)
+        gnss_row = gnss_row_T if 'TM' in os.path.basename(flight_name) else gnss_row_V
         if color_by_folder:
             if true_flt_false_base:
                 line, = ax.plot([start_time, end_time], [current_row, current_row], marker='o', label=flight_name,
@@ -205,19 +190,10 @@ def plot_stuff(mag_data_folder,
     cursor = mplcursors.cursor(lines, hover=True)
     cursor.connect("add", on_hover)
 
-    # Create y-tick labels dynamically from gnss_row_map
-    yticks = [1, 2, 3, 4, 5]  # Starting y-ticks for flights; adjust as needed
-    yticklabels = ['', '', '', '', 'MagArrow Flights']  # Corresponding labels
-
-    # Add entries for each serial number in gnss_row_map
-    for serial, row in gnss_row_map.items():
-        yticks.append(row)
-        yticklabels.append(f'SmartMag "{serial}"')
 
     # Set y-ticks and labels
-    ax.set_yticks(yticks)
-    ax.set_yticklabels(yticklabels)
-
+    ax.set_yticks([1, 2, 3, 4, 5, gnss_row_T, gnss_row_V])
+    ax.set_yticklabels(['', '', '', '', 'MagArrow Flights', 'SmartMag "T"', 'SmartMag "V"'])
     ax_rot = 10
     # Rotate x-ticks
     ax.tick_params(axis='x', rotation=ax_rot)

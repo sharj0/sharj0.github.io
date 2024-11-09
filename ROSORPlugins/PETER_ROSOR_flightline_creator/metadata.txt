@@ -2,7 +2,11 @@
 name= Flightline Maker
 qgisMinimumVersion=3.0
 description=ROSOR's tools flightline making
+<<<<<<< HEAD
 version=1.2024.10.27.1
+=======
+version=1.2024.10.28.1
+>>>>>>> parent of f3b2eb3 (base mag update)
 author=Pyotyr Young and Sharjeel Awon
 email=pyotyr@msn.com, pyotyr@rosor.ca
 icon=flightlines.png
