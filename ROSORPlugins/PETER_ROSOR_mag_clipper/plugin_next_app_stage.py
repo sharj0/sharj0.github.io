@@ -63,19 +63,11 @@ def main(settings_path):
 
     # Creating folder path, file name strings for easy reference
     raw_folder_path = Path(Path(magdata_path).parent,raw_folder_name_string).as_posix()
+    raw_csv_file_path = Path(raw_folder_path, Path(magdata_path).stem + "_10Hz_RAW.csv").as_posix()
     survey_manager_csv_target = Path(Path(magdata_path).parent, Path(magdata_path).stem + "_10Hz_RAW.csv").as_posix()
 
     # Defaulting csv boolean to be false (if the limiter is csv and there is no .csv the if tree will raise an error)
     import_csv_file_instead_of_magdata = False
-
-    #If the user input a magdata with file with a checkmark it means there is already a raw file
-    #This could definetely be condensed with the magdata if nest that is later in the code but oh well
-    if Path(magdata_path).suffix.startswith(".magdata") and Path(magdata_path).stem.startswith("✅ "):
-        raw_csv_file_path = Path(Path(raw_folder_path), Path(magdata_path).stem[2:] + "_10Hz_RAW.csv").as_posix()
-        import_csv_file_instead_of_magdata = True
-    else:
-        raw_csv_file_path = Path(Path(magdata_path).parent, Path(magdata_path).stem + ".csv").as_posix()
-
 
     # Create string for output csv folder
     output_csv_folder = Path(Path(magdata_path).parent, clean_folder_name_string).as_posix()
@@ -96,7 +88,7 @@ def main(settings_path):
         show_error('"EPSG_code_of_area" must be either 326XX or 327XX')
 
 
-    if Path(magdata_path).suffix.startswith(".magdata"):
+    if Path(magdata_path).suffix == ".magdata":
 
         # Checks if a "Raw" folder exists within the magdata working directory (where the file is)
         if Path(raw_folder_path).exists():
@@ -135,7 +127,7 @@ def main(settings_path):
                 Path(input_file).unlink()
 
         else:
-            raise "If this is a raw file please have it end with _RAW (double check)"
+            raise "If this is a raw file please have it start with RAW_ (double check)"
     else:
         raise "ERROR UNRECOGNIZED FILE INPUT"
 
@@ -225,10 +217,9 @@ def main(settings_path):
         print(gui_instance)
 
     # Checks if the file name has a check mark, if it does move on. Otherwise it should append to the beginning of the magdata file.
-    if not Path(magdata_path).suffix.startswith(".csv"):
-        if not Path(magdata_path).stem.startswith("✅ "):
-            Path(magdata_path).rename(Path(magdata_path).with_name("✅ " + Path(magdata_path).stem + Path(magdata_path).suffix))
-            print(f"Renamed magdata file to {Path(magdata_path).stem + Path(magdata_path).suffix}")
+    if not Path(magdata_path).stem.startswith("✅ "):
+        Path(magdata_path).rename(Path(magdata_path).with_name("✅ " + Path(magdata_path).stem + Path(magdata_path).suffix))
+        print(f"Renamed magdata file to {Path(magdata_path).stem + Path(magdata_path).suffix}")
 
     # create output pdf path (always output by default)
     output_pdf_folder = Path(Path(csv_out_file_path).parent, "QAQC Report").as_posix()
