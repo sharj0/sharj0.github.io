@@ -123,7 +123,7 @@ def main(settings_path):
             if not Path(magdata_path).parent.stem == raw_folder_name_string:
 
                 #Creates the "raw" folder since it doesn't exist
-                new_path = Path(Path(magdata_path).parent + raw_folder_name_string).as_posix()
+                new_path = Path(Path(magdata_path).parent, Path(raw_folder_name_string)).as_posix()
                 Path(new_path).mkdir(parents=True, exist_ok=True)
 
                 #Copies the raw csv
@@ -133,6 +133,7 @@ def main(settings_path):
                 magdata_path = Path(Path(new_path), Path(input_file).stem + Path(input_file).suffix).as_posix()
 
                 Path(input_file).unlink()
+                raw_csv_file_path = magdata_path
 
         else:
             raise "If this is a raw file please have it end with _RAW (double check)"
@@ -170,7 +171,10 @@ def main(settings_path):
 
     flight_lines, grid_line_names = load_and_transform_vector_lines(Flight_lines_file_path, epsg_target)
 
-    csv_output_path = Path(magdata_path).as_posix()
+    if not import_csv_file_instead_of_magdata:
+        csv_output_path = Path(magdata_path).as_posix()
+    elif import_csv_file_instead_of_magdata:
+        csv_output_path = Path(Path(raw_csv_file_path).parent).as_posix()
 
     outputt = gui_run(df,
                       flight_lines,
@@ -195,7 +199,16 @@ def main(settings_path):
     print("User accepted, new saving files...")
 
     # create output csv path
-    file_basen_no_ex = os.path.basename(csv_out_file_path).split('.')[0]
+
+    #Need to specify if input was magdata or not
+    if not import_csv_file_instead_of_magdata:
+        file_basen_no_ex = os.path.basename(csv_out_file_path).split('.')[0]
+    elif import_csv_file_instead_of_magdata:
+        if Path(magdata_path).stem.endswith("_RAW"):
+            file_basen_no_ex = Path(magdata_path).stem[:-4]
+        else:
+            file_basen_no_ex = Path(magdata_path).stem
+
     # if output_csv_into_input_magdata_folder:
     #     output_csv_path_no_ex = os.path.join(os.path.dirname(csv_out_file_path), file_basen_no_ex)
     # else:
