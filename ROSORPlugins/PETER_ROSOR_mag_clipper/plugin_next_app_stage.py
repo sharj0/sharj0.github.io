@@ -59,23 +59,92 @@ def main(settings_path):
 
     #In case we ever want to change the folders in the future
     raw_folder_name_string = "Raw_CSV_folder"
-    clean_folder_name_string = "clean"
+    clean_folder_name_string = "Clean_CSV_folder"
+    append_raw = "_RAW"
+    append_csv = ".csv"
+    append_raw_csv = append_raw + append_csv
 
     # Creating folder path, file name strings for easy reference
-    raw_folder_path = Path(Path(magdata_path).parent,raw_folder_name_string).as_posix()
-    survey_manager_csv_target = Path(Path(magdata_path).parent, Path(magdata_path).stem + "_10Hz_RAW.csv").as_posix()
+    if not Path(Path(magdata_path).parent).stem == raw_folder_name_string:
+        raw_folder_path = Path(Path(magdata_path).parent, raw_folder_name_string).as_posix()
+    else:
+        raw_folder_path = Path(Path(magdata_path).parent).as_posix()
 
     # Defaulting csv boolean to be false (if the limiter is csv and there is no .csv the if tree will raise an error)
     import_csv_file_instead_of_magdata = False
 
+    if not Path(magdata_path).stem.endswith(append_raw):
+        raw_csv_file_path = Path(Path(raw_folder_path), Path(magdata_path).stem + append_raw_csv).as_posix()
+    else:
+        raw_csv_file_path = Path(Path(raw_folder_path), Path(magdata_path).stem + append_csv).as_posix()
+
     #If the user input a magdata with file with a checkmark it means there is already a raw file
     #This could definetely be condensed with the magdata if nest that is later in the code but oh well
     if Path(magdata_path).suffix.startswith(".magdata") and Path(magdata_path).stem.startswith("✅ "):
-        raw_csv_file_path = Path(Path(raw_folder_path), Path(magdata_path).stem[2:] + "_10Hz_RAW.csv").as_posix()
-        import_csv_file_instead_of_magdata = True
-    else:
-        raw_csv_file_path = Path(Path(magdata_path).parent, Path(magdata_path).stem + ".csv").as_posix()
+        if os.path.exists(raw_folder_path):
+            raw_csv_file_path = Path(Path(raw_folder_path), Path(magdata_path).stem[2:] + append_raw_csv).as_posix()
+            import_csv_file_instead_of_magdata = True
+        else:
+            # magdata_path = Path(Path(magdata_path).parent, Path(magdata_path).stem[2:] + Path(magdata_path).suffix).as_posix()
+            # raw_csv_file_path = Path(Path(magdata_path).parent, raw_folder_name_string, Path(magdata_path).stem + "_RAW.csv").as_posix()
+            new_magdata_path_name = Path(Path(magdata_path).parent, Path(magdata_path).stem[2:] + Path(magdata_path).suffix).as_posix()
+            os.rename(magdata_path, new_magdata_path_name)
+            magdata_path = new_magdata_path_name
+            raw_csv_file_path = Path(Path(magdata_path).parent, raw_folder_name_string,
+                                     Path(magdata_path).stem + append_raw_csv).as_posix()
+            # else:
+            #     raw_csv_file_path = Path(Path(magdata_path).parent, raw_folder_name_string,
+            #                              Path(magdata_path).stem + append_raw_csv).as_posix()
+            
+    if Path(magdata_path).suffix.startswith(".magdata"):
 
+        # Checks if a "Raw" folder exists within the magdata working directory (where the file is)
+        if Path(raw_folder_path).exists():
+
+            # Checks to see if the raw csv file exists, otherwise move on
+            if Path(raw_csv_file_path).exists():
+                # Sets the boolean to true if it finds the csv file
+                import_csv_file_instead_of_magdata = True
+
+
+        # If there is no "Raw" folder, create it and move on
+        else:
+            Path(raw_folder_path).mkdir(parents=True, exist_ok=True)
+
+        # Checks if the user input a raw csv and then if it follows the folder structure
+    elif Path(magdata_path).suffix == append_csv:
+
+        # Checks if there is a raw csv file
+        if Path(magdata_path).stem.endswith(append_raw):
+            import_csv_file_instead_of_magdata = True
+
+            # Checks if the raw csv file's directory is called "raw", because the raw file should not be in the same folder as the magdata
+            if not Path(magdata_path).parent.stem == raw_folder_name_string:
+                # Creates the "raw" folder since it doesn't exist
+                new_path = Path(Path(magdata_path).parent, Path(raw_folder_name_string)).as_posix()
+                Path(new_path).mkdir(parents=True, exist_ok=True)
+
+                # Copies the raw csv
+                shutil.copy(Path(magdata_path).as_posix(),
+                            Path(new_path, Path(magdata_path).stem + Path(magdata_path).suffix))
+
+                input_file = Path(magdata_path).as_posix()
+                magdata_path = Path(Path(new_path), Path(input_file).stem + Path(input_file).suffix).as_posix()
+
+                Path(input_file).unlink()
+                raw_csv_file_path = magdata_path
+
+        else:
+            raise "If this is a raw file please have it end with _RAW (double check)"
+    else:
+        raise "ERROR UNRECOGNIZED FILE INPUT"
+
+
+
+
+
+
+    survey_manager_csv_target = Path(Path(magdata_path).parent, Path(magdata_path).stem + append_raw_csv).as_posix()
 
     # Create string for output csv folder
     output_csv_folder = Path(Path(magdata_path).parent, clean_folder_name_string).as_posix()
@@ -96,49 +165,7 @@ def main(settings_path):
         show_error('"EPSG_code_of_area" must be either 326XX or 327XX')
 
 
-    if Path(magdata_path).suffix.startswith(".magdata"):
 
-        # Checks if a "Raw" folder exists within the magdata working directory (where the file is)
-        if Path(raw_folder_path).exists():
-
-            # Checks to see if the raw csv file exists, otherwise move on
-            if Path(raw_csv_file_path).exists():
-
-                # Sets the boolean to true if it finds the csv file
-                import_csv_file_instead_of_magdata = True
-
-
-        # If there is no "Raw" folder, create it and move on
-        else:
-            Path(raw_folder_path).mkdir(parents=True, exist_ok=True)
-
-    # Checks if the user input a raw csv and then if it follows the folder structure
-    elif Path(magdata_path).suffix == ".csv":
-
-        #Checks if there is a raw csv file
-        if Path(magdata_path).stem.endswith("_RAW"):
-            import_csv_file_instead_of_magdata = True
-
-            #Checks if the raw csv file's directory is called "raw", because the raw file should not be in the same folder as the magdata
-            if not Path(magdata_path).parent.stem == raw_folder_name_string:
-
-                #Creates the "raw" folder since it doesn't exist
-                new_path = Path(Path(magdata_path).parent, Path(raw_folder_name_string)).as_posix()
-                Path(new_path).mkdir(parents=True, exist_ok=True)
-
-                #Copies the raw csv
-                shutil.copy(Path(magdata_path).as_posix(), Path(new_path, Path(magdata_path).stem + Path(magdata_path).suffix))
-
-                input_file = Path(magdata_path).as_posix()
-                magdata_path = Path(Path(new_path), Path(input_file).stem + Path(input_file).suffix).as_posix()
-
-                Path(input_file).unlink()
-                raw_csv_file_path = magdata_path
-
-        else:
-            raise "If this is a raw file please have it end with _RAW (double check)"
-    else:
-        raise "ERROR UNRECOGNIZED FILE INPUT"
 
 
     #If the raw csv file doesn't exist, then start the proprietary software, which currently saves the raw csv to the same folder as the magdata (work in progress)
@@ -204,7 +231,7 @@ def main(settings_path):
     if not import_csv_file_instead_of_magdata:
         file_basen_no_ex = os.path.basename(csv_out_file_path).split('.')[0]
     elif import_csv_file_instead_of_magdata:
-        if Path(magdata_path).stem.endswith("_RAW"):
+        if Path(magdata_path).stem.endswith(append_raw):
             file_basen_no_ex = Path(magdata_path).stem[:-4]
         else:
             file_basen_no_ex = Path(magdata_path).stem
@@ -215,7 +242,7 @@ def main(settings_path):
     if not os.path.exists(output_csv_folder):
         # the user specified folder does not exist.
         # their intention to put it in a folder is clear lets make one for them
-        output_csv_folder = os.path.join(os.path.dirname(csv_out_file_path), 'Clean_CSV_Folder')
+        output_csv_folder = os.path.join(os.path.dirname(csv_out_file_path), clean_folder_name_string)
         if not os.path.exists(output_csv_folder):
             os.makedirs(output_csv_folder)
     output_csv_path_no_ex = os.path.join(output_csv_folder, file_basen_no_ex)
@@ -238,7 +265,7 @@ def main(settings_path):
         print(gui_instance)
 
     # Checks if the file name has a check mark, if it does move on. Otherwise it should append to the beginning of the magdata file.
-    if not Path(magdata_path).suffix.startswith(".csv"):
+    if not Path(magdata_path).suffix.startswith(append_csv):
         if not Path(magdata_path).stem.startswith("✅ "):
             Path(magdata_path).rename(Path(magdata_path).with_name("✅ " + Path(magdata_path).stem + Path(magdata_path).suffix))
             print(f"Renamed magdata file to {Path(magdata_path).stem + Path(magdata_path).suffix}")

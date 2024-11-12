@@ -1,5 +1,5 @@
 <plugins>
-  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Waypoint Altitude Embedder" version="1.2024.10.27.1">
+  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Waypoint Altitude Embedder" version="1.2024.11.11.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_alter_mag_clipper_settings/ROSORPlugins/PETER_ROSOR_alt_embedder/plugin_icon.png</icon>
@@ -10,7 +10,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Base Mag QAQC" version="1.2024.10.27.1">
+  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Base Mag QAQC" version="1.2024.11.11.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_alter_mag_clipper_settings/ROSORPlugins/PETER_ROSOR_base_mag_qaqc/plugin_icon.png</icon>
@@ -20,7 +20,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Flightline Creator" version="1.2024.10.27.1">
+  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Flightline Creator" version="1.2024.11.11.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_alter_mag_clipper_settings/ROSORPlugins/PETER_ROSOR_flightline_creator/plugin_icon.png</icon>
@@ -30,7 +30,7 @@
   </pyqgis_plugin>
 
 
-  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Mag Clipper" version="1.2024.11.11.1">
+  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Mag Clipper" version="1.2024.11.11.2">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_alter_mag_clipper_settings/ROSORPlugins/PETER_ROSOR_mag_clipper/plugin_icon.png</icon>
@@ -40,7 +40,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Slope Analyzer" version="1.2024.10.27.1">
+  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Slope Analyzer" version="1.2024.11.11.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_alter_mag_clipper_settings/ROSORPlugins/PETER_ROSOR_slope_analyser/plugin_icon.png</icon>
@@ -49,7 +49,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Import CSVs" version="1.2024.10.27.1">
+  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Import CSVs" version="1.2024.11.11.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_alter_mag_clipper_settings/ROSORPlugins/PETER_ROSOR_import_csv/plugin_icon.png</icon>
@@ -59,7 +59,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Import KMLs" version="1.2024.10.27.1">
+  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Import KMLs" version="1.2024.11.11.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_alter_mag_clipper_settings/ROSORPlugins/PETER_ROSOR_import_kml/plugin_icon.png</icon>
@@ -69,7 +69,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Lines To Flights" version="1.2024.10.27.1">
+  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Lines To Flights" version="1.2024.11.11.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_alter_mag_clipper_settings/ROSORPlugins/PETER_ROSOR_lines_to_flights/plugin_icon.png</icon>
@@ -78,7 +78,7 @@
     <experimental>True</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Plugin Template" version="1.2024.10.27.1">
+  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Plugin Template" version="1.2024.11.11.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_alter_mag_clipper_settings/ROSORPlugins/PETER_ROSOR_plugin_template/plugin_icon.png</icon>
@@ -87,7 +87,7 @@
     <experimental>True</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Tile Maker" version="1.2024.10.27.1">
+  <pyqgis_plugin name=".DEV sharj_alter_mag_clipper_settings Tile Maker" version="1.2024.11.11.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_alter_mag_clipper_settings/ROSORPlugins/PETER_ROSOR_tile_maker/plugin_icon.png</icon>
