@@ -59,7 +59,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Import KMLs" version="1.2024.12.7.1">
+  <pyqgis_plugin name=".ROSOR Import KMLs" version="1.2024.12.7.2">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_import_kml/plugin_icon.png</icon>
