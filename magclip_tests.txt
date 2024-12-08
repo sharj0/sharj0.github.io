@@ -1,6 +1,0 @@
-so run .magdata,
-run raw next to .magdata,
-run raw in folder with .magdata next to the folder,
-run raw in folder without any .magdata anywhere
-run raw outside folder without any .magdata anywhere
-run raw that does not have the word "raw" in it (optional)
