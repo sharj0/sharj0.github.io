@@ -1,12 +1,12 @@
 {
-    "PETER_ROSOR_alt_embedder": "f143c755c45247abaef29972f153d5c66c0e68ab59d394fc2817efc4c134712d",
-    "PETER_ROSOR_base_mag_qaqc": "76154279c7f7de27a53599625a4dfac739452c814aaa10b9c79174ad11fa850f",
-    "PETER_ROSOR_flightline_creator": "4d27c87601f5f559af34c44e98746d12c21b7a336a903db2e3a80450dbd6409e",
-    "PETER_ROSOR_import_csv": "1343fde40da1f7d6241617291a2b7638671d7af0b8c3d792061725c4c06017ac",
-    "PETER_ROSOR_import_kml": "792102067cd402d5deeae3bdf01a542897dd6ab84935582da101c07c394176fd",
-    "PETER_ROSOR_lines_to_flights": "6793e7bab8e628381ad1bb1399240c146ad9efd646bba70db5ddfa72eb045771",
-    "PETER_ROSOR_mag_clipper": "ff1bc177c44bd1161b7941c690988c15ee2b862401de4bd3df4027012df7361c",
-    "PETER_ROSOR_plugin_template": "043b49407cfc2352a6436f96e49318bf6f7f37844530ce5eb5cf0c1e69bbf198",
-    "PETER_ROSOR_slope_analyser": "0b341a021b502c07fdbc742846f8b8110f78596d4ada692d7db9a67a475f4857",
-    "PETER_ROSOR_tile_maker": "41ebfe79eb8fbaf411d9c5be47fefc85bf6f18ceb8b913f7c2f9e51da825e2b5"
+    "PETER_ROSOR_alt_embedder": "7e6a41ff59cab4e63d1900045cea81d6590816cb11f6171bb14df3f5d4c8dae3",
+    "PETER_ROSOR_base_mag_qaqc": "21ac7ad977072268320fc1b0439cd2e9bfb509d8474e9711389941c9f59b235e",
+    "PETER_ROSOR_flightline_creator": "c73ca8d746589d434b060cd6301526b65132ff8ce37a25c1fb255e7e7e8f8696",
+    "PETER_ROSOR_import_csv": "c89310cfe167f98c0c3f67d509f1fe67256a5fa92642b9601ba7a9e8adf4d8b1",
+    "PETER_ROSOR_import_kml": "96f44dbcca42c374f4dd60bcf5193cb44f2fa00c383908c9d5383f17ec14182f",
+    "PETER_ROSOR_lines_to_flights": "326c98d30f0e92d0a0e2b8e784c7380c48a8327eea6fbe492e1ec01de38efa68",
+    "PETER_ROSOR_mag_clipper": "f8f9c24e5e2b9a93995153fbfed8352b8a381ab000a64e8024565251b8341d57",
+    "PETER_ROSOR_plugin_template": "be27d9605a34495965960351732a628afc7ce5b49af28c362f65dd72f6f32a24",
+    "PETER_ROSOR_slope_analyser": "36ec11b86a957afb14dd240dbfb8794ec380adacd7d1e95380cc81fea10b4b06",
+    "PETER_ROSOR_tile_maker": "452d7e058f16dc49e870b2612e69c82bf68161ae865fb62cb5ddceb1f2da7acc"
 }
