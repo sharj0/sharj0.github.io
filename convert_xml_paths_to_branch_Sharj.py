@@ -34,17 +34,19 @@ def convert_xml_paths_to_branch(xml_file_path=(Path(__file__).parent / "plugins_
         old_plugin_zip_path = plugin.find("download_url").text
         old_plugin_icon_path = plugin.find("icon").text
 
-        latter_plugin_path = Path(*Path(old_plugin_zip_path).parts[-2:]).as_posix()
-        latter_icon_path = Path(*Path(old_plugin_icon_path).parts[-3:]).as_posix()
+        if old_plugin_zip_path != branch_URI_directory:
+            latter_plugin_path = Path(*Path(old_plugin_zip_path).parts[-2:]).as_posix()
+            latter_icon_path = Path(*Path(old_plugin_icon_path).parts[-3:]).as_posix()
 
-        new_plugin_zip_path = target_branch_dir + "/" + latter_plugin_path
-        new_plugin_icon_path = target_branch_dir + "/" + latter_icon_path
+            new_plugin_zip_path = target_branch_dir + "/" + latter_plugin_path
+            new_plugin_icon_path = target_branch_dir + "/" + latter_icon_path
 
-        plugin.find("download_url").text = new_plugin_zip_path
-        plugin.find("icon").text = new_plugin_icon_path
-        print(f"XML Name: {new_name}  | ZIP PATH: {new_plugin_zip_path}")
+            plugin.find("download_url").text = new_plugin_zip_path
+            plugin.find("icon").text = new_plugin_icon_path
+            print(f"XML Name: {new_name}  | ZIP PATH: {new_plugin_zip_path}")
 
-    tree.write(xml_file_path, pretty_print=True, xml_declaration=False, encoding="UTF-8")
+    with open(xml_file_path,"wb") as xml_file:
+        tree.write(xml_file, pretty_print=True, xml_declaration=False, encoding="UTF-8")
 
 
 if __name__ == "__main__":
