@@ -20,9 +20,9 @@ import numpy as np
 
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QPushButton, QSizePolicy, QHBoxLayout, QLabel, QApplication, QWidget, \
     QSlider
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QFont
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 
 from qgis.core import QgsGeometry, QgsWkbTypes, QgsPointXY, QgsPoint, QgsVectorLayer, QgsUnitTypes, QgsProject, \
     QgsFeature
@@ -30,6 +30,9 @@ from qgis.core import QgsGeometry, QgsWkbTypes, QgsPointXY, QgsPoint, QgsVectorL
 
 # THIS IS A CUSTOM INTERACTIVE PLOT WIDGET CLASS THAT REQUIRES AN ARRAY OF INPUTS TO INITIALIZE
 class InteractivePlotWidget(QWidget):
+
+    updated_LKM = pyqtSignal(float)
+
     def __init__(self,
                  the_rest_of_the_flt_line_gen_params,
                  the_rest_of_the_tie_line_gen_params,
@@ -43,7 +46,6 @@ class InteractivePlotWidget(QWidget):
                  parent=None):
 
         super().__init__(parent)
-
         # Set up the layout for the widget
         self.layout = QVBoxLayout(self)
 
@@ -93,6 +95,9 @@ class InteractivePlotWidget(QWidget):
         self.tie_lines = []
         self.new_flt_lines = []
         self.new_tie_lines = []
+        self.LKMs = 0.0
+        self.total_LKMs = 0.0
+
 
         # These are the output variables that need to be finalized
         self.new_flt_lines_qgis_format = None
@@ -127,6 +132,8 @@ class InteractivePlotWidget(QWidget):
         self.new_tie_lines = new_tie_lines
         self.new_poly = new_poly
         self.anchor_xy = anchor_xy
+
+        self.compute_LKM_from_lines(flt_lines=new_flt_lines,tie_lines=new_tie_lines)
 
         # Example plotting logic
         self.ax.clear()  # Clear previous plot
@@ -275,6 +282,8 @@ class InteractivePlotWidget(QWidget):
                 tie_lines=None
             )
 
+        # self.compute_LKM_from_lines(flt_lines=self.new_flt_lines_qgis_format,tie_lines=self.new_tie_lines_qgis_format)
+
     #modifies the input parameters for update flight lines and reruns said function with newly stored values in the class
     def update_params_through_sliders(self, new_flt_line_angle, new_flt_line_translation, new_tie_line_translation):
         self.the_rest_of_the_flt_line_gen_params = (
@@ -294,6 +303,20 @@ class InteractivePlotWidget(QWidget):
             self.the_rest_of_the_tie_line_gen_params[5]
         )
         self.update_flight_lines()
+
+    def compute_LKM_from_lines(self, flt_lines, tie_lines):
+        self.LKMs = 0.0
+
+        for flt_line in flt_lines:
+            self.LKMs += flt_line.length()
+
+        for tie_line in tie_lines:
+            self.LKMs += tie_line.length()
+
+        self.total_LKMs = self.LKMs
+        self.updated_LKM.emit(self.total_LKMs)
+        print(f"Total LKMs: {self.total_LKMs/1000:.3f} km")
+
 
     # this returns the desired output variables so that an outside function can access the desired values
     def get_results(self):
@@ -777,6 +800,20 @@ def gui(poly_layer,
     angle_slider.valueChanged.connect(update_angle_label)
     flt_line_translation_slider.valueChanged.connect(update_flt_label)
     tie_line_translation_slider.valueChanged.connect(update_tie_label)
+
+    display_LKMs_live_label = QLabel(f"Total LKMs: {interactive_plot_widget.total_LKMs/1000:.3f} km")
+    display_LKMs_live_label.setFixedSize(400,20)
+    display_LKMs_live_label_font_size = QFont()
+    display_LKMs_live_label_font_size.setPointSize(12)
+    display_LKMs_live_label.setFont(display_LKMs_live_label_font_size)
+    dialog_layout.addWidget(display_LKMs_live_label)
+
+
+    def update_LKMs_live_label(value):
+        display_LKMs_live_label.setText(f"Total LKMs: {value/1000:.3f} km")
+
+    interactive_plot_widget.updated_LKM.connect(update_LKMs_live_label)
+
     """Sharj"""
 
     btn_accept = QPushButton("Accept and Save", dialog)
