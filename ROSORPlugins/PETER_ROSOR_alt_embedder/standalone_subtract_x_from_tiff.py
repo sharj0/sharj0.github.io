@@ -2,11 +2,11 @@ import rasterio
 import numpy as np
 
 # Input GeoTIFF file
-input_file = r"I:\CONTRACT_Senoa\Ram\Arctic_DEM.tif"
+input_file = r"G:\Shared drives\Rosor\2024 - 2025\Projects\project-dlm-st-barbara-cochrane-hill\Lidar_Data\TOF_7_DSM_NDV.tif"
 
 
-subtract_by = 100
-remove_negatives = True
+subtract_by = -17.287
+remove_negatives = False
 set_negatives_to = 600
 
 # Open the input file

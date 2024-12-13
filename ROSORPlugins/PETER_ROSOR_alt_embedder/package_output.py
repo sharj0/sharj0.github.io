@@ -8,6 +8,7 @@ def lat_lon_UAValt_to_mp_wp(output_file_path,
     if output_file_path.endswith('.kmz') or output_file_path.endswith('.kml'):
         output_file_path = output_file_path[:-4]
     output_file_path = output_file_path + '.waypoints'
+    os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
     with open(output_file_path, 'w') as file:
         file.write('QGC WPL 110\n')
         # alt_mode_num 0-abs 3-rel 10-terrain
