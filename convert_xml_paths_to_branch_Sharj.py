@@ -44,13 +44,8 @@ def convert_xml_paths_to_branch(xml_file_path=(Path(__file__).parent / "plugins_
             plugin.find("download_url").text = new_plugin_zip_path
             plugin.find("icon").text = new_plugin_icon_path
             print(f"XML Name: {new_name}  | ZIP PATH: {new_plugin_zip_path}")
-    try:
-        with open(xml_file_path,"wb") as xml_file:
-            tree.write(xml_file, pretty_print=True, xml_declaration=False, encoding="UTF-8")
-            print("File saved successfully!")
-    except Exception as e:
-        print(f"Error while saving the file: {e}")
 
+    tree.write(xml_file_path, pretty_print=True, xml_declaration=False, encoding="UTF-8")
 
 if __name__ == "__main__":
     convert_xml_paths_to_branch()
