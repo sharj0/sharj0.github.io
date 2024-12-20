@@ -3,7 +3,6 @@ XML FILE IN THE PARENT FOLDER"""
 
 import os
 import xml.etree.ElementTree as ET
-import pathlib
 from packaging.version import Version
 
 import zipfile  #zipfile is STRONGER than shutil.make_archive (I tested it)
@@ -15,6 +14,8 @@ from datetime import date
 
 import hashlib
 import json
+
+from pathlib import Path
 
 HASH_FILE = "detect_changes_with_folder_hashes.json"
 
@@ -180,10 +181,10 @@ def match_xml_version_main(folders_that_need_updating,
     parent_dir = os.path.dirname(current_path)
     xml_file_path = os.path.join(parent_dir, xml_file_name)
 
-
     if not os.path.isfile(xml_file_path):
         print("given plugin xml doesn't exist in the parent directory")
         return None
+
 
 
     tree = ET.parse(xml_file_path)
@@ -192,17 +193,32 @@ def match_xml_version_main(folders_that_need_updating,
     #setting up a conditional boolean on whether to write to the xml file
     change_xml = False
 
-    #increments through all plugins in the xml file
+    plugin_folders_in_dir = check_plugin_folders()
+    no_of_fields = root.findall("pyqgis_plugin")
+
+    poppable_folder_list = list(plugin_folders_in_dir.keys())
+
+    # if len(plugin_folders_in_dir) > len(no_of_fields):
+    #     poppable_
+
     for plugin in root.findall("pyqgis_plugin"):
 
-        #obtains the download url (used to identify the plugin name) and its corresponding version in the xml file
         plugin_zip_path = plugin.find('download_url').text
         xml_version = plugin.attrib['version']
 
         #uses the download url zip file name to correspond to the plugin and gets creates a path to it in the current directory
-        plugin_folder = pathlib.Path(plugin_zip_path).stem
+        plugin_folder = Path(plugin_zip_path).stem
+
+        if not plugin_folder in plugin_folders_in_dir:
+            root.remove(plugin)
+            tree.write(xml_file_path)
+            continue
+        else:
+            poppable_folder_list.remove(plugin_folder)
+
         if not plugin_folder in folders_that_need_updating:
             continue
+
         plugin_folder_path = os.path.join(current_path, plugin_folder)
 
 
@@ -317,6 +333,73 @@ def match_xml_version_main(folders_that_need_updating,
             #Overwrites xml file with modified versions for all plugins that have changed (I think this can go outside the for loop so it only writes once, but oh well, I can't be bothered to try and debug)
             tree.write(xml_file_path)
 
+    print(poppable_folder_list)
+
+    for plugin in poppable_folder_list:
+        plugin_folder_path = Path(plugin_folders_in_dir[plugin]).as_posix()
+        add_plugin_in_xml(xml_file_path=xml_file_path,plugin=plugin,plugin_folder_path=plugin_folder_path)
+
+
+def check_plugin_folders(xml_file_name="plugins_leak.xml", current_path=os.path.dirname(__file__), precursor = "PETER_ROSOR"):
+
+    current_path = Path(current_path).as_posix()
+    parent_dir = Path(Path(current_path).parent).as_posix()
+
+    xml_file_path = Path(parent_dir,xml_file_name).as_posix()
+
+    if not os.path.isfile(xml_file_path):
+        print("given plugin xml doesn't exist in the parent directory")
+        return None
+
+    plugin_folders_in_dir = {file.name: file for file in Path(current_path).glob(f"{precursor}*") if file.is_dir()}
+
+    return plugin_folders_in_dir
+
+
+def add_plugin_in_xml(xml_file_path, plugin, plugin_folder_path):
+    tree = ET.parse(xml_file_path)
+    root = tree.getroot()
+
+    metadata_file_path = Path(plugin_folder_path, "metadata.txt").as_posix()
+
+    if not os.path.exists(metadata_file_path):
+        print("metadata file not found")
+        return None
+
+    with open(metadata_file_path,"r") as file:
+        lines = file.readlines()
+
+    name_index = next((i for i, line in enumerate(lines) if line.startswith("name")), None)
+    desc_index = next((i for i, line in enumerate(lines) if line.startswith("description")), None)
+    exp_index = next((i for i, line in enumerate(lines) if line.startswith("experimental")), None)
+
+    #this is assuming "name=" takes up 6 characters and \n is always present (I think this can be modular instead of hard coded)
+    plugin_name = lines[name_index][5:-1]
+    plugin_description = lines[desc_index][12:-1]
+    experimental = lines[exp_index][13:]
+
+    temp_name = ".ROSOR " + plugin_name
+    temp_version = make_version_todays_date()
+
+    new_plugin = ET.Element("pyqgis_plugin", {
+        "name": temp_name,
+        "version": temp_version
+    })
+
+    MAIN_REPO_URI = "https://sharj0.github.io"
+    download_zip_path = MAIN_REPO_URI + "/ROSORPlugins/" + plugin + ".zip"
+    plugin_icon_path = MAIN_REPO_URI + "/ROSORPlugins/" + plugin + "/plugin_icon.png"
+
+    ET.SubElement(new_plugin, "qgis_minimum_version").text = "3.0.0"
+    ET.SubElement(new_plugin, "author_name").text = "Pyotyr Young and Sharjeel Awon"
+    ET.SubElement(new_plugin, "icon").text = plugin_icon_path
+    ET.SubElement(new_plugin, "description").text = plugin_description
+    ET.SubElement(new_plugin, "download_url").text =  download_zip_path
+    ET.SubElement(new_plugin, "experimental").text = experimental
+
+    root.append(new_plugin)
+
+    tree.write(xml_file_path)
 
 #This function increments numerical version strings with periods as delimiters, the default target increment is the right most value
 def increment_two_decimal_version_string(version="1.0.0", target_index=-1):
@@ -392,11 +475,13 @@ if __name__ == "__main__":
     folders_that_need_updating = check_for_changes_and_update_versions()
     print()
     match_xml_version_main(folders_that_need_updating, xml_file_name="plugins_leak.xml", update_date=True, increment_all=True)
+    #
+    # autozip_files_main(folders_that_need_updating)
+    # print()
+    # if folders_that_need_updating:
+    #     save_hashes(get_all_current_hashes(), HASH_FILE)
+    #     print("\n DON'T FORGET TO PUSH TO MAIN" )
+    # else:
+    #     print("\n No changes detected in any of the input folders.")
 
-    autozip_files_main(folders_that_need_updating)
-    print()
-    if folders_that_need_updating:
-        save_hashes(get_all_current_hashes(), HASH_FILE)
-        print("\n DON'T FORGET TO PUSH TO MAIN" )
-    else:
-        print("\n No changes detected in any of the input folders.")
+    check_plugin_folders()

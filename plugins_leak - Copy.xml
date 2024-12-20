@@ -30,6 +30,25 @@
   </pyqgis_plugin>
 
 
+  <pyqgis_plugin name=".DEV sharj_ceate_modular_match_versions_zip_py Mag Clipper" version="1.2024.12.19.1">
+    <qgis_minimum_version>3.0.0</qgis_minimum_version>
+    <author_name>Pyotyr Young and Sharjeel Awon</author_name>
+    <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_ceate_modular_match_versions_zip_py/ROSORPlugins/PETER_ROSOR_mag_clipper/plugin_icon.png</icon>
+    <description>ROSOR's tool that takes proprietary ".magdata" and converts to csv then clips it
+      and does QaQc.</description>
+    <download_url>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_ceate_modular_match_versions_zip_py/ROSORPlugins/PETER_ROSOR_mag_clipper.zip</download_url>
+    <experimental>False</experimental>
+  </pyqgis_plugin>
+
+  <pyqgis_plugin name=".DEV sharj_ceate_modular_match_versions_zip_py Slope Analyzer" version="1.2024.12.19.1">
+    <qgis_minimum_version>3.0.0</qgis_minimum_version>
+    <author_name>Pyotyr Young and Sharjeel Awon</author_name>
+    <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_ceate_modular_match_versions_zip_py/ROSORPlugins/PETER_ROSOR_slope_analyser/plugin_icon.png</icon>
+    <description>ROSOR's tool that shows the user how steep the terrain is.</description>
+    <download_url>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_ceate_modular_match_versions_zip_py/ROSORPlugins/PETER_ROSOR_slope_analyser.zip</download_url>
+    <experimental>False</experimental>
+  </pyqgis_plugin>
+
   <pyqgis_plugin name=".DEV sharj_ceate_modular_match_versions_zip_py Import CSVs" version="1.2024.12.19.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
@@ -49,5 +68,31 @@
     <download_url>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_ceate_modular_match_versions_zip_py/ROSORPlugins/PETER_ROSOR_import_kml.zip</download_url>
     <experimental>False</experimental>
   </pyqgis_plugin>
-  
-  <pyqgis_plugin name=".DEV sharj_ceate_modular_match_versions_zip_py  Lines to Flights" version="1.2024.12.20.0"><qgis_minimum_version>3.0.0</qgis_minimum_version><author_name>Pyotyr Young and Sharjeel Awon</author_name><icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_ceate_modular_match_versions_zip_py/ROSORPlugins/PETER_ROSOR_lines_to_flights/plugin_icon.png</icon><description> Takes parallel flight-lines and take-off location points and creates flights out of them  </description><download_url>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_ceate_modular_match_versions_zip_py/ROSORPlugins/PETER_ROSOR_lines_to_flights.zip</download_url><experimental>True</experimental></pyqgis_plugin></plugins>
+
+  <pyqgis_plugin name=".DEV sharj_ceate_modular_match_versions_zip_py Lines To Flights" version="1.2024.12.19.1">
+    <qgis_minimum_version>3.0.0</qgis_minimum_version>
+    <author_name>Pyotyr Young and Sharjeel Awon</author_name>
+    <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_ceate_modular_match_versions_zip_py/ROSORPlugins/PETER_ROSOR_lines_to_flights/plugin_icon.png</icon>
+    <description>ROSOR's tool that shows the user how steep the terrain is.</description>
+    <download_url>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_ceate_modular_match_versions_zip_py/ROSORPlugins/PETER_ROSOR_lines_to_flights.zip</download_url>
+    <experimental>True</experimental>
+  </pyqgis_plugin>
+
+  <pyqgis_plugin name=".DEV sharj_ceate_modular_match_versions_zip_py Plugin Template" version="1.2024.12.19.1">
+    <qgis_minimum_version>3.0.0</qgis_minimum_version>
+    <author_name>Pyotyr Young and Sharjeel Awon</author_name>
+    <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_ceate_modular_match_versions_zip_py/ROSORPlugins/PETER_ROSOR_plugin_template/plugin_icon.png</icon>
+    <description>ROSOR's tool that shows the user how steep the terrain is.</description>
+    <download_url>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_ceate_modular_match_versions_zip_py/ROSORPlugins/PETER_ROSOR_plugin_template.zip</download_url>
+    <experimental>True</experimental>
+  </pyqgis_plugin>
+
+  <pyqgis_plugin name=".DEV sharj_ceate_modular_match_versions_zip_py Tile Maker" version="1.2024.12.19.1">
+    <qgis_minimum_version>3.0.0</qgis_minimum_version>
+    <author_name>Pyotyr Young and Sharjeel Awon</author_name>
+    <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_ceate_modular_match_versions_zip_py/ROSORPlugins/PETER_ROSOR_tile_maker/plugin_icon.png</icon>
+    <description>ROSOR's tool that shows the user how steep the terrain is.</description>
+    <download_url>https://raw.githubusercontent.com/sharj0/sharj0.github.io/sharj_ceate_modular_match_versions_zip_py/ROSORPlugins/PETER_ROSOR_tile_maker.zip</download_url>
+    <experimental>True</experimental>
+  </pyqgis_plugin>
+</plugins>
