@@ -41,5 +41,7 @@ def revert_xml_paths_to_main(xml_file_path=(Path(__file__).parent / "plugins_lea
 
 
     tree.write(xml_file_path, pretty_print=True, xml_declaration=False, encoding="UTF-8")
+
 if __name__ == "__main__":
+
     revert_xml_paths_to_main()

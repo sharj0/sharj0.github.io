@@ -185,8 +185,6 @@ def match_xml_version_main(folders_that_need_updating,
         print("given plugin xml doesn't exist in the parent directory")
         return None
 
-
-
     tree = ET.parse(xml_file_path)
     root = tree.getroot()
 
@@ -194,7 +192,6 @@ def match_xml_version_main(folders_that_need_updating,
     change_xml = False
 
     plugin_folders_in_dir = check_plugin_folders()
-    no_of_fields = root.findall("pyqgis_plugin")
 
     poppable_folder_list = list(plugin_folders_in_dir.keys())
 
@@ -333,11 +330,12 @@ def match_xml_version_main(folders_that_need_updating,
             #Overwrites xml file with modified versions for all plugins that have changed (I think this can go outside the for loop so it only writes once, but oh well, I can't be bothered to try and debug)
             tree.write(xml_file_path)
 
-    print(poppable_folder_list)
+
 
     for plugin in poppable_folder_list:
+        print(f"Plugin added to xml: {poppable_folder_list}")
         plugin_folder_path = Path(plugin_folders_in_dir[plugin]).as_posix()
-        add_plugin_in_xml(xml_file_path=xml_file_path,plugin=plugin,plugin_folder_path=plugin_folder_path)
+        add_plugin_in_xml(xml_file_path=xml_file_path, plugin=plugin, plugin_folder_path=plugin_folder_path)
 
 
 def check_plugin_folders(xml_file_name="plugins_leak.xml", current_path=os.path.dirname(__file__), precursor = "PETER_ROSOR"):
@@ -345,7 +343,7 @@ def check_plugin_folders(xml_file_name="plugins_leak.xml", current_path=os.path.
     current_path = Path(current_path).as_posix()
     parent_dir = Path(Path(current_path).parent).as_posix()
 
-    xml_file_path = Path(parent_dir,xml_file_name).as_posix()
+    xml_file_path = Path(parent_dir, xml_file_name).as_posix()
 
     if not os.path.isfile(xml_file_path):
         print("given plugin xml doesn't exist in the parent directory")
@@ -373,10 +371,14 @@ def add_plugin_in_xml(xml_file_path, plugin, plugin_folder_path):
     desc_index = next((i for i, line in enumerate(lines) if line.startswith("description")), None)
     exp_index = next((i for i, line in enumerate(lines) if line.startswith("experimental")), None)
 
+
     #this is assuming "name=" takes up 6 characters and \n is always present (I think this can be modular instead of hard coded)
-    plugin_name = lines[name_index][5:-1]
+    plugin_name = lines[name_index][6:-1]
     plugin_description = lines[desc_index][12:-1]
-    experimental = lines[exp_index][13:]
+    if not exp_index is None:
+        experimental = lines[exp_index][13:]
+    else:
+        experimental = "False"
 
     temp_name = ".ROSOR " + plugin_name
     temp_version = make_version_todays_date()
@@ -394,7 +396,7 @@ def add_plugin_in_xml(xml_file_path, plugin, plugin_folder_path):
     ET.SubElement(new_plugin, "author_name").text = "Pyotyr Young and Sharjeel Awon"
     ET.SubElement(new_plugin, "icon").text = plugin_icon_path
     ET.SubElement(new_plugin, "description").text = plugin_description
-    ET.SubElement(new_plugin, "download_url").text =  download_zip_path
+    ET.SubElement(new_plugin, "download_url").text = download_zip_path
     ET.SubElement(new_plugin, "experimental").text = experimental
 
     root.append(new_plugin)
@@ -475,13 +477,13 @@ if __name__ == "__main__":
     folders_that_need_updating = check_for_changes_and_update_versions()
     print()
     match_xml_version_main(folders_that_need_updating, xml_file_name="plugins_leak.xml", update_date=True, increment_all=True)
-    #
-    # autozip_files_main(folders_that_need_updating)
-    # print()
-    # if folders_that_need_updating:
-    #     save_hashes(get_all_current_hashes(), HASH_FILE)
-    #     print("\n DON'T FORGET TO PUSH TO MAIN" )
-    # else:
-    #     print("\n No changes detected in any of the input folders.")
+
+    autozip_files_main(folders_that_need_updating)
+    print()
+    if folders_that_need_updating:
+        save_hashes(get_all_current_hashes(), HASH_FILE)
+        print("\n DON'T FORGET TO PUSH TO MAIN")
+    else:
+        print("\n No changes detected in any of the input folders.")
 
     check_plugin_folders()

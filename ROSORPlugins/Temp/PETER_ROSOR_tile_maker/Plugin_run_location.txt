@@ -1,1 +1,0 @@
-#USE IN C:\Users\pyoty\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins
