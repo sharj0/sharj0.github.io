@@ -1,12 +1,13 @@
 {
-    "PETER_ROSOR_alt_embedder": "5cfa2bbcea3791d2d4f16272f235d1c91f0077a607c103eeeef9b53355c5e932",
-    "PETER_ROSOR_base_mag_qaqc": "fff780bda6e90c11eb2625d838b809d21923439100a0af77b32a318c2535fcd0",
-    "PETER_ROSOR_flightline_creator": "0023977294b4122af41208cd15ed01cb6e3c111cbe83960507adf9b6fbc70ed2",
-    "PETER_ROSOR_import_csv": "30089f11fb8e8f7029c207346b133f0b346a899502b7dde864512ebba381e9b7",
-    "PETER_ROSOR_import_kml": "10cc9d82cf58a5e65f12d03a97d33136f6793d5f341bdcf59e7f054ea688c5dc",
-    "PETER_ROSOR_lines_to_flights": "effdcd00363c529408f1e784fb255ca0f423850580686193c0e44540c7e2d75e",
-    "PETER_ROSOR_mag_clipper": "c1a08c908409e69fce144cb0ddbf6dc9897043c489682f9fa8aacb024c71c5ce",
-    "PETER_ROSOR_plugin_template": "eb60dd4a05881f1ca2e9f82dbc7dd547df0b6e16633b25517dad0b0b7672f166",
-    "PETER_ROSOR_slope_analyser": "97b9c09697abbc0c286b3964655052b909667df5a8b47cec2f309598a19a7f28",
-    "PETER_ROSOR_tile_maker": "8484888ad9ae0c91244d0f1829b98549c113dd7675efb1ca27240cb72b018a24"
+    "PETER_ROSOR_alt_embedder": "1a10b8e0607e755b1c284c304ab1910feab7c1e7e4cf8c740fe3ad92acdf0bb7",
+    "PETER_ROSOR_base_mag_qaqc": "bf2489938e2088aaed79d931df803633c05a86458d5f8d6416595f6ff562212c",
+    "PETER_ROSOR_flightline_creator": "79ec7992a133e751988ea5d7c133c89fff6782e803edd907438d35a9196fcc9b",
+    "PETER_ROSOR_import_csv": "87718b3eaf44fabbaf86d2fedeaa3cd5c7b1601ebb6b2b4ec50f3cfdc9681269",
+    "PETER_ROSOR_import_kml": "6d0d97dfdd17fffc2b2a27ec8a33c291f974a668d3d66034bbc7d6a3b3ae8e27",
+    "PETER_ROSOR_import_kml_2": "6d0d97dfdd17fffc2b2a27ec8a33c291f974a668d3d66034bbc7d6a3b3ae8e27",
+    "PETER_ROSOR_lines_to_flights": "c81a523afd7b076e4ff86839227585e6753ab7568398b76e182e6111b1341b68",
+    "PETER_ROSOR_mag_clipper": "eef22d3817ff1b25650997966561d1977d75bfc6e72677c786b635315314894e",
+    "PETER_ROSOR_plugin_template": "5bcfa2a605d2f63dd8d5ab80977debd8bc5fdb6b2569315c364f1d836006642a",
+    "PETER_ROSOR_slope_analyser": "a8dca9cfd2f250fecb7bb8bbaae342e590dcdcf97ca06257e5d524fc2dd5ed0e",
+    "PETER_ROSOR_tile_maker": "ff1444c2405fde47bfc7f35c0627c14a553ae4b8bab5b4a33e0f7573a7854d9f"
 }
