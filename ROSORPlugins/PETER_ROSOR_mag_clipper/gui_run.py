@@ -14,14 +14,14 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap, hex2color
 import matplotlib.ticker as ticker
 
-from PETER_ROSOR_mag_clipper import plot_dataframe_to_pdf
-from PETER_ROSOR_mag_clipper.plugin_tools import show_error
-from PETER_ROSOR_mag_clipper.tools import (CustomNavigationToolbar,
+from . import plot_dataframe_to_pdf
+from .plugin_tools import show_error
+from .tools import (CustomNavigationToolbar,
                                            calculate_4th_difference,
                                            calculate_range_noise,
                                            load_csv_data_to_qgis)
 
-from PETER_ROSOR_mag_clipper.detect_belonging_flight_name import detect_belonging_flight_name
+from .detect_belonging_flight_name import detect_belonging_flight_name
 from matplotlib.patches import Polygon
 
 from .split_csv_by_flightlines import run_flightline_splitter_gui

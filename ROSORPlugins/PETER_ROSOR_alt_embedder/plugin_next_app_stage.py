@@ -6,11 +6,11 @@ This is where the substance of the plugin begins. In main()
 import os
 from PyQt5.QtWidgets import QMessageBox
 from qgis.core import QgsProject, QgsVectorLayer
-from PETER_ROSOR_alt_embedder import load_data, buffer_points, drape_wps_over_buffer, plot_and_accept
-from PETER_ROSOR_alt_embedder.load_data import (
+from . import load_data, buffer_points, drape_wps_over_buffer, plot_and_accept
+from .load_data import (
     get_source_and_target_crs_from_layer,
     raster_convert_to_meters_crs)
-from PETER_ROSOR_alt_embedder.tools import (
+from .tools import (
     remove_duplicates,
     compute_heading,
     compute_heading_for_samples,
@@ -27,8 +27,8 @@ from PETER_ROSOR_alt_embedder.tools import (
     get_new_folder_name,
     remove_steep_angles)
 
-from PETER_ROSOR_alt_embedder.flight_segment_class import Segment, plot_segment_samples, merge_segments
-from PETER_ROSOR_alt_embedder.package_output import (
+from .flight_segment_class import Segment, plot_segment_samples, merge_segments
+from .package_output import (
     lat_lon_UAValt_turnRad_to_DJI_wp_kmz,
     lat_lon_to_DJI_with_P1_corridor_kmz,
     lat_lon_UAValt_turnRad_heading_to_DJI_with_P1_wp_kmz,
