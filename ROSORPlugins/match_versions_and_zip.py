@@ -375,12 +375,20 @@ def add_plugin_in_xml(xml_file_path, plugin, plugin_folder_path):
 
 
     #this is assuming "name=" takes up 6 characters and \n is always present (I think this can be modular instead of hard coded)
-    plugin_name = lines[name_index][6:-1]
-    plugin_description = lines[desc_index][12:-1]
-    if not exp_index is None:
+    if name_index is not None:
+        plugin_name = lines[name_index][6:-1]
+    else:
+        plugin_name = "REPLACE NAME"
+
+    if desc_index is not None:
+        plugin_description = lines[desc_index][12:-1]
+    else:
+        plugin_description = "INSERT DESC HERE"
+
+    if exp_index is not None:
         experimental = lines[exp_index][13:]
     else:
-        experimental = "False"
+        experimental = "True"
 
     temp_name = ".ROSOR " + plugin_name
     temp_version = make_version_todays_date()
@@ -404,6 +412,8 @@ def add_plugin_in_xml(xml_file_path, plugin, plugin_folder_path):
     root.append(new_plugin)
 
     tree.write(xml_file_path)
+
+    match_xml_version_main(plugin_folder_path, xml_file_name="plugins_leak.xml", update_date=True, increment_all=True)
 
 #This function increments numerical version strings with periods as delimiters, the default target increment is the right most value
 def increment_two_decimal_version_string(version="1.0.0", target_index=-1):
