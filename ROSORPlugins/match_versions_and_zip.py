@@ -366,7 +366,7 @@ def add_plugin_in_xml(xml_file_path, plugin, plugin_folder_path):
         print(f"metadata file not found for: {plugin}")
         return None
 
-    with open(metadata_file_path,"r") as file:
+    with open(metadata_file_path, "r") as file:
         lines = file.readlines()
 
     name_index = next((i for i, line in enumerate(lines) if line.startswith("name")), None)
