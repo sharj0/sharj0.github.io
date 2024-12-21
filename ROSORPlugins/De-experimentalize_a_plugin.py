@@ -342,7 +342,7 @@ def main(target_plugin):
             return
 
     print("\nConversion to non-experimental plugin completed successfully.")
-
+    print('--- DONT FORGET TO MATCH VERSIONS AND ZIP ---')
 
 
 

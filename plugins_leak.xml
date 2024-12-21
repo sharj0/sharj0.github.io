@@ -20,7 +20,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Flightline Creator" version="1.2024.12.20.2">
+  <pyqgis_plugin name=".ROSOR Flightline Creator" version="1.2024.12.21.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_flightline_creator/plugin_icon.png</icon>
@@ -78,7 +78,7 @@
     <experimental>True</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Plugin Template" version="1.2024.12.21.1">
+  <pyqgis_plugin name=".ROSOR Plugin Template" version="1.2024.12.21.2">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_plugin_template/plugin_icon.png</icon>
@@ -95,15 +95,5 @@
     <download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_tile_maker.zip</download_url>
     <experimental>True</experimental>
   </pyqgis_plugin>
-  <pyqgis_plugin name=".ROSOR Flightline Creator Experimental" version="1.2024.12.20.0">
-    <qgis_minimum_version>3.0.0</qgis_minimum_version>
-    <author_name>Pyotyr Young and Sharjeel Awon</author_name>
-    <icon>
-      https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_flightline_creator_experimental/plugin_icon.png</icon>
-    <description>ROSOR's tools flightline making</description>
-    <download_url>
-      https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_flightline_creator_experimental.zip</download_url>
-    <experimental>True</experimental>
-  </pyqgis_plugin>
-<pyqgis_plugin name=".ROSOR Lines to Flights Experimental" version="1.2024.12.21.0"><qgis_minimum_version>3.0.0</qgis_minimum_version><author_name>Pyotyr Young and Sharjeel Awon</author_name><icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_lines_to_flights_exp/plugin_icon.png</icon><description> Takes parallel flight-lines and take-off location points and creates flights out of them  </description><download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_lines_to_flights_exp.zip</download_url><experimental>True
-</experimental></pyqgis_plugin></plugins>
+  <pyqgis_plugin name=".ROSOR Lines to Flights Experimental" version="1.2024.12.21.0"><qgis_minimum_version>3.0.0</qgis_minimum_version><author_name>Pyotyr Young and Sharjeel Awon</author_name><icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_lines_to_flights_exp/plugin_icon.png</icon><description> Takes parallel flight-lines and take-off location points and creates flights out of them  </description><download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_lines_to_flights_exp.zip</download_url><experimental>True
+</experimental></pyqgis_plugin><pyqgis_plugin name=".ROSOR Flightline Creator Experimental" version="1.2024.12.21.0"><qgis_minimum_version>3.0.0</qgis_minimum_version><author_name>Pyotyr Young and Sharjeel Awon</author_name><icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_flightline_creator_exp/plugin_icon.png</icon><description>ROSOR's tools flightline making</description><download_url>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_flightline_creator_exp.zip</download_url><experimental>True</experimental></pyqgis_plugin></plugins>

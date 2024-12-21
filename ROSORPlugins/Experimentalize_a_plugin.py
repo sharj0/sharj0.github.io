@@ -218,6 +218,7 @@ def main(target_plugin):
             return
 
     print("\nConversion to experimental plugin completed successfully.")
+    print('--- DONT FORGET TO MATCH VERSIONS AND ZIP ---')
 
 
 if __name__ == "__main__":
