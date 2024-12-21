@@ -9,7 +9,7 @@ from PyQt5.QtGui import QFont, QIcon, QColor
 from qgis.core import QgsProject
 from PyQt5.QtCore import Qt
 
-from PETER_ROSOR_QGIS_PLUGIN import gui_tools
+from . import gui_tools
 
 def find_key_in_nested_dict(nested_dict, search_key):
     if search_key in nested_dict:

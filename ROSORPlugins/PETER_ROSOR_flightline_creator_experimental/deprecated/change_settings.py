@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QWidget, QScrollArea, \
     QFormLayout, QGroupBox, QPushButton
 from PyQt5.QtGui import QFont, QIcon
 from functools import partial
-from PETER_ROSOR_QGIS_PLUGIN import gui_tools
+from . import gui_tools
 
 
 def run():

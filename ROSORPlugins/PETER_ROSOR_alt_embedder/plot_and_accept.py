@@ -20,7 +20,7 @@ from PyQt5.QtGui import QIcon
 
 
 # PETER_ROSOR_alt_embedder related
-from PETER_ROSOR_alt_embedder.tools import extract_2D_subarray_with_buffer
+from .tools import extract_2D_subarray_with_buffer
 
 def run(waypoints, dsm, dem, surf_samples, grnd_samples):
     # surf / grnd samples_merged and new_waypoints format what each col represents

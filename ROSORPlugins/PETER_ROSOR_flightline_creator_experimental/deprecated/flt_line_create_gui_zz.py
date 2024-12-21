@@ -1,8 +1,8 @@
 import os
 from PyQt5.QtWidgets import QMessageBox
 from qgis.core import QgsProject, QgsVectorLayer
-from PETER_ROSOR_alt_embedder import load_data, buffer_points, drape_wps_over_buffer
-from PETER_ROSOR_alt_embedder.tools import \
+from . import load_data, buffer_points, drape_wps_over_buffer
+from .tools import \
     remove_duplicates, \
     compute_heading, \
     compute_heading_for_samples, \
@@ -14,12 +14,12 @@ from PETER_ROSOR_alt_embedder.tools import \
     get_RTH_alt_above_takeoff_req, \
     extract_2D_subarray_with_buffer, \
     get_extent_coords
-from PETER_ROSOR_alt_embedder.flight_segment_class import Segment, plot_segment_samples, merge_segments
-from PETER_ROSOR_alt_embedder.package_output import lat_lon_UAValt_turnRad_to_DJI_kmz
+from .flight_segment_class import Segment, plot_segment_samples, merge_segments
+from .package_output import lat_lon_UAValt_turnRad_to_DJI_kmz
 import numpy as np
 import sys
 
-from PETER_ROSOR_flightline_creator import plot_and_accept
+from . import plot_and_accept
 
 def flt_line_create_window(settings_file_path):
     # load settings and allow for the re-naming of settings with a conversion step between the .json name and the internal code

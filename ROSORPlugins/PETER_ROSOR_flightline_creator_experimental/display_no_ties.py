@@ -1,8 +1,8 @@
 import os
 
-from PETER_ROSOR_flightline_creator.my_class_definitions import (EndPoint, FltLine, TieLine)
-from PETER_ROSOR_flightline_creator.functions import get_anchor_xy, show_information
-from PETER_ROSOR_flightline_creator.generate_lines import generate_lines
+from .my_class_definitions import (EndPoint, FltLine, TieLine)
+from .functions import get_anchor_xy, show_information
+from .generate_lines import generate_lines
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
