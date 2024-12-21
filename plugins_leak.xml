@@ -93,7 +93,7 @@
     <download_url>https://raw.githubusercontent.com/sharj0/sharj0.github.io/peter_test_branch/ROSORPlugins/PETER_ROSOR_Ortho_Photo_Merger.zip</download_url>
     <experimental>True</experimental>
   </pyqgis_plugin>
-  <pyqgis_plugin name=".DEV peter_test_branch Flightline Creator Experimental" version="1.2024.12.20.2">
+  <pyqgis_plugin name=".DEV peter_test_branch Flightline Creator Experimental" version="1.2024.12.20.3">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://raw.githubusercontent.com/sharj0/sharj0.github.io/peter_test_branch/ROSORPlugins/PETER_ROSOR_flightline_creator_experimental/plugin_icon.png</icon>

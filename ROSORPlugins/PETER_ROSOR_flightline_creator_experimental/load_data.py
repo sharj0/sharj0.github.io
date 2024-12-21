@@ -1,4 +1,4 @@
-from PETER_ROSOR_flightline_creator import settings_suffixes
+from . import settings_suffixes
 from osgeo import gdal
 import os
 import json
