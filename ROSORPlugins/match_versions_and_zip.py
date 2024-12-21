@@ -3,7 +3,6 @@ XML FILE IN THE PARENT FOLDER"""
 
 import os
 import xml.etree.ElementTree as ET
-import pathlib
 from packaging.version import Version
 
 import zipfile  #zipfile is STRONGER than shutil.make_archive (I tested it)
@@ -15,6 +14,10 @@ from datetime import date
 
 import hashlib
 import json
+
+from pathlib import Path
+
+#make by sharj 😀 << peter wrote this
 
 HASH_FILE = "detect_changes_with_folder_hashes.json"
 
@@ -92,21 +95,27 @@ def autozip_files_main(folders_that_need_updating,
                        plugin_dir=os.path.dirname(__file__)):
     #I'm reusing Peter's code
 
-    # Check if the provided plugin directory exists
+
     if not os.path.isdir(plugin_dir):
+
         print(f"The directory {plugin_dir} does not exist.")
+
         return
 
-    #Iterate through all the folders in the current directory
+
     for root, dirs, files in os.walk(plugin_dir):
+
         for dir_name in dirs:
+
             #Check if directory has the prefix which is our indicator/standard for plugins
             if dir_name.startswith(plugin_prefix):
+
                 if dir_name in folders_that_need_updating:
+
                     print(f'zipping folder {dir_name} ... ')
-                    #Calls separate function in file that checks whether there is a difference between the zipped plugin and the unzipped one in current directory
+
                     if is_archive_folder_different(dir_name):
-                        #uses the zipfile library to write the plugin folder into an archive with the plugin folder name
+
                         zip_file(dir_name)
 
 #Compares a zipped folder to an unzipped folder and should return true if any file is different and false when it's compared all the files and fails to find a difference (the default path is current directory)
@@ -148,20 +157,18 @@ def is_archive_folder_different(folder, directory=os.path.dirname(__file__)):
 #Created a dedicated function to zip files as it might be used later
 #Defaults to the folder being in the working directory
 def zip_file(folder, directory=os.path.dirname(__file__)):
-    #Sets the path to the folder
+
     folder_path = os.path.join(directory, folder)
 
     #Creates a ZipFile instance that creates a .zip using the folder and path
     with zipfile.ZipFile(folder_path + ".zip", mode="w", compression=zipfile.ZIP_LZMA) as archive:
 
-        #Goes through every file in the chosen folder
         for root, dirs, files in os.walk(folder_path):
             for file in files:
                 #writes the file and any parent folder if applicable to the new archive (I got this from stack overflow and it just worked)
                 archive.write(os.path.join(root, file),
                               os.path.relpath(os.path.join(root, file), os.path.join(folder_path, "..")))
 
-    #Prints out that its done its job
     print("zipped: " + folder)
 
 
@@ -172,54 +179,66 @@ def match_xml_version_main(folders_that_need_updating,
                            current_path=os.path.dirname(__file__),
                            update_date=False,
                            increment_all=False):
-    #gets parent directory for xml file path
+
     parent_dir = os.path.dirname(current_path)
     xml_file_path = os.path.join(parent_dir, xml_file_name)
 
-    #ends function early if it cannot find the xml file in the parent folder
     if not os.path.isfile(xml_file_path):
         print("given plugin xml doesn't exist in the parent directory")
         return None
 
-    #uses elementree to read xml data
     tree = ET.parse(xml_file_path)
     root = tree.getroot()
 
     #setting up a conditional boolean on whether to write to the xml file
     change_xml = False
 
-    #increments through all plugins in the xml file
+    plugin_folders_in_dir = check_plugin_folders()
+
+    poppable_folder_list = list(plugin_folders_in_dir.keys())
+
+    # if len(plugin_folders_in_dir) > len(no_of_fields):
+    #     poppable_
+
     for plugin in root.findall("pyqgis_plugin"):
 
-        #obtains the download url (used to identify the plugin name) and its corresponding version in the xml file
         plugin_zip_path = plugin.find('download_url').text
         xml_version = plugin.attrib['version']
 
         #uses the download url zip file name to correspond to the plugin and gets creates a path to it in the current directory
-        plugin_folder = pathlib.Path(plugin_zip_path).stem
+        plugin_folder = Path(plugin_zip_path).stem
+
+        if not plugin_folder in plugin_folders_in_dir:
+            root.remove(plugin)
+            tree.write(xml_file_path)
+            continue
+        else:
+            poppable_folder_list.remove(plugin_folder)
+
         if not plugin_folder in folders_that_need_updating:
             continue
+
         plugin_folder_path = os.path.join(current_path, plugin_folder)
 
-        # creates a metadata.txt path by appending it to the plugin folder path above as every plugin should have a metadata text file
+
         metadata_path = os.path.join(plugin_folder_path, "metadata.txt")
 
-        # prints out plugin name and xml version in the console
+
         print(f"xml version for {plugin_folder}: {xml_version}")
 
         #creates a version string with today's date using the make_version_todays_date function
         xml_date_version = make_version_todays_date(xml_version)
 
-        #checks if the written xml_version is different from the todays
+
         if update_date and Version(xml_version) != Version(xml_date_version):
 
-            #since the xml is different, then the new one needs to be written (setting the boolean to true)
+
             change_xml = True
 
-            #replaces the xml version with current date
+
             xml_version = xml_date_version
 
-            #notifies user about the updated date version
+
             print(f"updated xml version to todays date: {xml_version}")
 
         #setting up a conditional boolean on whether to write to the metadata file
@@ -237,55 +256,51 @@ def match_xml_version_main(folders_that_need_updating,
                 #isolates the line with the plugin's version that we want to check
                 metadata_version = metadata[4][8:-1]
 
-                # prints the plugin name and metadata version in the console
                 print(f"metadata version for {plugin_folder}: {metadata_version}")
 
                 # creates a version string with today's date using the make_version_todays_date function
                 metadata_date_version = make_version_todays_date(metadata_version)
 
-                # checks if the written metadata_version is different from the todays
+
                 if update_date and Version(metadata_version) != Version(metadata_date_version):
 
                     # since the metadata is different, then the new one needs to be written (setting the boolean to true)
                     change_metadata = True
 
-                    # replaces the xml version with current date
                     metadata_version = metadata_date_version
 
-                    # notifies user about the updated date version
                     print(f"updated xml version to todays date: {metadata_version}")
 
                 #if deciding to increment each plugin to save time this calls the function to add one to the right most decimal
                 if increment_all:
+
                     metadata_version = increment_two_decimal_version_string(metadata_version, target_index=-1)
+
                     xml_version = increment_two_decimal_version_string(xml_version, target_index=-1)
+
                     change_xml = True
+
                     change_metadata = True
+
                     print(f"xml incremented: {xml_version} | metadata incremented: {metadata_version} | (highest is used to write)")
 
 
                 #This if statement compares the versions using packaging.version library and decides which value to change based on the larger version
                 if Version(metadata_version) < Version(xml_version):
 
-                    # If metadata's version is less than the xml one, then metadata needs to change
                     change_metadata = True
 
-                    #sets metadata version the the greater to match
                     metadata_version = xml_version
 
-                    #statement in console to show user that the metadata is changed to match the xml
                     print(f"modified metadata for {plugin_folder}\n")
 
 
                 elif Version(metadata_version) > Version(xml_version):
 
-                    #If xml's version is less than the metadata one, then xml needs to change
                     change_xml = True
 
-                    #sets xml version to the greater to match
                     xml_version = metadata_version
 
-                    # statement in console to show user that the xml is changed to match the metadata
                     print(f"modified xml for {plugin_folder}\n")
 
                 else:
@@ -295,7 +310,6 @@ def match_xml_version_main(folders_that_need_updating,
 
                     pass
 
-            #Checks boolean to change metadata
             if change_metadata:
 
                 # Alters the 4th line in metadata (which should be version=x.x.x in the current template) to match xml version
@@ -309,15 +323,87 @@ def match_xml_version_main(folders_that_need_updating,
             #If metadata file doesn't exist, then move on (this else can be omitted)
             pass
 
-        #Checks boolean to change xml
+
         if change_xml:
 
-            # alters the text in the xml "version" attribute to match the metadata version
+            #Alters the text in the xml "version" attribute to match the metadata version
             plugin.set('version', xml_version)
 
             #Overwrites xml file with modified versions for all plugins that have changed (I think this can go outside the for loop so it only writes once, but oh well, I can't be bothered to try and debug)
             tree.write(xml_file_path)
 
+
+
+    for plugin in poppable_folder_list:
+        print(f"Plugin added to xml: {poppable_folder_list}")
+        plugin_folder_path = Path(plugin_folders_in_dir[plugin]).as_posix()
+        add_plugin_in_xml(xml_file_path=xml_file_path, plugin=plugin, plugin_folder_path=plugin_folder_path)
+
+
+def check_plugin_folders(xml_file_name="plugins_leak.xml", current_path=os.path.dirname(__file__), precursor = "PETER_ROSOR"):
+
+    current_path = Path(current_path).as_posix()
+    parent_dir = Path(Path(current_path).parent).as_posix()
+
+    xml_file_path = Path(parent_dir, xml_file_name).as_posix()
+
+    if not os.path.isfile(xml_file_path):
+        print("given plugin xml doesn't exist in the parent directory")
+        return None
+
+    plugin_folders_in_dir = {file.name: file for file in Path(current_path).glob(f"{precursor}*") if file.is_dir()}
+
+    return plugin_folders_in_dir
+
+
+def add_plugin_in_xml(xml_file_path, plugin, plugin_folder_path):
+    tree = ET.parse(xml_file_path)
+    root = tree.getroot()
+
+    metadata_file_path = Path(plugin_folder_path, "metadata.txt").as_posix()
+
+    if not os.path.exists(metadata_file_path):
+        print("metadata file not found")
+        return None
+
+    with open(metadata_file_path,"r") as file:
+        lines = file.readlines()
+
+    name_index = next((i for i, line in enumerate(lines) if line.startswith("name")), None)
+    desc_index = next((i for i, line in enumerate(lines) if line.startswith("description")), None)
+    exp_index = next((i for i, line in enumerate(lines) if line.startswith("experimental")), None)
+
+
+    #this is assuming "name=" takes up 6 characters and \n is always present (I think this can be modular instead of hard coded)
+    plugin_name = lines[name_index][6:-1]
+    plugin_description = lines[desc_index][12:-1]
+    if not exp_index is None:
+        experimental = lines[exp_index][13:]
+    else:
+        experimental = "False"
+
+    temp_name = ".ROSOR " + plugin_name
+    temp_version = make_version_todays_date()
+
+    new_plugin = ET.Element("pyqgis_plugin", {
+        "name": temp_name,
+        "version": temp_version
+    })
+
+    MAIN_REPO_URI = "https://sharj0.github.io"
+    download_zip_path = MAIN_REPO_URI + "/ROSORPlugins/" + plugin + ".zip"
+    plugin_icon_path = MAIN_REPO_URI + "/ROSORPlugins/" + plugin + "/plugin_icon.png"
+
+    ET.SubElement(new_plugin, "qgis_minimum_version").text = "3.0.0"
+    ET.SubElement(new_plugin, "author_name").text = "Pyotyr Young and Sharjeel Awon"
+    ET.SubElement(new_plugin, "icon").text = plugin_icon_path
+    ET.SubElement(new_plugin, "description").text = plugin_description
+    ET.SubElement(new_plugin, "download_url").text = download_zip_path
+    ET.SubElement(new_plugin, "experimental").text = experimental
+
+    root.append(new_plugin)
+
+    tree.write(xml_file_path)
 
 #This function increments numerical version strings with periods as delimiters, the default target increment is the right most value
 def increment_two_decimal_version_string(version="1.0.0", target_index=-1):
@@ -326,19 +412,14 @@ def increment_two_decimal_version_string(version="1.0.0", target_index=-1):
     if (not Version(version)) or target_index > len(version.split(".")):
         return None
 
-    # splits the version string based on the delimiter "." and converts them into an integer array
     version_ints = [int(split_number) for split_number in version.split(".")]
 
-    # incremets the targeted value in the integer array
     version_ints[target_index] += 1
 
-    # converts the integer array into a string array with the incremented numerical
     new_version_str = [str(new_split_number) for new_split_number in version_ints]
 
-    # joins the string array for the new incremented version
     new_version = '.'.join(new_version_str)
 
-    # return the incremented version
     return new_version
 
 
@@ -378,7 +459,6 @@ def make_version_todays_date(version="1.0.0"):
         #create the larger array into a an array full of strings
         new_version_str = [str(new_split_number) for new_split_number in version_ints]
 
-        #join the string array with "." as a delimiter
         new_version = ".".join(new_version_str)
 
         #recurse the appended string through until it meets the array size of 5 (it will continue appending zeros until it meets the first if statement in this nest)
@@ -387,10 +467,8 @@ def make_version_todays_date(version="1.0.0"):
     # converts the integer array into a string array with the incremented numerical
     new_version_str = [str(new_split_number) for new_split_number in version_ints]
 
-    # joins the string array for the new incremented version
     new_version = ".".join(new_version_str)
 
-    # return the incremented version
     return new_version
 
 # Sample function for version update logic
@@ -406,6 +484,8 @@ if __name__ == "__main__":
     print()
     if folders_that_need_updating:
         save_hashes(get_all_current_hashes(), HASH_FILE)
-        print("\n DON'T FORGET TO PUSH TO MAIN" )
+        print("\n DON'T FORGET TO PUSH TO MAIN")
     else:
         print("\n No changes detected in any of the input folders.")
+
+    check_plugin_folders()
