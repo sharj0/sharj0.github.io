@@ -117,6 +117,7 @@ def main(settings_file_path):
                                      tie_line_buffer_distance,
                                      the_rest_of_the_flt_line_gen_params,
                                      the_rest_of_the_tie_line_gen_params)
+
         result, new_flt_lines, new_tie_lines, new_poly = results
     else:
         tie_lines = []

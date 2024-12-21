@@ -1,1 +1,0 @@
-as of the writing of this aug 5th 2024, there should be 6 plugins in this production branch and 8 in the dev branch

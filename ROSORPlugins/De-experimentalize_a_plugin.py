@@ -2,7 +2,7 @@
 import os
 import shutil
 
-target_plugin = r"C:\Users\pyoty\Documents\GitHub\test_braaahnch\sharj0.github.io\ROSORPlugins\PETER_ROSOR_lines_to_flights_exp"
+target_plugin = r"C:\Users\pyoty\Documents\GitHub\test_braaahnch\sharj0.github.io\ROSORPlugins\PETER_ROSOR_flightline_creator_exp"
 
 
 # ------------------------------------------------------------------------------
