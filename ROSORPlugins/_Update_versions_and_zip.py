@@ -527,7 +527,22 @@ def remove_extra_zips_in_folder(rosor_plugins_folder):
             os.remove(zip_path)
             print(f"Zip '{zip_file}' found with no corresponding plugin folder. Deleting the zip.")
 
+
+def delete_unwanted_files(folder_path, unwanted_files_endwith):
+    for root, dirs, files in os.walk(folder_path):
+        for file in files:
+            if file.endswith(unwanted_files_endwith):
+                file_path = os.path.join(root, file)
+                try:
+                    os.remove(file_path)
+                    print(f"Deleted: {file_path}\n")
+                except Exception as e:
+                    print(f"Failed to delete {file_path}: {e}\n")
+
+
 if __name__ == "__main__":
+    delete_unwanted_files(folder_path=os.path.dirname(__file__), unwanted_files_endwith=".drawio.dtmp")
+
     folders_that_need_updating = check_for_changes_and_update_versions()
 
     match_xml_version_main(folders_that_need_updating, xml_file_name="plugins_leak.xml", update_date=True, increment_all=True)
