@@ -14,15 +14,15 @@ from datetime import date
 
 import hashlib
 import json
-
 from pathlib import Path
+from pathspec import PathSpec
 
-#make by sharj 😀 << peter wrote this
+#made by sharj mostly😀 << peter wrote this
 
 HASH_FILE = "detect_changes_with_folder_hashes.json"
 
 # Function to calculate the hash of a folder
-def calculate_folder_hash(folder_path):
+def calculate_folder_hash_old(folder_path):
     sha256 = hashlib.sha256()
     for root, dirs, files in os.walk(folder_path):
         for file in sorted(files):  # Sort files to ensure consistent order
@@ -35,6 +35,36 @@ def calculate_folder_hash(folder_path):
                     sha256.update(chunk)
     return sha256.hexdigest()
 
+
+def calculate_folder_hash(folder_path):
+    # Initialize SHA256 hash object
+    sha256 = hashlib.sha256()
+
+    # Find and parse `.gitignore` files
+    ignore_patterns = []
+    for path in [folder_path, os.path.dirname(folder_path)]:
+        gitignore_path = os.path.join(path, '.gitignore')
+        if os.path.exists(gitignore_path):
+            with open(gitignore_path, 'r') as f:
+                ignore_patterns.extend(f.readlines())
+
+    # Compile the patterns into a PathSpec object
+    spec = PathSpec.from_lines('gitwildmatch', ignore_patterns)
+
+    # Walk through the folder and hash files
+    for root, dirs, files in os.walk(folder_path):
+        # Filter directories and files based on .gitignore rules
+        dirs[:] = [d for d in dirs if not spec.match_file(os.path.relpath(os.path.join(root, d), folder_path))]
+        for file in sorted(files):  # Sort files for consistent order
+            file_path = os.path.relpath(os.path.join(root, file), folder_path)
+            if not spec.match_file(file_path):
+                # Read and hash the file
+                full_file_path = os.path.join(root, file)
+                with open(full_file_path, 'rb') as f:
+                    while chunk := f.read(4096):
+                        sha256.update(chunk)
+
+    return sha256.hexdigest()
 
 # Function to get all current hashes for folders that start with plugin_prefix
 def get_all_current_hashes(plugin_prefix="PETER_ROSOR", plugin_dir=os.path.dirname(__file__)):
