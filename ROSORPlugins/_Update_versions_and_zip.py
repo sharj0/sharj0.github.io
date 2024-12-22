@@ -261,22 +261,18 @@ def match_xml_version_main(folders_that_need_updating,
 
 
         if update_date and Version(xml_version) != Version(xml_date_version):
-
-
             change_xml = True
-
-
             xml_version = xml_date_version
-
-
             #print(f"updated xml version to todays date: {xml_version}")
 
         #setting up a conditional boolean on whether to write to the metadata file
         change_metadata = False
 
-        #checks if metadata.txt exists in the plugin folder (if it fails it means either metadata.txt is missing or the plugin folder is missing) (two birds one stone, but bad for debugging)
-        if os.path.exists(metadata_path):
+        # checks if metadata.txt exists in the plugin folder
+        if not os.path.exists(metadata_path):
+            raise "metadata file doesn't exist in the plugin, please add one"
 
+        else:
             #opening the metadata text file in reading mode (I tried using read and write at once, but was unable to replace the original text)
             with open(metadata_path, mode="r") as metadata_file:
 
@@ -312,10 +308,6 @@ def match_xml_version_main(folders_that_need_updating,
 
                     change_metadata = True
 
-                    print(f'For {plugin_folder}')
-                    print(f"xml incremented: {xml_version_old} -> {xml_version}")
-                    print(f"metadata incremented: {metadata_version_old} -> {metadata_version}")
-
                 #This if statement compares the versions using packaging.version library and decides which value to change based on the larger version
                 if Version(metadata_version) < Version(xml_version):
 
@@ -323,7 +315,7 @@ def match_xml_version_main(folders_that_need_updating,
 
                     metadata_version = xml_version
 
-                    print(f"modified metadata for {plugin_folder}\n")
+                    #print(f"modified metadata for {plugin_folder}\n")
 
 
                 elif Version(metadata_version) > Version(xml_version):
@@ -332,13 +324,13 @@ def match_xml_version_main(folders_that_need_updating,
 
                     xml_version = metadata_version
 
-                    print(f"modified xml for {plugin_folder}\n")
+                    #print(f"modified xml for {plugin_folder}\n")
 
                 else:
 
                     #If both version are the same, then do nothing and print to console that nothing was modified (both booleans stay false)
                     #print(f"versions match for {plugin_folder}\n")
-                    print()
+
                     pass
 
             if change_metadata:
@@ -350,11 +342,7 @@ def match_xml_version_main(folders_that_need_updating,
                 with open(metadata_path, mode="w") as metadata_file:
                     metadata_file.writelines(metadata)
 
-        else:
-            #If metadata file doesn't exist, then move on (this else can be omitted)
-            pass
-
-
+        print(f'For {plugin_folder}')
         if change_xml:
 
             #Alters the text in the xml "version" attribute to match the metadata version
@@ -362,17 +350,19 @@ def match_xml_version_main(folders_that_need_updating,
 
             #Overwrites xml file with modified versions for all plugins that have changed (I think this can go outside the for loop so it only writes once, but oh well, I can't be bothered to try and debug)
             tree.write(xml_file_path)
+            print(f"xml incremented: {xml_version_old} -> {xml_version}")
 
-
+        if change_metadata:
+            print(f"metadata incremented: {metadata_version_old} -> {metadata_version}")
+        print() #new line, to look good
 
     for plugin in poppable_folder_list:
-        print(f"Plugin added to xml: {poppable_folder_list}")
+        print(f"New lugin added to xml: {poppable_folder_list}")
         plugin_folder_path = Path(plugin_folders_in_dir[plugin]).as_posix()
         add_plugin_in_xml(xml_file_path=xml_file_path, plugin=plugin, plugin_folder_path=plugin_folder_path)
 
 
 def check_plugin_folders(xml_file_name="plugins_leak.xml", current_path=os.path.dirname(__file__), precursor = "PETER_ROSOR"):
-
     current_path = Path(current_path).as_posix()
     parent_dir = Path(Path(current_path).parent).as_posix()
 

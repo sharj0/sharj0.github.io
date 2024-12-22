@@ -123,13 +123,15 @@ def line_geometries_to_kml(geometries, output_kml_path, crs):
 
         # Extract the points from the transformed geometry
         points = geom.asPolyline()
-        coords_str = " ".join([f"{point.x()},{point.y()}" for point in points])  # Note: KML uses y,x ordering
+        coords_str = " ".join([f"{point.x()},{point.y()},0" for point in points])  
 
         # Add the line to the KML content
         kml_content += f'''
     <Placemark>
         <styleUrl>#redLine</styleUrl>
         <LineString>
+            <altitudeMode>clampToGround</altitudeMode> <!-- This is set my default I think -->
+            <tessellate>1</tessellate> <!-- This tells google earth to add hidden points along path to make the path terrain follow -->
             <coordinates>{coords_str}</coordinates>
         </LineString>
     </Placemark>'''
