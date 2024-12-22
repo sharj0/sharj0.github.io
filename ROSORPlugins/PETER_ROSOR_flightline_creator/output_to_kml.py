@@ -101,6 +101,8 @@ def output_swaths_to_kml(swaths_shp_path, output_swaths_kml_path):
     print(f'success swath kml written{output_swaths_kml_path}')
 
 
+
+
 def line_geometries_to_kml(geometries, output_kml_path, crs):
     # Define the target CRS as WGS 84 (EPSG:4326)
     target_crs = QgsCoordinateReferenceSystem("EPSG:4326")
@@ -123,15 +125,13 @@ def line_geometries_to_kml(geometries, output_kml_path, crs):
 
         # Extract the points from the transformed geometry
         points = geom.asPolyline()
-        coords_str = " ".join([f"{point.x()},{point.y()},0" for point in points])  
+        coords_str = " ".join([f"{point.x()},{point.y()}" for point in points])  # Note: KML uses y,x ordering
 
         # Add the line to the KML content
         kml_content += f'''
     <Placemark>
         <styleUrl>#redLine</styleUrl>
         <LineString>
-            <altitudeMode>clampToGround</altitudeMode> <!-- This is set my default I think -->
-            <tessellate>1</tessellate> <!-- This tells google earth to add hidden points along path to make the path terrain follow -->
             <coordinates>{coords_str}</coordinates>
         </LineString>
     </Placemark>'''
@@ -144,6 +144,7 @@ def line_geometries_to_kml(geometries, output_kml_path, crs):
     # Write the KML content to a file
     with open(output_kml_path, 'w') as file:
         file.write(kml_content)
+
 
 
 def save_kml_polygon(new_poly_shapley, output_kml_path, crs):

@@ -496,12 +496,46 @@ def make_version_todays_date(version="1.0.0"):
 def update_version_logic(plugin_folder):
     print(f"Running version update logic for {plugin_folder}")
 
+def remove_extra_zips_in_folder(rosor_plugins_folder):
+    """
+    Removes zip files in the specified folder if no corresponding folder exists with the same name.
+
+    Parameters:
+        rosor_plugins_folder (str): Path to the folder containing zip files and plugin folders.
+    """
+    # Ensure the folder exists
+    if not os.path.isdir(rosor_plugins_folder):
+        print(f"The folder '{rosor_plugins_folder}' does not exist.")
+        return
+
+    # List all items in the directory
+    items = os.listdir(rosor_plugins_folder)
+
+    # Separate zip files and directories
+    zip_files = [item for item in items if item.endswith('.zip')]
+    directories = [item for item in items if os.path.isdir(os.path.join(rosor_plugins_folder, item))]
+
+    # Iterate through zip files and check for corresponding directories
+    for zip_file in zip_files:
+        # Remove the '.zip' extension to find the corresponding folder name
+        folder_name = os.path.splitext(zip_file)[0]
+
+        # Check if the corresponding folder exists
+        if folder_name not in directories:
+            # If the folder does not exist, delete the zip file
+            zip_path = os.path.join(rosor_plugins_folder, zip_file)
+            os.remove(zip_path)
+            print(f"Zip '{zip_file}' found with no corresponding plugin folder. Deleting the zip.")
+
 if __name__ == "__main__":
     folders_that_need_updating = check_for_changes_and_update_versions()
-    print()
+
     match_xml_version_main(folders_that_need_updating, xml_file_name="plugins_leak.xml", update_date=True, increment_all=True)
 
     autozip_files_main(folders_that_need_updating)
+
+    remove_extra_zips_in_folder(os.path.dirname(__file__))
+
     print()
     if folders_that_need_updating:
         save_hashes(get_all_current_hashes(), HASH_FILE)
