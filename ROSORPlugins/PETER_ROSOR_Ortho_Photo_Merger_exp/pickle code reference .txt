@@ -1,0 +1,81 @@
+    load_from_pickle = False
+    if not load_from_pickle:
+        variables_to_save = {
+            "save_base": save_base,
+            "output_files": output_files,
+            "output_folder": output_folder,
+            "proj": proj,
+            "gt1": gt1,
+            "gt2": gt2,
+            "cut_shifted_1": cut_shifted_1,
+            "cut_shifted_2": cut_shifted_2,
+            "keep_dir_unit_vector_1": keep_dir_unit_vector_1,
+            "keep_dir_unit_vector_2": keep_dir_unit_vector_2,
+            "keep_mask_1" : keep_mask_1,
+            "keep_mask_2" : keep_mask_2,
+            "out_mask_path_1" : out_mask_path_1,
+            "out_mask_path_2" : out_mask_path_2
+            # Add other variables as needed
+        }
+        with open("E:\pichette\pickle.pkl", 'wb') as f:
+            pickle.dump(variables_to_save, f)
+            print('saved_pickl')
+
+    if load_from_pickle:
+        # Load variables from the pickle file
+        with open(r"E:\pichette\pickle.pkl", 'rb') as f:
+            loaded_variables = pickle.load(f)
+            print('loaded_pickl')
+
+        # Update the current namespace with the loaded variables
+        for var_name, value in loaded_variables.items():
+            locals()[var_name] = value
+
+        save_base = loaded_variables.get("save_base", None)
+        output_files = loaded_variables.get("output_files", None)
+        output_folder = loaded_variables.get("output_folder", None)
+        proj = loaded_variables.get("proj", None)
+        gt1 = loaded_variables.get("gt1", None)
+        gt2 = loaded_variables.get("gt2", None)
+        cut_shifted_1 = loaded_variables.get("cut_shifted_1", None)
+        cut_shifted_2 = loaded_variables.get("cut_shifted_2", None)
+        keep_dir_unit_vector_1 = loaded_variables.get("keep_dir_unit_vector_1", None)
+        keep_dir_unit_vector_2 = loaded_variables.get("keep_dir_unit_vector_2", None)
+        keep_mask_1 = loaded_variables.get("keep_mask_1", None)
+        keep_mask_2 = loaded_variables.get("keep_mask_2", None)
+        out_mask_path_1 = loaded_variables.get("out_mask_path_1", None)
+        out_mask_path_2 = loaded_variables.get("out_mask_path_2", None)
+
+    print(f'{keep_mask_1=}')
+    print(f'{keep_mask_2=}')
+
+#
+    #merged_out_path = save_base + "_merged.tiff"
+#
+    #masked_data1 = apply_mask(stacked_data1, keep_mask_1)
+    #masked_data2 = apply_mask(stacked_data2, keep_mask_2)
+#
+    #print(masked_data1)
+
+    #merged_out_path = save_base + "_merged.tiff"
+    #merged_data = merge_rasters_with_mask(stacked_data_out_1, stacked_data_out_2, gt1, gt2, footprint_geotransform,
+    #                                      footprint_mask.shape)
+#
+    ## plot_array(merged_data, title="merged_data", cmap="gray")
+#
+    #save_output_to_raster(merged_data, merged_out_path, footprint_geotransform, proj)
+#
+    #load_mask_into_qgis(merged_out_path)
+    #load_mask_into_qgis(path_preference_path)
+    #load_mask_into_qgis(pixels_along_centreline_mask_path)
+    #load_mask_into_qgis(cut_path_mask_path)
+#
+    #end_time = time.time()
+    #execution_time = end_time - start_time
+    #csv_file_path = save_base + "_metrics.csv"
+    #save_metrics_to_csv(csv_file_path, execution_time, size_of_all_inputs_gb, target_GSD_cm)
+    #get_time_sofar(start_time, 'ALL')
+#
+    #plugin_tools.show_information(f" ALL DONE {merged_out_path=}")
+    ##plugin_tools.show_error(" NOT ACTUALLY AN EROROROR, JUST TESTING TEMPLATE ")
+    ##plotting.plot_stuff([1, 2], [3, 4])

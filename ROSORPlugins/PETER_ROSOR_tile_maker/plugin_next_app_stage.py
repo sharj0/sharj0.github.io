@@ -15,7 +15,6 @@ def main(settings_path):
 
     settings_dict = None # don't use settings_dict from here on
 
-
     plugin_tools.show_information(f"JUST TESTING TEMPLATE {executable_path=}")
     #plugin_tools.show_error(" NOT ACTUALLY AN EROROROR, JUST TESTING TEMPLATE ")
     #plotting.plot_stuff([1, 2], [3, 4])
