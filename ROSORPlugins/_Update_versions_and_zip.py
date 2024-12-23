@@ -42,11 +42,11 @@ def calculate_folder_hash(folder_path):
 
     # Find and parse `.gitignore` files
     ignore_patterns = []
-    for path in [folder_path, os.path.dirname(folder_path)]:
-        gitignore_path = os.path.join(path, '.gitignore')
-        if os.path.exists(gitignore_path):
-            with open(gitignore_path, 'r') as f:
-                ignore_patterns.extend(f.readlines())
+
+    gitignore_path = os.path.join(os.path.dirname(folder_path), '.gitignore')
+    if os.path.exists(gitignore_path):
+        with open(gitignore_path, 'r') as f:
+            ignore_patterns.extend(f.readlines())
 
     # Compile the patterns into a PathSpec object
     spec = PathSpec.from_lines('gitwildmatch', ignore_patterns)
@@ -342,7 +342,7 @@ def match_xml_version_main(folders_that_need_updating,
                 with open(metadata_path, mode="w") as metadata_file:
                     metadata_file.writelines(metadata)
 
-        print(f'For {plugin_folder}')
+        print(f'\nFor {plugin_folder}')
         if change_xml:
 
             #Alters the text in the xml "version" attribute to match the metadata version
