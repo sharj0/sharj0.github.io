@@ -114,7 +114,6 @@ def line_geometries_to_kml(geometries, output_kml_path, crs):
 <Document>
     <Style id="redLine">
         <LineStyle>
-            <tessellate>1</tessellate>
             <color>ff0000ff</color>
             <width>4</width>
         </LineStyle>
@@ -133,6 +132,7 @@ def line_geometries_to_kml(geometries, output_kml_path, crs):
     <Placemark>
         <styleUrl>#redLine</styleUrl>
         <LineString>
+            <tessellate>1</tessellate>
             <coordinates>{coords_str}</coordinates>
         </LineString>
     </Placemark>'''
