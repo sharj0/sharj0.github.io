@@ -5,8 +5,6 @@ from lxml import etree
 """CHANGE THIS STRING FOR BRANCH NAME (DO NOT PUT ANY SLASHES)"""
 branch_name_string = "sharj_split_flightline_creator"
 
-
-
 URI_HEAD_STRING = "https://raw.githubusercontent.com"
 REPO_USER_STRING = "sharj0"
 REPO_NAME_STRING = "sharj0.github.io"
@@ -43,7 +41,7 @@ def convert_xml_paths_to_branch(xml_file_path=(Path(__file__).parent / "plugins_
 
             plugin.find("download_url").text = new_plugin_zip_path
             plugin.find("icon").text = new_plugin_icon_path
-            print(f"XML Name: {new_name}  | ZIP PATH: {new_plugin_zip_path}")
+            print(f"XML Name: {new_name} | ZIP PATH: {new_plugin_zip_path}")
 
     tree.write(xml_file_path, pretty_print=True, xml_declaration=False, encoding="UTF-8")
 
