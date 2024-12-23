@@ -1,7 +1,12 @@
 import os
 import shutil
+from pathlib import Path
 
-target_plugin = r"C:\Users\pyoty\Documents\GitHub\test_braaahnch\sharj0.github.io\ROSORPlugins\PETER_ROSOR_Ortho_Photo_Merger"
+plugin_file_name = r"PETER_ROSOR_flightline_creator"
+
+parent_dir = Path(Path(__file__).resolve().parent).as_posix()
+
+target_plugin = Path(parent_dir, plugin_file_name).as_posix()
 
 # ------------------------------------------------------------------------------
 # This function checks if a string ends in "exp" or "experimental" (any case).
