@@ -5,7 +5,7 @@ def get_swath_kml_representation(indx, coords_lonlat):
     kml_text = f'\n    <Placemark> <name> swath_{indx} </name> ' \
                f'\n    <open> 1 </open> ' \
                f'\n    <styleUrl> #msn_ylw-pushpin</styleUrl>' \
-               f'\n    <Polygon> <outerBoundaryIs> <LinearRing> <coordinates> ' \
+               f'\n    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> ' \
                f'\n    {coords_lonlat[0][0]},{coords_lonlat[0][1]} ' \
                f'\n    {coords_lonlat[1][0]},{coords_lonlat[1][1]} ' \
                f'\n    {coords_lonlat[2][0]},{coords_lonlat[2][1]} ' \
@@ -178,6 +178,7 @@ def save_kml_polygon(new_poly_shapley, output_kml_path, crs):
     <Placemark>
         <styleUrl>#orangeOutline</styleUrl>
         <Polygon>
+            <tessellate>1</tessellate>
             <outerBoundaryIs>
                 <LinearRing>
                     <coordinates>{coords_str}</coordinates>
