@@ -31,7 +31,7 @@ class NoScrollQComboBox(QComboBox):
         pass
 
 
-def run(next_app_stage, settings_folder, skip=False, windowtitle=plugin_tools.get_plugin_name()):
+def run(next_app_stage, settings_folder, skip=False, windowtitle=plugin_tools.get_plugin_name()+'       v'+plugin_tools.get_plugin_version()):
     # Get the directory containing the current Python file.
     # This would be the path to the 'PETER_ROSOR_QGIS_PLUGIN' folder.
     plugin_dir = os.path.dirname(os.path.abspath(__file__))

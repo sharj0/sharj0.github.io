@@ -1,7 +1,8 @@
 import os
 import shutil
 
-file_to_spread = r"D:\ROSOR\sharj0.github.io\ROSORPlugins\PETER_ROSOR_mag_clipper\plugin_tools.py"
+file_to_spread = r"C:\Users\pyoty\Documents\GitHub\test_braaahnch\sharj0.github.io\ROSORPlugins\PETER_ROSOR_flightline_creator\plugin_change_settings.py"
+
 
 def replace_file_in_all_plugins(file_to_spread,
                                 plugin_prefix='PETER_ROSOR_',

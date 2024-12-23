@@ -73,6 +73,26 @@ def get_plugin_name():
     # If the name= line is not found, raise an error
     raise ValueError("name= not found in metadata.txt")
 
+def get_plugin_version():
+    # Get the directory containing the current file
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # Path to the metadata.txt file
+    metadata_file_path = os.path.join(current_dir, 'metadata.txt')
+
+    # Open the file and search for the name=
+    with open(metadata_file_path, 'r') as file:
+        for line in file:
+            # Remove any leading or trailing whitespace from the line
+            line = line.strip()
+            if line.startswith('version='):
+                return line[len('version='):].strip()
+            elif line.startswith('version ='):
+                return line[len('version ='):].strip()
+
+    # If the name= line is not found, raise an error
+    raise ValueError("name= not found in metadata.txt")
+
 def show_error(mesage):
     msg = QMessageBox()
     msg.setIcon(QMessageBox.Critical)

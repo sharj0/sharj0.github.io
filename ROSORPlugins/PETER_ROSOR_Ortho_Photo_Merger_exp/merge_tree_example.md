@@ -1,0 +1,27 @@
+- 5,1
+  - 4,1mr
+    - 2,1mr
+      - 1,1mr
+        - E:\pichette\pichette out\UNMERGED_aligned_5_GSD_holes_filled\TOF_1_S.tiff
+        - E:\pichette\pichette out\UNMERGED_aligned_5_GSD_holes_filled\TOF_2_S_flt_1_to_14_pix_4D-orthomosaic.tiff
+      - E:\pichette\pichette out\UNMERGED_aligned_5_GSD_holes_filled\TOF_1_N.tiff
+    - 3,1mr
+      - 2,3mr
+        - 1,3mr
+          - E:\pichette\pichette out\UNMERGED_aligned_5_GSD_holes_filled\TOF_3_S_flts_1-10-orthomosaic.tiff
+          - E:\pichette\pichette out\UNMERGED_aligned_5_GSD_holes_filled\TOF_3_S_flts_11-20-orthomosaic.tiff
+        - E:\pichette\pichette out\UNMERGED_aligned_5_GSD_holes_filled\TOF_2_S_flt_15_to_28_pix_4D-orthomosaic2.tiff
+      - 2,2mr
+        - 1,2mr
+          - E:\pichette\pichette out\UNMERGED_aligned_5_GSD_holes_filled\TOF_2_N_1_to_10-orthomosaic.tiff
+          - E:\pichette\pichette out\UNMERGED_aligned_5_GSD_holes_filled\TOF_2_N_11_to_20-orthomosaic.tiff
+        - E:\pichette\pichette out\UNMERGED_aligned_5_GSD_holes_filled\TOF_3_North-orthomosaic.tiff
+  - 3,2mr
+    - 2,4mr
+      - 1,4mr
+        - E:\pichette\pichette out\UNMERGED_aligned_5_GSD_holes_filled\TOF_3_S_flts_21_to_30_pix-orthomosaic.tiff
+        - E:\pichette\pichette out\UNMERGED_aligned_5_GSD_holes_filled\TOF_4_S_flt_1_to_12-orthomosaic.tiff
+      - 1,5mr
+        - E:\pichette\pichette out\UNMERGED_aligned_5_GSD_holes_filled\TOF4_S_FLTs_13_to_26-orthomosaic.tiff
+        - E:\pichette\pichette out\UNMERGED_aligned_5_GSD_holes_filled\TOF4_S_flt_27_to_38-orthomosaic.tiff
+    - E:\pichette\pichette out\UNMERGED_aligned_5_GSD_holes_filled\TOF_4_North_pix-orthomosaic.tiff

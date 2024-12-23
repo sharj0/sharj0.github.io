@@ -1,0 +1,32 @@
+flowchart LR
+    5_1[5,1] --- 4_1mr[4,1mr] & 3_2mr[3,2mr]
+    4_1mr --- 2_1mr[2,1mr] & 3_1mr[3,1mr]
+    3_1mr --- 2_3mr[2,3mr] & 2_2mr[2,2mr]
+    2_1mr --- 1_1mr[1,1mr] & TOF_1_N[TOF_1_N]
+    1_1mr --- TOF_1_S[TOF_1_S] & TOF_2_S_flt_1_14[TOF_2_S_flt_1_to_14_pix_4D-orthomosaic]
+    2_3mr --- 1_3mr[1,3mr] & TOF_2_S_flt_15_28[TOF_2_S_flt_15_to_28_pix_4D-orthomosaic2]
+    1_3mr --- TOF_3_S_1_10[TOF_3_S_flts_1-10-orthomosaic] & TOF_3_S_11_20[TOF_3_S_flts_11-20-orthomosaic]
+    2_2mr --- 1_2mr[1,2mr] & TOF_3_North[TOF_3_North-orthomosaic]
+    1_2mr --- TOF_2_N_1_10[TOF_2_N_1_to_10-orthomosaic] & TOF_2_N_11_20[TOF_2_N_11_to_20-orthomosaic]
+    3_2mr --- 2_4mr[2_4mr] & TOF_4_North[TOF_4_North_pix-orthomosaic]
+    2_4mr --- 1_4mr[1,4mr] & 1_5mr[1,5mr]
+    1_4mr --- TOF_3_S_21_30[TOF_3_S_flts_21_to_30_pix-orthomosaic] & TOF_4_S_1_12[TOF_4_S_flt_1_to_12-orthomosaic]
+    1_5mr --- TOF4_S_13_26[TOF4_S_FLTs_13_to_26-orthomosaic] & TOF4_S_27_38[TOF4_S_flt_27_to_38-orthomosaic]
+
+    %% Force TOF nodes to the far right
+    subgraph AlignRight
+        TOF_1_N
+        TOF_1_S
+        TOF_2_S_flt_1_14
+        TOF_2_S_flt_15_28
+        TOF_3_S_1_10
+        TOF_3_S_11_20
+        TOF_3_North
+        TOF_2_N_1_10
+        TOF_2_N_11_20
+        TOF_4_North
+        TOF_3_S_21_30
+        TOF_4_S_1_12
+        TOF4_S_13_26
+        TOF4_S_27_38
+    end

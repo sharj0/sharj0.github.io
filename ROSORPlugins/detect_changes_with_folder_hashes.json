@@ -1,13 +1,13 @@
 {
-    "PETER_ROSOR_alt_embedder": "9ed06065dbb15f60a1b25ca7f1124193e280cbf52381ecab3f81c985256c3d57",
-    "PETER_ROSOR_base_mag_qaqc": "1c3509106bcfe19514c86ceb41e45127737dde875c8a91d29f17d4f58a61babe",
-    "PETER_ROSOR_flightline_creator": "d040eb03b48cc5cb4dee7da17429eea6830b3b1c714c93b9283a06a09296e3cb",
-    "PETER_ROSOR_flightline_creator_experimental": "06e72783699126f8c6e7e4cf2f69fb3abdafaab4d8f24284b030b98584a85eab",
-    "PETER_ROSOR_import_csv": "30089f11fb8e8f7029c207346b133f0b346a899502b7dde864512ebba381e9b7",
-    "PETER_ROSOR_import_kml": "10cc9d82cf58a5e65f12d03a97d33136f6793d5f341bdcf59e7f054ea688c5dc",
-    "PETER_ROSOR_lines_to_flights": "dd2be336fd80e56e38c76fd7b24675df84f29ad41ebdfe7ff4a1928a47c96ef6",
-    "PETER_ROSOR_mag_clipper": "d94f9e9770b0ce1583846b18aa8b9da696139ce13c9d7e3253d258214e1c0b4b",
-    "PETER_ROSOR_plugin_template": "aa85d33bc06faf479ddd4fd020245e0c7cd4580b82a2d539366a786f095dd7b9",
-    "PETER_ROSOR_slope_analyser": "97b9c09697abbc0c286b3964655052b909667df5a8b47cec2f309598a19a7f28",
-    "PETER_ROSOR_tile_maker": "9042559294ff1be16ad35bac8fc97000b62246bc769779764fcd8be17dd071a4"
+    "PETER_ROSOR_alt_embedder": "04a8b451ea58f8de72294076364aae35c332bb83e7314552664d79ee2f25eb31",
+    "PETER_ROSOR_base_mag_qaqc": "5c1b675d3ad805b14e9a8955646d8b1e7f95021771b0c8498a05e82e021e8c7d",
+    "PETER_ROSOR_flightline_creator": "9cc6fb8ac0985575fadedff7e46a33222ffb0f3372ff6da5d7c4cd6add744b13",
+    "PETER_ROSOR_import_csv": "1ed9fee11748a958b93b8d7a95fe66c8dea105e799ffb7f687906d775a818f1c",
+    "PETER_ROSOR_import_kml": "ac2fbeb4aa108f553e3662635d4af9b0287a996db7bf03e28efd2b7a12cbddc7",
+    "PETER_ROSOR_lines_to_flights_exp": "22e0e5450215f59e87880a61e3313f4eeaf274cb304cac82dc4c92c6a0036a05",
+    "PETER_ROSOR_mag_clipper": "417f92676d31687260ab23e4f5314771548ef36d356efb12298bcf1726ae3708",
+    "PETER_ROSOR_Ortho_Photo_Merger_exp": "9878e629c15987afa8f946b94e60d1424746c05f26a4ab8b558030fa3abec1ac",
+    "PETER_ROSOR_plugin_template": "1f29a2a3a946c0d5b0651a7442320195c020228b630a6a63679dff8dc260938f",
+    "PETER_ROSOR_slope_analyser": "13fdd47c7f71dcfb99f7dd7d39b13ca1ca16f978473ba56b31b715986a16ba79",
+    "PETER_ROSOR_tile_maker": "4a35605ff1144bb78bc906347d8ec79e4df09891213362c6bfd38fc783325daa"
 }

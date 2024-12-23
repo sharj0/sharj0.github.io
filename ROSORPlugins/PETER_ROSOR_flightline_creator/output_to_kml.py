@@ -101,6 +101,8 @@ def output_swaths_to_kml(swaths_shp_path, output_swaths_kml_path):
     print(f'success swath kml written{output_swaths_kml_path}')
 
 
+
+
 def line_geometries_to_kml(geometries, output_kml_path, crs):
     # Define the target CRS as WGS 84 (EPSG:4326)
     target_crs = QgsCoordinateReferenceSystem("EPSG:4326")
@@ -142,6 +144,7 @@ def line_geometries_to_kml(geometries, output_kml_path, crs):
     # Write the KML content to a file
     with open(output_kml_path, 'w') as file:
         file.write(kml_content)
+
 
 
 def save_kml_polygon(new_poly_shapley, output_kml_path, crs):
