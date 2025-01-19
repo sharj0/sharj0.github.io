@@ -115,7 +115,7 @@ def line_geometries_to_kml(geometries, output_kml_path, crs):
     <Style id="redLine">
         <LineStyle>
             <color>ff0000ff</color>
-            <width>4</width>
+            <width>2</width>
         </LineStyle>
     </Style>'''
 
