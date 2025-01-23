@@ -2,7 +2,7 @@ import os
 import shutil
 from pathlib import Path
 
-plugin_file_name = r"PETER_ROSOR_flightline_creator"
+plugin_file_name = r"PETER_ROSOR_noties_flightline_creator"
 
 parent_dir = Path(Path(__file__).resolve().parent).as_posix()
 

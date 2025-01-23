@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>Priority 1 extra.kml</name>
+	<Style id="falseColor">
+		<IconStyle>
+			<color>ffe7ebef</color>
+		</IconStyle>
+		<BalloonStyle>
+			<text><![CDATA[<table border="0">
+  <tr><td><b>ID</b></td><td>$[Magnetic_area/ID]</td></tr>
+  <tr><td><b>area</b></td><td>$[Magnetic_area/area]</td></tr>
+</table>
+]]></text>
+		</BalloonStyle>
+		<ListStyle>
+		</ListStyle>
+		<LineStyle>
+			<color>ff00aaff</color>
+			<width>5</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>6600aaff</color>
+		</PolyStyle>
+		<gx:IconStackStyle>
+		</gx:IconStackStyle>
+	</Style>
+	<StyleMap id="falseColor0">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#falseColor1</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#falseColor</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="falseColor1">
+		<IconStyle>
+			<color>ffe7ebef</color>
+		</IconStyle>
+		<BalloonStyle>
+			<text><![CDATA[<table border="0">
+  <tr><td><b>ID</b></td><td>$[Magnetic_area/ID]</td></tr>
+  <tr><td><b>area</b></td><td>$[Magnetic_area/area]</td></tr>
+</table>
+]]></text>
+		</BalloonStyle>
+		<ListStyle>
+		</ListStyle>
+		<LineStyle>
+			<color>ff00aaff</color>
+			<width>5</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>6600aaff</color>
+		</PolyStyle>
+		<gx:IconStackStyle>
+		</gx:IconStackStyle>
+	</Style>
+	<Placemark>
+		<name>Priority 1 extra</name>
+		<open>1</open>
+		<styleUrl>#falseColor0</styleUrl>
+		<Polygon>
+			<tessellate>1</tessellate>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-130.6660702050678,61.43147822930442,0 -130.6659112619242,61.42786237099455,0 -130.6079647324242,61.42802027781669,0 -130.6079298709261,61.43310683391461,0 -130.6178222195644,61.43310812672051,0 -130.6179015288475,61.44637999076518,0 -130.6230674530551,61.45270939550849,0 -130.6541811029079,61.4468859104292,0 -130.6760883411313,61.44691710642215,0 -130.6762420786977,61.45280566010368,0 -130.6843937500136,61.45277775678456,0 -130.6833923046472,61.43159019820145,0 -130.6660702050678,61.43147822930442,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+</Document>
+</kml>
