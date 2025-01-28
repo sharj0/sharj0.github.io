@@ -24,6 +24,9 @@ from . import plugin_load_settings
 from . import plugin_tools
 from . import plotting
 
+
+
+
 def main(settings_path):
     """Entry point for the plugin."""
     settings_dict = plugin_load_settings.run(settings_path)
@@ -56,8 +59,6 @@ def main(settings_path):
     # Optionally show a message to user
     #plugin_tools.show_information("Hover over polygons to highlight; click to select.\n"
     #                              "When you have one feature selected, click a *different* feature to merge.")
-
-
 
 def hide_layer_by_path(shapefile_path):
     """

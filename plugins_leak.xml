@@ -78,7 +78,7 @@
     <experimental>True</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Tile Maker" version="1.2025.1.28.2">
+  <pyqgis_plugin name=".ROSOR Tile Maker" version="1.2025.1.28.3">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_tile_maker/plugin_icon.png</icon>

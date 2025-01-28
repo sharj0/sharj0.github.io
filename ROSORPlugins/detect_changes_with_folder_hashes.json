@@ -2667,8 +2667,7 @@
         "tutorial_vids\\intro.mp4": "73f63b466595ec170f0905ad402f6fbde35a9bd73f1a20220d74ca37635c289d"
     },
     "PETER_ROSOR_tile_maker": {
-        "delete_me.py": "d5de9c5bd36ca3a1c053e975987c18da8f0075384cb2e058df99391cb9bee46d",
-        "metadata.txt": "6bc9fa1b123730113671b46f546f52f040692ba63f76a7615a42010150106f2b",
+        "metadata.txt": "d3a5a2a3bbd58cc825aa38806fcd34bb8e9b034b1197345f2603792493224fc1",
         "plotting.py": "6d4e31b03c5a742c9bdef0f92579bdc93ef304249c92fc582966bc48cbaadb49",
         "plugin_add_custom_buttons.py": "e9c7fb981a30846b6584412d8a0c4262e5de0ce80793b4f7b5d049ebc27317a6",
         "plugin_change_settings.py": "f1f92cd8d621e8697835419fd92357276205d0b79540c1c78ea9abad630f0efa",
@@ -2677,7 +2676,7 @@
         "plugin_icon_exp.png": "85d033a7801db228f00548cce0efd67b630e52ccc589ba4de71a3c343793d90b",
         "plugin_icon_non_exp.png": "c8fdf27eaa0c4913a644a662eb09086fcc15afdc1e4498fe4ca2e16a770c508f",
         "plugin_load_settings.py": "9bf5abbdb4def8e8f2963e0d6705f7f477cb83db7e5829f03305dec64b58d8c4",
-        "plugin_next_app_stage.py": "c026419371572a6ea3d8fef655594c99de1d6538a0a815a9087412eea139ac62",
+        "plugin_next_app_stage.py": "2777d1f05d72183b760a7c9c89d8a7f1aa44ef372cb88022d32519efd263787e",
         "plugin_qgis_module.py": "7003467f9972921b2917bee0b284cf3f3d1835b8ae789c427e3e39e368a35d5b",
         "Plugin_run_location.txt": "4560364dfac699b43a80426f3bd66afe0cb2b2a512a8a006080808b961b918e6",
         "plugin_settings_suffixes.py": "6386b947887dc12087b80b5dccbd79ac46e5379dd6e7a7a15346891ba5dfd865",
