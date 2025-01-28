@@ -1,29 +1,8 @@
 {
-    "Teszding_RADIO": {
-        "option1": false,
-        "option2": false,
-        "option3": true
-    },
-    "Teszding2_RADIO": {
-        "option4": false,
-        "option5": false
-    },
-    "Teszding2_VIDEO": "Survey_Manager_exe_path_VIDEO.mp4",
-    "First Time Setup": {
-        "Survey_Manager_exe_path": "C:\\Users\\pyoty\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\exclude.txt",
-        "Survey_Manager_exe_path_SELECT_FILE": "true",
-        "Survey_Manager_exe_path_COMMENT": "Survey Manager app opens \".magdata\" files. It can be downloaded https://www.geometrics.com/product/magarrow/",
-        "Survey_Manager_exe_path_VIDEO": "Survey_Manager_exe_path_VIDEO.mp4",
-        "test_boolean_with_vid": true,
-        "test_boolean_with_vid_VIDEO": "Survey_Manager_exe_path_VIDEO.mp4"
-    },
-    "Input files": {
-        "Magdata_folder_path": "C:\\Users\\pyoty\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_plugin_template",
-        "Magdata_folder_path_SELECT_FOLDER": "true",
-        "Magdata_folder_path_COMMENT": "A \".magdata\" file is downloaded from the MagArrow sensor and is turned into a \".csv\" file by this app",
-        "Flight_lines_file_path": "C:\\Users\\pyoty\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_plugin_template\\vid_icon.png",
-        "Flight_lines_file_path_SELECT_LAYER": "true",
-        "Flight_lines_file_path_COMMENT": "Select the file that has the flight line"
-    },
+    "Clipped Grid": "G:\\Shared drives\\Rosor\\2024 - 2025\\Projects\\2311-38-phlo-aurora-michelin\\TILE_MAKING\\clipped_gird.shp",
+    "Clipped Grid_SELECT_LAYER": "true",
+    "Clipped Grid_COMMENT": "Click on the tiles that need to be merged.",
+    "Output a new file": true,
+    "Output a new file_COMMENT": "If box checked, the file is copied before making any changes. Otherwise it will edit the existing file.",
     "Close this window on accept": true
 }

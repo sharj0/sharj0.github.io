@@ -2,7 +2,7 @@
 name= Import CSV Flight Data
 qgisMinimumVersion=3.0
 description=ROSOR's tool to mass import csv flight data from a folder and match the file structure using layer groups.
-version=1.2024.12.22.2
+version=1.2025.1.28.1
 author=Pyotyr Young and Sharjeel Awon
 email=pyotyr@msn.com, pyotyr@rosor.ca
 icon=plugin_icon.png
