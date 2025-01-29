@@ -1,25 +1,16 @@
 {
-    "Input files": {
-        "Ortho_photo_1_file_path": "E:\\pichette\\pichette out\\2,3mr_5_GSD\\_2,3mr_5_GSD_MERGED.VRT",
-        "Ortho_photo_1_file_path_SELECT_LAYER": "true",
-        "Ortho_photo_1_file_path_COMMENT": "Select the first ortho photo you want to merge. The output folder will be placed next to this rasters parent folder",
-        "Ortho_photo_2_file_path": "E:\\pichette\\pichette out\\2,2mr_5_GSD\\_2,2mr_5_GSD_MERGED.VRT",
-        "Ortho_photo_2_file_path_SELECT_LAYER": "true",
-        "Ortho_photo_2_file_path_COMMENT": "Select the second ortho photo you want to merge"
-    },
-    "Output options": {
-        "Over-ride output folder name": "3,1mr",
-        "Over-ride output folder name_COMMENT": "Instead of using input's parent folders name it will use your name provided here"
-    },
+    "Merge order tree file": "R:\\ORTHO_STUFF\\Aurora_ortho_chunks\\ALLIGNED\\test_1,1_only.md",
+    "Merge order tree file_SELECT_FILE": "R:\\ORTHO_STUFF\\BAN_TIMMINS\\TEST_ALLIGNED\\Merge order tree.md",
+    "Merge order tree file_COMMENT": "R:\\ORTHO_STUFF\\BAN_TIMMINS\\TEST_ALLIGNED\\Merge order tree.md",
     "Parameters": {
-        "Target GSD cm": 5,
+        "Target GSD cm": 10,
         "Target GSD cm_COMMENT": "Current available choices: [5, 10, 20, 50, 100].",
         "Prefer centre factor": 0.05,
-        "Prefer centre factor_COMMENT": "When prefer_centre_factor is positive (e.g., greater than 1), the preference will lean more towards following centerline.\nWhen prefer_centre_factor is negative (e.g., less than 1), the preference will lean more towards color similarity.",
-        "Line sample points": 15,
-        "Line sample points_COMMENT": "Used to determine the direction of the line ends. If line ends are going off course reduce this number. If the middle of the line is misshapen increase this number"
+        "Prefer centre factor_COMMENT": "When prefer_centre_factor is positive (e.g., greater than 1), the preference will lean more towards following centerline.\nWhen prefer_centre_factor is negative (e.g., less than 1), the preference will lean more towards color similarity."
     },
-    "Beep when finished": true,
+    "Beep when finished": false,
     "Beep when finished_COMMENT": "This will alert you, to come back to the computer to continue processing.",
+    "Beep if error": false,
+    "Beep if error_COMMENT": "This will alert you, to come back to the computer to fix/work-around/report the error.",
     "Close this window on accept": true
 }

@@ -1,5 +1,4 @@
 from osgeo import gdal
-#from . import gdal_calc
 import os
 import re
 import shutil
@@ -8,6 +7,7 @@ import math
 import tempfile
 import subprocess
 import sys
+import xml.etree.ElementTree as ET
 
 def save_vrt_as_tiff(vrt_path, output_tiff_path, nodata_value=0):
     """
@@ -22,7 +22,6 @@ def save_vrt_as_tiff(vrt_path, output_tiff_path, nodata_value=0):
     Returns:
         None
     """
-    from osgeo import gdal
 
     # Open the VRT file
     vrt_ds = gdal.Open(vrt_path)
@@ -32,7 +31,8 @@ def save_vrt_as_tiff(vrt_path, output_tiff_path, nodata_value=0):
     # Define options for GeoTIFF creation
     options = [
         "COMPRESS=LZW",  # Apply LZW compression
-        "TILED=YES"      # Enable tiling for better performance
+        "TILED=YES",      # Enable tiling for better performance
+        "BIGTIFF=YES"
     ]
 
     # Create the GeoTIFF
@@ -183,6 +183,114 @@ def create_wide_ext_overlap_vrt(raster1_path, raster2_path, output_vrt_path):
 #    except subprocess.CalledProcessError as e:
 #        print(f"An error occurred while running gdal_calc.py: {e}")
 
+
+def apply_mask_rel_path_to_rgb_rast(rgb_raster_path, mask_path, output_vrt_path, nodata_value=0):
+    """
+    Apply a mask to an RGB raster, outputting the RGB raster only where the mask is '1'.
+    The output raster will have the extent of the mask and include a NoData value.
+
+    Args:
+        rgb_raster_path (str): Path to the RGB raster (assumed to have 3 bands).
+        mask_path (str): Path to the mask raster (assumed to be a single-band raster with values 0 or 1).
+        output_vrt_path (str): Path to save the output VRT file.
+        nodata_value (int): The NoData value to apply to the output VRT.
+
+    Returns:
+        None
+    """
+
+    # Open the RGB raster and the mask raster
+    rgb_ds = gdal.Open(rgb_raster_path)
+    mask_ds = gdal.Open(mask_path)
+
+    if rgb_ds is None or mask_ds is None:
+        raise RuntimeError("RGB raster or mask raster could not be opened.")
+
+    # Get projections
+    rgb_proj = rgb_ds.GetProjectionRef()
+    mask_proj = mask_ds.GetProjectionRef()
+
+    if rgb_proj != mask_proj:
+        raise RuntimeError("RGB raster and mask raster have different projections.")
+
+    # Get geotransforms
+    rgb_gt = rgb_ds.GetGeoTransform()
+    mask_gt = mask_ds.GetGeoTransform()
+
+    # Get pixel sizes
+    rgb_pixel_width = rgb_gt[1]
+    rgb_pixel_height = rgb_gt[5]
+    mask_pixel_width = mask_gt[1]
+    mask_pixel_height = mask_gt[5]
+
+    threshold = 1e-8
+
+    # Check using math.isclose with the threshold
+    pixel_size_x_matches_target_GSD = math.isclose(rgb_pixel_width, mask_pixel_width, rel_tol=threshold, abs_tol=threshold)
+    pixel_size_y_matches_target_GSD = math.isclose(rgb_pixel_height, mask_pixel_height, rel_tol=threshold, abs_tol=threshold)
+
+    # Check that the pixel sizes are the same
+    if not pixel_size_x_matches_target_GSD or not pixel_size_y_matches_target_GSD:
+        raise RuntimeError("RGB raster and mask raster have different pixel sizes.")
+
+    # Get extents
+    rgb_minx = rgb_gt[0]
+    rgb_maxx = rgb_gt[0] + rgb_pixel_width * rgb_ds.RasterXSize
+    rgb_miny = rgb_gt[3] + rgb_pixel_height * rgb_ds.RasterYSize
+    rgb_maxy = rgb_gt[3]
+
+    mask_minx = mask_gt[0]
+    mask_maxx = mask_gt[0] + mask_pixel_width * mask_ds.RasterXSize
+    mask_miny = mask_gt[3] + mask_pixel_height * mask_ds.RasterYSize
+    mask_maxy = mask_gt[3]
+
+    # Ensure the mask extent is within the RGB raster extent
+    if not (mask_minx >= rgb_minx and mask_maxx <= rgb_maxx and
+            mask_miny >= rgb_miny and mask_maxy <= rgb_maxy):
+        raise RuntimeError("Mask raster extent is outside the bounds of the RGB raster.")
+
+    # Compute offsets and sizes
+    x_offset_rgb = int(round((mask_minx - rgb_minx) / rgb_pixel_width))
+    y_offset_rgb = int(round((mask_maxy - rgb_maxy) / rgb_pixel_height))
+    x_size = mask_ds.RasterXSize
+    y_size = mask_ds.RasterYSize
+
+    # Build the VRT
+    vrt_template = f"""<VRTDataset rasterXSize="{x_size}" rasterYSize="{y_size}">
+    <SRS>{mask_proj}</SRS>
+    <GeoTransform>{mask_minx}, {mask_pixel_width}, 0, {mask_maxy}, 0, {mask_pixel_height}</GeoTransform>
+    """
+
+    for band in range(1, 4):  # Assuming RGB raster has 3 bands
+        vrt_template += f"""
+    <VRTRasterBand dataType="Byte" band="{band}" subClass="VRTDerivedRasterBand">
+        <NoDataValue>{nodata_value}</NoDataValue>
+        <PixelFunctionType>mul</PixelFunctionType>
+        <SimpleSource>
+            <SourceFilename relativeToVRT="0">{rgb_raster_path}</SourceFilename>
+            <SourceBand>{band}</SourceBand>
+            <SrcRect xOff="{x_offset_rgb}" yOff="{y_offset_rgb}" xSize="{x_size}" ySize="{y_size}"/>
+            <DstRect xOff="0" yOff="0" xSize="{x_size}" ySize="{y_size}"/>
+        </SimpleSource>
+        <SimpleSource>
+            <SourceFilename relativeToVRT="1">{os.path.basename(mask_path)}</SourceFilename>
+            <SourceBand>1</SourceBand>
+            <SrcRect xOff="0" yOff="0" xSize="{x_size}" ySize="{y_size}"/>
+            <DstRect xOff="0" yOff="0" xSize="{x_size}" ySize="{y_size}"/>
+        </SimpleSource>
+    </VRTRasterBand>
+    """
+    vrt_template += """
+</VRTDataset>
+"""
+
+    # Write the VRT file
+    with open(output_vrt_path, "w") as vrt_file:
+        vrt_file.write(vrt_template)
+
+    print(f"Mask applied to RGB raster successfully. Output VRT saved at: {output_vrt_path}")
+
+
 def apply_mask_to_rgb_rast(rgb_raster_path, mask_path, output_vrt_path, nodata_value=0):
     """
     Apply a mask to an RGB raster, outputting the RGB raster only where the mask is '1'.
@@ -222,8 +330,14 @@ def apply_mask_to_rgb_rast(rgb_raster_path, mask_path, output_vrt_path, nodata_v
     mask_pixel_width = mask_gt[1]
     mask_pixel_height = mask_gt[5]
 
+    threshold = 1e-8
+
+    # Check using math.isclose with the threshold
+    pixel_size_x_matches_target_GSD = math.isclose(rgb_pixel_width, mask_pixel_width, rel_tol=threshold, abs_tol=threshold)
+    pixel_size_y_matches_target_GSD = math.isclose(rgb_pixel_height, mask_pixel_height, rel_tol=threshold, abs_tol=threshold)
+
     # Check that the pixel sizes are the same
-    if (rgb_pixel_width != mask_pixel_width) or (rgb_pixel_height != mask_pixel_height):
+    if not pixel_size_x_matches_target_GSD or not pixel_size_y_matches_target_GSD:
         raise RuntimeError("RGB raster and mask raster have different pixel sizes.")
 
     # Get extents
@@ -284,53 +398,60 @@ def apply_mask_to_rgb_rast(rgb_raster_path, mask_path, output_vrt_path, nodata_v
     print(f"Mask applied to RGB raster successfully. Output VRT saved at: {output_vrt_path}")
 
 
-def apply_mask_to_rgb_rast_old(rgb_raster_path, mask_path, output_vrt_path):
+def apply_mask_to_mask(mask_path_0, mask_path, output_vrt_path, nodata_value=0):
     """
     Apply a mask to an RGB raster, outputting the RGB raster only where the mask is '1'.
-    The output raster will have the extent of the mask.
+    The output raster will have the extent of the mask and include a NoData value.
 
     Args:
-        rgb_raster_path (str): Path to the RGB raster (assumed to have 3 bands).
+        mask_path_0 (str): Path to the RGB raster (assumed to have 3 bands).
         mask_path (str): Path to the mask raster (assumed to be a single-band raster with values 0 or 1).
         output_vrt_path (str): Path to save the output VRT file.
+        nodata_value (int): The NoData value to apply to the output VRT.
 
     Returns:
         None
     """
 
     # Open the RGB raster and the mask raster
-    rgb_ds = gdal.Open(rgb_raster_path)
+    mask_0_ds = gdal.Open(mask_path_0)
     mask_ds = gdal.Open(mask_path)
 
-    if rgb_ds is None or mask_ds is None:
+    if mask_0_ds is None or mask_ds is None:
         raise RuntimeError("RGB raster or mask raster could not be opened.")
 
     # Get projections
-    rgb_proj = rgb_ds.GetProjectionRef()
+    mask_0_proj = mask_0_ds.GetProjectionRef()
     mask_proj = mask_ds.GetProjectionRef()
 
-    if rgb_proj != mask_proj:
+    if mask_0_proj != mask_proj:
         raise RuntimeError("RGB raster and mask raster have different projections.")
 
     # Get geotransforms
-    rgb_gt = rgb_ds.GetGeoTransform()
+    mask_0_gt = mask_0_ds.GetGeoTransform()
     mask_gt = mask_ds.GetGeoTransform()
 
     # Get pixel sizes
-    rgb_pixel_width = rgb_gt[1]
-    rgb_pixel_height = rgb_gt[5]
+    mask_0_pixel_width = mask_0_gt[1]
+    mask_0_pixel_height = mask_0_gt[5]
     mask_pixel_width = mask_gt[1]
     mask_pixel_height = mask_gt[5]
 
+    threshold = 1e-8
+
+    # Check using math.isclose with the threshold
+    pixel_size_x_matches_target_GSD = math.isclose(mask_0_pixel_width, mask_pixel_width, rel_tol=threshold, abs_tol=threshold)
+    pixel_size_y_matches_target_GSD = math.isclose(mask_0_pixel_height, mask_pixel_height, rel_tol=threshold, abs_tol=threshold)
+
     # Check that the pixel sizes are the same
-    if (rgb_pixel_width != mask_pixel_width) or (rgb_pixel_height != mask_pixel_height):
+    if not pixel_size_x_matches_target_GSD or not pixel_size_y_matches_target_GSD:
         raise RuntimeError("RGB raster and mask raster have different pixel sizes.")
 
     # Get extents
-    rgb_minx = rgb_gt[0]
-    rgb_maxx = rgb_gt[0] + rgb_pixel_width * rgb_ds.RasterXSize
-    rgb_miny = rgb_gt[3] + rgb_pixel_height * rgb_ds.RasterYSize
-    rgb_maxy = rgb_gt[3]
+    mask_0_minx = mask_0_gt[0]
+    mask_0_maxx = mask_0_gt[0] + mask_0_pixel_width * mask_0_ds.RasterXSize
+    mask_0_miny = mask_0_gt[3] + mask_0_pixel_height * mask_0_ds.RasterYSize
+    mask_0_maxy = mask_0_gt[3]
 
     mask_minx = mask_gt[0]
     mask_maxx = mask_gt[0] + mask_pixel_width * mask_ds.RasterXSize
@@ -338,13 +459,13 @@ def apply_mask_to_rgb_rast_old(rgb_raster_path, mask_path, output_vrt_path):
     mask_maxy = mask_gt[3]
 
     # Ensure the mask extent is within the RGB raster extent
-    if not (mask_minx >= rgb_minx and mask_maxx <= rgb_maxx and
-            mask_miny >= rgb_miny and mask_maxy <= rgb_maxy):
+    if not (mask_minx >= mask_0_minx and mask_maxx <= mask_0_maxx and
+            mask_miny >= mask_0_miny and mask_maxy <= mask_0_maxy):
         raise RuntimeError("Mask raster extent is outside the bounds of the RGB raster.")
 
     # Compute offsets and sizes
-    x_offset_rgb = int(round((mask_minx - rgb_minx) / rgb_pixel_width))
-    y_offset_rgb = int(round((mask_maxy - rgb_maxy) / rgb_pixel_height))
+    x_offset_mask_0 = int(round((mask_minx - mask_0_minx) / mask_0_pixel_width))
+    y_offset_mask_0 = int(round((mask_maxy - mask_0_maxy) / mask_0_pixel_height))
     x_size = mask_ds.RasterXSize
     y_size = mask_ds.RasterYSize
 
@@ -354,14 +475,14 @@ def apply_mask_to_rgb_rast_old(rgb_raster_path, mask_path, output_vrt_path):
     <GeoTransform>{mask_minx}, {mask_pixel_width}, 0, {mask_maxy}, 0, {mask_pixel_height}</GeoTransform>
     """
 
-    for band in range(1, 4):  # Assuming RGB raster has 3 bands
-        vrt_template += f"""
-    <VRTRasterBand dataType="Byte" band="{band}" subClass="VRTDerivedRasterBand">
+    vrt_template += f"""
+    <VRTRasterBand dataType="Byte" band="1" subClass="VRTDerivedRasterBand">
+        <NoDataValue>{nodata_value}</NoDataValue>
         <PixelFunctionType>mul</PixelFunctionType>
         <SimpleSource>
-            <SourceFilename relativeToVRT="0">{rgb_raster_path}</SourceFilename>
-            <SourceBand>{band}</SourceBand>
-            <SrcRect xOff="{x_offset_rgb}" yOff="{y_offset_rgb}" xSize="{x_size}" ySize="{y_size}"/>
+            <SourceFilename relativeToVRT="0">{mask_path_0}</SourceFilename>
+            <SourceBand>1</SourceBand>
+            <SrcRect xOff="{x_offset_mask_0}" yOff="{y_offset_mask_0}" xSize="{x_size}" ySize="{y_size}"/>
             <DstRect xOff="0" yOff="0" xSize="{x_size}" ySize="{y_size}"/>
         </SimpleSource>
         <SimpleSource>
@@ -380,7 +501,9 @@ def apply_mask_to_rgb_rast_old(rgb_raster_path, mask_path, output_vrt_path):
     with open(output_vrt_path, "w") as vrt_file:
         vrt_file.write(vrt_template)
 
-    print(f"Mask applied to RGB raster successfully. Output VRT saved at: {output_vrt_path}")
+    print(f"Mask applied to mask  successfully. Output VRT saved at: {output_vrt_path}")
+
+
 
 def get_footprint_mask(raster1_path, raster2_path, output_vrt_path):
     """
@@ -676,23 +799,100 @@ def save_rast_as_geotiff(mask_array, output_path, geotransform, projection):
     copy_qml(output_path)
 
 
-def merge_vrt_rasters(raster1_path, raster2_path, output_vrt_path):
+def extract_raster_sources_from_vrt(vrt_path):
     """
-    Merges two rasters with nodata value of 0 into a VRT file,
+    Extracts the file paths of constituent rasters from a VRT file, removing duplicates,
+    and resolves them to full file paths.
+
+    Parameters:
+        vrt_path (str): Path to the input VRT file.
+
+    Returns:
+        list: List of unique, full file paths of constituent rasters.
+    """
+    # Parse the VRT file as XML
+    tree = ET.parse(vrt_path)
+    root = tree.getroot()
+
+    # Get the directory of the VRT file
+    vrt_dir = os.path.dirname(os.path.abspath(vrt_path))
+
+    # Find all <SourceFilename> elements and extract their text
+    source_files = []
+    for source_filename in root.findall(".//SourceFilename"):
+        relative_path = source_filename.text
+        # Resolve relative path to absolute path
+        full_path = os.path.abspath(os.path.join(vrt_dir, relative_path))
+        source_files.append(full_path)
+
+    # Remove duplicates
+    unique_source_files = list(set(source_files))
+
+    return unique_source_files
+
+def extract_mask_and_rgb_from_vrt(vrt_path):
+    """
+    Extracts the full paths of the mask and aligned RGB TIFF from a VRT file.
+
+    Parameters:
+        vrt_path (str): Path to the input VRT file.
+
+    Returns:
+        tuple: A tuple containing the full paths of the mask (str) and the aligned RGB TIFF (str).
+    """
+    # Parse the VRT file as XML
+    tree = ET.parse(vrt_path)
+    root = tree.getroot()
+
+    # Get the directory of the VRT file
+    vrt_dir = os.path.dirname(os.path.abspath(vrt_path))
+
+    mask_path = None
+    rgb_tiff_path = None
+
+    # Iterate over all <SimpleSource> elements in the VRT
+    for simple_source in root.findall(".//SimpleSource"):
+        # Get the file path and relativeToVRT attribute
+        source_filename = simple_source.find("SourceFilename")
+        relative_to_vrt = int(source_filename.attrib.get("relativeToVRT", "0"))
+        source_band = int(simple_source.find("SourceBand").text)
+
+        # Resolve the full file path
+        file_path = source_filename.text
+        if relative_to_vrt == 1:
+            file_path = os.path.abspath(os.path.join(vrt_dir, file_path))
+
+        # Determine if it's a mask or an aligned RGB TIFF
+        if source_band == 1:
+            mask_path = file_path  # Mask always has SourceBand 1
+        else:
+            rgb_tiff_path = file_path  # Aligned RGB TIFF has multiple bands
+
+    # Ensure both paths are found
+    if not mask_path or not rgb_tiff_path:
+        raise ValueError("Could not determine both mask and aligned RGB TIFF paths from the VRT.")
+
+    return mask_path, rgb_tiff_path
+
+def merge_vrt_rasters(raster_paths, output_vrt_path):
+    """
+    Merges multiple rasters with a nodata value of 0 into a VRT file,
     where the nodata values are respected, i.e., pixels with value 0 are treated as transparent.
 
     Parameters:
-        raster1_path (str): Path to the first input GeoTIFF file.
-        raster2_path (str): Path to the second input GeoTIFF file.
+        raster_paths (list of str): List of paths to input GeoTIFF files.
         output_vrt_path (str): Path where the output VRT file will be saved.
     """
+    if len(raster_paths) < 2:
+        raise ValueError("At least two raster paths are required for merging.")
+
     nodata_value = 0
 
     # Build VRT options with specified nodata values
     vrt_options = gdal.BuildVRTOptions(srcNodata=nodata_value, VRTNodata=nodata_value)
 
     # Build VRT by merging the input rasters
-    gdal.BuildVRT(output_vrt_path, [raster1_path, raster2_path], options=vrt_options)
+    gdal.BuildVRT(output_vrt_path, raster_paths, options=vrt_options)
 
     print(f"Output merged VRT saved at: {output_vrt_path}")
 

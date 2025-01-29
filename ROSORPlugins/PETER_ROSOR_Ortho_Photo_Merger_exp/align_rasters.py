@@ -3,15 +3,288 @@ import csv
 import math
 import re
 import time
-from osgeo import gdal
+from osgeo import gdal, osr
 import numpy as np
 from remotior_sensus.util.files_directories import output_path
+import winsound
+import subprocess
 
-folder_path = r"E:\ORTHO_STUFF\DUC\_tiffs\Duc_test"
-target_GSD = 1  # meters
+# "C:/Program Files/QGIS 3.38.0/bin/python-qgis.bat" "C:\Users\pyoty\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\PETER_ROSOR_Ortho_Photo_Merger\align_rasters.py"
 
-# C:/Program Files/QGIS 3.38.0/bin/python-qgis.bat
-# C:\Users\pyoty\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\PETER_ROSOR_Ortho_Photo_Merger\align_rasters.py
+'''
+Here are rough estimates of relative execution times for different alignment sample_alg (where nearest is the baseline):
+nearest: 1x
+bilinear: ~1.5x (slightly slower than nearest)
+cubic: ~2-3x (moderate increase in computation)
+cubicSpline: ~3-5x (slower due to smoother interpolation)
+lanczos: ~4-10x (highest quality, slowest due to large kernel and complexity)
+'''
+
+def align_rasters(tif_files,
+                  output_folder,
+                  target_GSD_cm=100,
+                  load_into_QGIS=True,
+                  sample_alg='bilinear',
+                  do_save_metrics_to_csv=False,
+                  beep_when_finished=False,
+                  epsg_int_override=None):
+    start_time = time.time()
+    target_GSD = target_GSD_cm / 100
+    assert target_GSD in [0.05, 0.1, 0.2, 0.5, 1], \
+        "target_GSD must be either a whole number of meters or a factor of a meter [0.05, 0.1, 0.2, 0.5, 1]"
+
+    print("Please wait...")
+    gdal.UseExceptions()
+
+    output_files = substitute_output_folder(tif_files, output_folder)
+
+    extents = []
+    number_of_pixs = []
+    for i, (input_file, output_file) in enumerate(zip(tif_files, output_files)):
+        dataset = gdal.Open(input_file)
+        if not dataset:
+            print(f"Failed to open {input_file}")
+            continue
+
+        geotransform = dataset.GetGeoTransform()
+        input_crs = dataset.GetProjection()
+
+        top_left_x = geotransform[0]
+        pixel_size_x = geotransform[1]
+        top_left_y = geotransform[3]
+        pixel_size_y = geotransform[5]
+
+        if is_raster_aligned(geotransform, target_GSD, debug_print=False):
+            print(f"{input_file} is already aligned. Skipping alignment.")
+            output_files[i] = input_file  # Use original file path if already aligned
+            dataset = None
+            continue
+
+        raster_x_size = dataset.RasterXSize
+        raster_y_size = dataset.RasterYSize
+
+        number_of_pix = raster_x_size * raster_y_size
+        number_of_pixs.append(number_of_pix)
+
+        # Calculate new alignment
+        left = top_left_x
+        top = top_left_y
+        right = left + pixel_size_x * raster_x_size
+        bottom = top + pixel_size_y * raster_y_size
+
+        new_left = math.floor(left / target_GSD) * target_GSD
+        new_right = math.ceil(right / target_GSD) * target_GSD
+        new_top = math.ceil(top / target_GSD) * target_GSD
+        new_bottom = math.floor(bottom / target_GSD) * target_GSD
+
+        output_file = simplified_name(output_file)
+        output_files[i] = output_file
+        os.makedirs(os.path.dirname(output_file), exist_ok=True)
+
+        output_data_type = dataset.GetRasterBand(1).DataType
+
+        # This list has the exact percentages at which you want to print progress
+        progress_thresholds = [1, 2, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+
+        user_data = {
+            "thresholds": progress_thresholds[:],  # copy the list so each file’s Warp starts fresh
+        }
+
+        if epsg_int_override:
+            srs = osr.SpatialReference()
+            srs.ImportFromEPSG(epsg_int_override)  # EPSG code for WGS 84 / UTM zone 21N
+            outp_epsg = srs.ExportToWkt()  # Get the WKT string
+
+        else:
+            outp_epsg=input_crs
+        print(outp_epsg)
+
+
+        warp_options = gdal.WarpOptions(
+            format='GTiff',
+            outputBounds=(new_left, new_bottom, new_right, new_top),
+            xRes=target_GSD,
+            yRes=-target_GSD,
+            dstSRS=outp_epsg,
+            resampleAlg=sample_alg,
+            outputType=output_data_type,
+            creationOptions=['COMPRESS=LZW', 'BIGTIFF=YES'],
+            callback=my_progress_callback,
+            callback_data=user_data
+        )
+        print(f"Shifting raster {os.path.basename(output_file)}")
+        print(f"{input_file} -> {output_file}")
+        os.makedirs(output_folder, exist_ok=True)
+        gdal.Warp(output_file, dataset, options=warp_options)
+
+        extents.append((new_left, new_bottom, new_right, new_top))
+        dataset = None
+
+        alignment_execution_time = time.time() - start_time
+        batch = f'{i+1}/{len(tif_files)}'
+        if do_save_metrics_to_csv:
+            if alignment_execution_time > 1:
+                number_of_all_pix_aligned = np.sum(number_of_pixs)
+                csv_file_path = os.path.join(os.path.dirname(output_file),'alignment_stats.csv')
+                save_metrics_to_csv(csv_file_path,
+                                    alignment_execution_time=alignment_execution_time,
+                                    sample_alg=sample_alg,
+                                    target_GSD_cm=target_GSD_cm,
+                                    number_of_all_pix_aligned=number_of_all_pix_aligned,
+                                    file_name=input_file,
+                                    batch=batch)
+
+    if beep_when_finished and __name__ == '__main__':
+        print('Playing completion notification noises...')
+        while True:
+            winsound.Beep(200, 1000)
+            sound_path = os.path.join(os.path.dirname(__file__),"The_geotiffs_have_been_merged.wav")
+            winsound.PlaySound(sound_path, winsound.SND_FILENAME)
+            time.sleep(2)
+
+    elif beep_when_finished:
+        print('Playing completion notification noises...')
+        for _ in range(3):
+            winsound.Beep(200, 1000)
+            sound_path = os.path.join(os.path.dirname(__file__), "The_geotiffs_have_been_merged.wav")
+            winsound.PlaySound(sound_path, winsound.SND_FILENAME)
+            time.sleep(2)
+
+    if not load_into_QGIS:
+        return output_files
+
+    try:
+        from qgis.core import QgsProject, QgsRasterLayer
+        from qgis.utils import iface
+
+        # Load output files as layers if in QGIS
+        if iface:  # Check if in QGIS Desktop environment
+            for output_file in output_files:
+                layer_name = os.path.basename(output_file)
+                raster_layer = QgsRasterLayer(output_file, layer_name)
+                if raster_layer.isValid():
+                    QgsProject.instance().addMapLayer(raster_layer)
+                    print(f"Loaded {layer_name} into QGIS.")
+                else:
+                    print(f"Failed to load {layer_name} into QGIS.")
+    except ImportError:
+        print("Not running within QGIS Desktop; skipping layer loading.")
+
+
+    return output_files
+
+# Function to save metrics to a CSV
+def save_metrics_to_csv(csv_path, **metrics):
+    """
+    Save metrics to a CSV file dynamically based on the input variables.
+
+    Parameters:
+        csv_path (str): Path to the CSV file.
+        **metrics: Arbitrary keyword arguments representing metric names and values.
+
+    Example usage:
+        save_metrics_to_csv('metrics.csv', execution_time=12.34, file_size_gb=1.23, gsd=15.6)
+    """
+    # Get the names of the metrics from the arguments
+    metric_names = list(metrics.keys())
+    metric_values = list(metrics.values())
+
+    # Check if CSV exists to determine if headers are needed
+    file_exists = os.path.isfile(csv_path)
+    # Open the CSV file and write data
+    with open(csv_path, mode='a', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        if not file_exists:
+            writer.writerow(metric_names)
+        writer.writerow([round(value, 2) if isinstance(value, (float, int)) else value for value in metric_values])
+
+    print(f"Metrics saved to {csv_path}")
+
+def is_raster_aligned(geotransform, target_GSD, debug_print=False):
+    """
+    Check if a raster is aligned to the specified target GSD.
+
+    Parameters:
+        geotransform (tuple): Geotransform of the raster.
+        target_GSD (float): Target ground sampling distance.
+        debug_print (bool): If True, prints debug information.
+
+    Returns:
+        bool: True if the raster is aligned, False otherwise.
+    """
+    top_left_x, pixel_size_x, _, top_left_y, _, pixel_size_y = geotransform
+    threshold = 1e-8
+
+    pixel_size_x_matches_target_GSD = math.isclose(pixel_size_x, target_GSD, rel_tol=threshold, abs_tol=threshold)
+    pixel_size_y_matches_target_GSD = math.isclose(pixel_size_y, -target_GSD, rel_tol=threshold, abs_tol=threshold)
+
+    if debug_print:
+        print(f"\n{pixel_size_x=}")
+        print(f"{pixel_size_y=}")
+        print(f"{target_GSD=}")
+        print(f"pixel_size_x == target_GSD {pixel_size_x_matches_target_GSD}")
+        print(f"pixel_size_y == -target_GSD {pixel_size_y_matches_target_GSD}")
+        print(f"{top_left_x=}")
+        print(f"{top_left_y=}")
+        print(f"abs(top_left_x / target_GSD - round(top_left_x / target_GSD)) < 1e-6 {abs(top_left_x / target_GSD - round(top_left_x / target_GSD)) < 1e-6}")
+        print(f"abs(top_left_y / target_GSD - round(top_left_y / target_GSD)) < 1e-6 {abs(top_left_y / target_GSD - round(top_left_y / target_GSD)) < 1e-6}")
+        print()
+
+    return (
+        pixel_size_x_matches_target_GSD and
+        pixel_size_y_matches_target_GSD and
+        abs(top_left_x / target_GSD - round(top_left_x / target_GSD)) < 1e-6 and
+        abs(top_left_y / target_GSD - round(top_left_y / target_GSD)) < 1e-6
+    )
+
+
+def calculate_single_overview_level(file_path, target_resolution=2000):
+    """
+    Calculates the closest single overview level to make the longest edge close to the target resolution.
+    """
+    # Open the raster file
+    dataset = gdal.Open(file_path)
+    if dataset is None:
+        print(f"Failed to open {file_path}")
+        return None
+
+    # Get raster dimensions
+    width = dataset.RasterXSize
+    height = dataset.RasterYSize
+    longest_edge = max(width, height)
+
+    # Calculate the single closest downsampling factor (power of 2)
+    factor = 1
+    while longest_edge / factor > target_resolution:
+        factor *= 2
+
+    return factor
+
+
+def build_single_internal_overview(file_path, target_resolution=2000):
+    print("Building overview...")
+    """
+    Builds a single internal overview with LZW compression for a GeoTIFF.
+    """
+    # Calculate the overview level
+    overview_level = calculate_single_overview_level(file_path, target_resolution)
+
+    if overview_level is None:
+        print("Failed to calculate the overview level.")
+        return
+
+    # Run gdaladdo with the single calculated level
+    command = [
+        "gdaladdo",
+        "--config", "COMPRESS_OVERVIEW", "LZW",  # Enable LZW compression
+        "--config", "INTERLEAVE_OVERVIEW", "PIXEL",  # Ensure pixel interleaving
+        "-r", "average",  # Resampling method
+        file_path,
+        str(overview_level)  # Single overview level
+    ]
+
+    print(f"Running command: {' '.join(command)}")
+    subprocess.run(command, check=True)
 
 def simplified_name(file_path):
     # Get the directory and filename
@@ -67,169 +340,41 @@ def get_name_of_non_existing_output_file(base_filepath, additional_suffix='', ne
     return f"{base}{additional_suffix}_v{version}{ext}"
 
 
-def align_rasters(tif_files, output_folder, target_GSD_cm=100, load_into_QGIS=True, sample_alg='bilinear', do_save_metrics_to_csv=False):
-    start_time = time.time()
-    target_GSD = target_GSD_cm / 100
-    assert target_GSD in [0.05, 0.1, 0.2, 0.5, 1], \
-        "target_GSD must be either a whole number of meters or a factor of a meter [0.05, 0.1, 0.2, 0.5, 1]"
-
-    print("Please wait...")
-    gdal.UseExceptions()
-
-    output_files = substitute_output_folder(tif_files, output_folder)
-
-    extents = []
-    number_of_pixs = []
-    for i, (input_file, output_file) in enumerate(zip(tif_files, output_files)):
-        dataset = gdal.Open(input_file)
-        if not dataset:
-            print(f"Failed to open {input_file}")
-            continue
-
-        geotransform = dataset.GetGeoTransform()
-        input_crs = dataset.GetProjection()
-
-        top_left_x = geotransform[0]
-        pixel_size_x = geotransform[1]
-        top_left_y = geotransform[3]
-        pixel_size_y = geotransform[5]
-
-        raster_x_size = dataset.RasterXSize
-        raster_y_size = dataset.RasterYSize
-        debug_print = True
-        if debug_print:
-            print()
-            print(f'{pixel_size_x=}')
-            print(f'{pixel_size_y=}')
-            print(f'{target_GSD=}')
-            print(f'pixel_size_x == target_GSD {pixel_size_x == target_GSD}')
-            print(f'pixel_size_y == -target_GSD {pixel_size_y == -target_GSD}')
-            print(f'{top_left_x=}')
-            print(f'{top_left_y=}')
-            print(f'abs(top_left_x / target_GSD - round(top_left_x / target_GSD)) < 1e-8 {abs(top_left_x / target_GSD - round(top_left_x / target_GSD)) < 1e-8}')
-            print(f'abs(top_left_y / target_GSD - round(top_left_y / target_GSD)) < 1e-8 {abs(top_left_y / target_GSD - round(top_left_y / target_GSD)) < 1e-8}')
-            print()
-        # Check if the raster is already aligned
-        if (
-            pixel_size_x == target_GSD and
-            pixel_size_y == -target_GSD and
-            abs(top_left_x / target_GSD - round(top_left_x / target_GSD)) < 1e-6 and
-            abs(top_left_y / target_GSD - round(top_left_y / target_GSD)) < 1e-6
-        ):
-            print(f"{input_file} is already aligned. Skipping alignment.")
-            output_files[i] = input_file  # Use original file path if already aligned
-            dataset = None
-            continue
-
-        number_of_pix = raster_x_size * raster_y_size
-        number_of_pixs.append(number_of_pix)
-
-        # Calculate new alignment
-        left = top_left_x
-        top = top_left_y
-        right = left + pixel_size_x * raster_x_size
-        bottom = top + pixel_size_y * raster_y_size
-
-        new_left = math.floor(left / target_GSD) * target_GSD
-        new_right = math.ceil(right / target_GSD) * target_GSD
-        new_top = math.ceil(top / target_GSD) * target_GSD
-        new_bottom = math.floor(bottom / target_GSD) * target_GSD
-
-        output_file = simplified_name(output_file)
-        output_files[i] = output_file
-        os.makedirs(os.path.dirname(output_file), exist_ok=True)
-
-        output_data_type = dataset.GetRasterBand(1).DataType
-
-        print(f"Shifting raster {os.path.basename(output_file)}")
-        print(f"{input_file} -> {output_file}")
-        warp_options = gdal.WarpOptions(
-            format='GTiff',
-            outputBounds=(new_left, new_bottom, new_right, new_top),
-            xRes=target_GSD,
-            yRes=-target_GSD,
-            dstSRS=input_crs,
-            resampleAlg=sample_alg,
-            outputType=output_data_type,
-            creationOptions=['COMPRESS=LZW', 'BIGTIFF=YES'],
-        )
-
-        os.makedirs(output_folder, exist_ok=True)
-        gdal.Warp(output_file, dataset, options=warp_options)
-
-        extents.append((new_left, new_bottom, new_right, new_top))
-        dataset = None
-
-    if do_save_metrics_to_csv:
-        total_execution_time = time.time() - start_time
-        if total_execution_time > 1:
-            number_of_all_pix_aligned = np.sum(number_of_pixs)
-            csv_file_path = os.path.join(os.path.dirname(output_file),'alignment_stats.csv')
-            csv_file_path = get_name_of_non_existing_output_file(csv_file_path)
-            save_metrics_to_csv(csv_file_path,
-                                total_execution_time=total_execution_time,
-                                sample_alg=sample_alg,
-                                target_GSD_cm=target_GSD_cm,
-                                number_of_all_pix_aligned=number_of_all_pix_aligned)
-
-    if not load_into_QGIS:
-        return output_files
-
-    try:
-        from qgis.core import QgsProject, QgsRasterLayer
-        from qgis.utils import iface
-
-        # Load output files as layers if in QGIS
-        if iface:  # Check if in QGIS Desktop environment
-            for output_file in output_files:
-                layer_name = os.path.basename(output_file)
-                raster_layer = QgsRasterLayer(output_file, layer_name)
-                if raster_layer.isValid():
-                    QgsProject.instance().addMapLayer(raster_layer)
-                    print(f"Loaded {layer_name} into QGIS.")
-                else:
-                    print(f"Failed to load {layer_name} into QGIS.")
-    except ImportError:
-        print("Not running within QGIS Desktop; skipping layer loading.")
-    return output_files
-
-
-# Function to save metrics to a CSV
-def save_metrics_to_csv(csv_path, **metrics):
+def my_progress_callback(complete_fraction, message, user_data):
     """
-    Save metrics to a CSV file dynamically based on the input variables.
-
-    Parameters:
-        csv_path (str): Path to the CSV file.
-        **metrics: Arbitrary keyword arguments representing metric names and values.
-
-    Example usage:
-        save_metrics_to_csv('metrics.csv', execution_time=12.34, file_size_gb=1.23, gsd=15.6)
+    Print progress at specific percentage thresholds.
     """
-    # Get the names of the metrics from the arguments
-    metric_names = list(metrics.keys())
-    metric_values = list(metrics.values())
+    thresholds = user_data["thresholds"]  # the list of thresholds we still need to print
+    percent_done = int(complete_fraction * 100)
 
-    # Check if CSV exists to determine if headers are needed
-    file_exists = os.path.isfile(csv_path)
+    # Check each threshold that hasn't been printed yet
+    to_remove = []
+    for t in thresholds:
+        if percent_done >= t:
+            print(f"{t}% done for current alignment operation.")
+            to_remove.append(t)
+    # Remove any thresholds we've already printed
+    for t in to_remove:
+        thresholds.remove(t)
 
-    # Open the CSV file and write data
-    with open(csv_path, mode='a', newline='') as csvfile:
-        writer = csv.writer(csvfile)
-        if not file_exists:
-            writer.writerow(metric_names)
-        writer.writerow([round(value, 2) if isinstance(value, (float, int)) else value for value in metric_values])
-
-    print(f"Metrics saved to {csv_path}")
-
+    # Returning 1 tells GDAL to continue; returning 0 would abort the operation
+    return 1
 
 if __name__ == '__main__':
-    folder_path = r"E:\ORTHO_STUFF\DEL_AREA\UN-ALIGNED\TOF2"
+    #folder_path = r"E:\ORTHO_STUFF\DEL_AREA\UN-ALIGNED\TOF2"
     #align_raster_list = get_list_of_paths_os_walk_folder(folder_path, ".tiff")
     '''
     OR
     '''
-    align_raster_list = [r"E:\ORTHO_STUFF\DEL_AREA\UN-ALIGNED\TOF2\TOF2_flt_1-orthomosaic.tiff"]
-    output_folder = r"E:\ORTHO_STUFF\DEL_AREA\ALIGNED"
+    align_raster_list = [r"R:\ORTHO_STUFF\Aurora_ortho_chunks\ALLIGNED\Mid_fixed.tiff",
+                         r"R:\ORTHO_STUFF\Aurora_ortho_chunks\ALLIGNED\aurora_e-orthomosaic.tiff",
+                         r"R:\ORTHO_STUFF\Aurora_ortho_chunks\ALLIGNED\aurora_se_2-orthomosaic.tiff",
+                         r"R:\ORTHO_STUFF\Aurora_ortho_chunks\ALLIGNED\aurora_s-orthomosaic.tiff"]
+
+    output_folder = r"R:\ORTHO_STUFF\Aurora_ortho_chunks\test_four_aligned"
     print("starting")
-    align_rasters(align_raster_list, output_folder, target_GSD_cm=5, load_into_QGIS=False, sample_alg='cubic', do_save_metrics_to_csv=True)
+    align_rasters(align_raster_list, output_folder, target_GSD_cm=100, load_into_QGIS=False, sample_alg='bilinear', do_save_metrics_to_csv=True, beep_when_finished=True, epsg_int_override=None)
+
+    #build_single_internal_overview(output_file, target_resolution=2000)
+
+

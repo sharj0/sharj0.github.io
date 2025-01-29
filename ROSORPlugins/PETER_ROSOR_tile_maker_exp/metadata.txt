@@ -1,5 +1,5 @@
 [general]
-name= Tile Maker
+name= Tile Maker Experimental
 qgisMinimumVersion=3.0
 description= This plugin accepts a polygon as an input and produces tiles. The tiles can be auto-named, merged, and styled. Photos with geotags can be re-organised (move/copy) according to what tiles they are in.
 version=1.2025.1.28.3
