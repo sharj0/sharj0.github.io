@@ -1,0 +1,8 @@
+{
+    "Clipped Grid": "G:\\Shared drives\\Rosor\\2024 - 2025\\Projects\\2311-38-phlo-aurora-michelin\\TILE_MAKING\\clipped_gird_v3.shp",
+    "Clipped Grid_SELECT_LAYER": "true",
+    "Clipped Grid_COMMENT": "Click on the tiles that need to be merged.",
+    "Output a new file": true,
+    "Output a new file_COMMENT": "If box checked, the file is copied before making any changes. Otherwise it will edit the existing file.",
+    "Close this window on accept": true
+}

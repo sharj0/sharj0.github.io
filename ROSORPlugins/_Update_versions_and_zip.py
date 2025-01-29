@@ -21,22 +21,10 @@ from pathspec import PathSpec
 
 HASH_FILE = "detect_changes_with_folder_hashes.json"
 
-# Function to calculate the hash of a folder
+
+
+
 def calculate_folder_hash_old(folder_path):
-    sha256 = hashlib.sha256()
-    for root, dirs, files in os.walk(folder_path):
-        for file in sorted(files):  # Sort files to ensure consistent order
-            file_path = os.path.join(root, file)
-            with open(file_path, 'rb') as f:
-                while True:
-                    chunk = f.read(4096)
-                    if not chunk:
-                        break
-                    sha256.update(chunk)
-    return sha256.hexdigest()
-
-
-def calculate_folder_hash(folder_path):
     # Initialize SHA256 hash object
     sha256 = hashlib.sha256()
 
@@ -66,41 +54,156 @@ def calculate_folder_hash(folder_path):
 
     return sha256.hexdigest()
 
-# Function to get all current hashes for folders that start with plugin_prefix
 def get_all_current_hashes(plugin_prefix="PETER_ROSOR", plugin_dir=os.path.dirname(__file__)):
-    current_hashes = {}
-
-    # Iterate through all the folders in the directory
+    """
+    Return a dict of:
+       {
+         'FolderName': {
+             'relative/path/to/fileA': 'sha256hash1',
+             'relative/path/to/fileB': 'sha256hash2',
+             ...
+         },
+         ...
+       }
+    """
+    all_hashes = {}
     for root, dirs, files in os.walk(plugin_dir):
         for dir_name in dirs:
             if dir_name.startswith(plugin_prefix):
                 folder_path = os.path.join(root, dir_name)
+                file_hashes = get_file_hashes(folder_path)
+                all_hashes[dir_name] = file_hashes
+        # We do not want to descend into subfolders again at this level,
+        # so you can optionally do: dirs[:] = [] if needed
+    return all_hashes
 
-                # Calculate current hash for the folder
-                current_hash = calculate_folder_hash(folder_path)
-                current_hashes[dir_name] = current_hash
+def check_for_changes_and_update_versions(plugin_prefix="PETER_ROSOR"):
+    saved_hashes = load_saved_hashes(HASH_FILE)  # same as before
+    current_hashes = get_all_current_hashes(plugin_prefix=plugin_prefix)  # now returns dict of dict
 
-    return current_hashes
+    folders_that_need_updating = []
 
-# Function to load saved hashes from a file
+    for dir_name, curr_file_hashes in current_hashes.items():
+        old_file_hashes = saved_hashes.get(dir_name, {})  # might be empty if never saved
+        changed_files = []
+        deleted_files = []
+
+        # 1) Check which files changed or are new
+        for file_path, curr_hash in curr_file_hashes.items():
+            old_hash = old_file_hashes.get(file_path)
+            if old_hash != curr_hash:
+                changed_files.append(file_path)
+
+        # 2) Check which files were removed
+        for old_file_path in old_file_hashes:
+            if old_file_path not in curr_file_hashes:
+                deleted_files.append(old_file_path)
+
+        # If anything changed, print details
+        if changed_files or deleted_files:
+            print(f"Changes detected in {dir_name}. Need to update version")
+            for cf in changed_files:
+                print(f"  -> Modified or new file: {cf}")
+            for df in deleted_files:
+                print(f"  -> Deleted file: {df}")
+
+            folders_that_need_updating.append(dir_name)
+        else:
+            print(f"No changes detected in {dir_name}.")
+
+    return folders_that_need_updating
+
+
+def get_file_hashes(folder_path):
+    """
+    Calculates a sha256 hash for each file (respecting .gitignore if you like).
+    Returns dict: {'relative/path/to/file': 'hash', ...}
+    """
+    from pathspec import PathSpec
+    sha_map = {}
+
+    # Load .gitignore patterns if you still want to skip certain files
+    ignore_patterns = []
+    gitignore_path = os.path.join(os.path.dirname(folder_path), '.gitignore')
+    if os.path.exists(gitignore_path):
+        with open(gitignore_path, 'r') as f:
+            ignore_patterns.extend(f.readlines())
+    spec = PathSpec.from_lines('gitwildmatch', ignore_patterns)
+
+    for root, dirs, files in os.walk(folder_path):
+        # Filter out ignored subdirs
+        dirs[:] = [d for d in dirs
+                   if not spec.match_file(os.path.relpath(os.path.join(root, d), folder_path))]
+
+        for file_name in files:
+            rel_path = os.path.relpath(os.path.join(root, file_name), folder_path)
+            if not spec.match_file(rel_path):
+                # Calculate hash for each file
+                full_file_path = os.path.join(root, file_name)
+                sha256 = hashlib.sha256()
+                with open(full_file_path, 'rb') as f:
+                    while True:
+                        chunk = f.read(4096)
+                        if not chunk:
+                            break
+                        sha256.update(chunk)
+                sha_map[rel_path] = sha256.hexdigest()
+    return sha_map
+
 def load_saved_hashes(hash_file):
     if os.path.exists(hash_file):
         with open(hash_file, 'r') as f:
-            outp = json.load(f)
+            outp = json.load(f)  # This is now { "PETER_ROSOR_alt_embedder": { "file1.py": "hash", ...}, ... }
             print(f"loaded hashes from '{os.path.basename(hash_file)}'")
             print()
             return outp
+    return {}  # empty dict if it doesn't exist
 
-    return {}
-
-# Function to save hashes to a file
 def save_hashes(hashes, hash_file):
     print(f"updating '{os.path.basename(hash_file)}'")
     with open(hash_file, 'w') as f:
+        # 'hashes' is the nested dict
         json.dump(hashes, f, indent=4)
 
-# Function to check for changes and update versions if needed
 def check_for_changes_and_update_versions(plugin_prefix="PETER_ROSOR"):
+    saved_hashes = load_saved_hashes(HASH_FILE)  # same as before
+    current_hashes = get_all_current_hashes(plugin_prefix=plugin_prefix)  # now returns dict of dict
+
+    folders_that_need_updating = []
+
+    for dir_name, curr_file_hashes in current_hashes.items():
+        old_file_hashes = saved_hashes.get(dir_name, {})  # might be empty if never saved
+        changed_files = []
+        deleted_files = []
+
+        # 1) Check which files changed or are new
+        for file_path, curr_hash in curr_file_hashes.items():
+            old_hash = old_file_hashes.get(file_path)
+            if old_hash != curr_hash:
+                changed_files.append(file_path)
+
+        # 2) Check which files were removed
+        for old_file_path in old_file_hashes:
+            if old_file_path not in curr_file_hashes:
+                deleted_files.append(old_file_path)
+
+        # If anything changed, print details
+        if changed_files or deleted_files:
+            print(f"Changes detected in {dir_name}. Need to update version")
+            for cf in changed_files:
+                print(f"  -> Modified or new file: {cf}")
+            for df in deleted_files:
+                print(f"  -> Deleted file: {df}")
+
+            folders_that_need_updating.append(dir_name)
+        else:
+            print(f"No changes detected in {dir_name}.")
+
+    return folders_that_need_updating
+
+
+# Function to check for changes and update versions if needed
+def check_for_changes_and_update_versions_old(plugin_prefix="PETER_ROSOR"):
     saved_hashes = load_saved_hashes(HASH_FILE)
 
     # Get all current hashes for the relevant folders
@@ -357,7 +460,7 @@ def match_xml_version_main(folders_that_need_updating,
         print() #new line, to look good
 
     for plugin in poppable_folder_list:
-        print(f"New lugin added to xml: {poppable_folder_list}")
+        print(f"New plugin added to xml: {poppable_folder_list}")
         plugin_folder_path = Path(plugin_folders_in_dir[plugin]).as_posix()
         add_plugin_in_xml(xml_file_path=xml_file_path, plugin=plugin, plugin_folder_path=plugin_folder_path)
 

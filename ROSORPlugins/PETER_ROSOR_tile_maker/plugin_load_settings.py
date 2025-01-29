@@ -8,7 +8,7 @@ import json
 from . import plugin_settings_suffixes
 
 def run(settings_file_path):
-    suffixes = plugin_settings_suffixes.get()
+    suffixes = plugin_settings_suffixes.get_suffixes()
     # suffixes = ["_SELECT_LAYER", "_COMMENT", "_TOOLTIP"]
     with open(settings_file_path) as data:
         settings_dict_dirty = json.loads(data.read())
