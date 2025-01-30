@@ -1,0 +1,8 @@
+{
+    "Clipped Grid": "R:\\ORTHO_STUFF\\Aurora_ortho_chunks\\North_half_10_GSD\\tiles\\Tiles_South.shp",
+    "Clipped Grid_SELECT_LAYER": "true",
+    "Clipped Grid_COMMENT": "Click on the tiles that need to be merged.",
+    "Output a new file": true,
+    "Output a new file_COMMENT": "If box checked, the file is copied before making any changes. Otherwise it will edit the existing file.",
+    "Close this window on accept": true
+}

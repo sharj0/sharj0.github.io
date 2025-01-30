@@ -44,6 +44,8 @@ def main(settings_path):
 
     input_layer = get_or_load_layer(input_path)
 
+    convert_multipolygons_to_polygons(input_layer)
+
     apply_style(input_layer)
 
     success = add_tile_name_attribute(input_layer)
@@ -59,6 +61,51 @@ def main(settings_path):
     # Optionally show a message to user
     #plugin_tools.show_information("Hover over polygons to highlight; click to select.\n"
     #                              "When you have one feature selected, click a *different* feature to merge.")
+
+def convert_multipolygons_to_polygons(layer):
+    """
+    Converts all MultiPolygon features in the layer into single-part Polygons.
+    - If a feature has multiple parts, it is split into multiple single-part features.
+    - The original multi-part feature is removed.
+    """
+    if not layer.isValid():
+        print("Layer is not valid. Cannot convert multipolygons to polygons.")
+        return
+
+    if not layer.isEditable():
+        layer.startEditing()
+
+    features_to_delete = []
+
+    for feature in layer.getFeatures():
+        geom = feature.geometry()
+        if geom is None:
+            continue
+
+        # Check if geometry is multi-part
+        if geom.isMultipart():
+            # Extract single-part geometries
+            single_geometries = geom.asGeometryCollection()
+            # If multiple parts, create new features for each part
+            if len(single_geometries) > 1:
+                for single_part_geom in single_geometries:
+                    new_feat = QgsFeature(layer.fields())
+                    new_feat.setAttributes(feature.attributes())
+                    new_feat.setGeometry(single_part_geom)
+                    layer.addFeature(new_feat)
+                # Mark the original multi-part feature for deletion
+                features_to_delete.append(feature.id())
+            else:
+                # If there's only one geometry part, just replace
+                layer.changeGeometry(feature.id(), single_geometries[0])
+
+    # Delete the multi-part features replaced by new single-part features
+    for fid in features_to_delete:
+        layer.deleteFeature(fid)
+
+    layer.commitChanges()
+    layer.triggerRepaint()
+    print("All multipolygons converted to single-part polygons.")
 
 def hide_layer_by_path(shapefile_path):
     """
@@ -420,6 +467,7 @@ class HoverHighlightTool(QgsMapTool):
     def perform_merge(self):
         """
         Merge the two selected polygons in the layer.
+        If the resulting geometry is still multi-part, abort and inform the user.
         """
         feats = []
         for f in self.layer.getFeatures():
@@ -438,11 +486,21 @@ class HoverHighlightTool(QgsMapTool):
 
         union_geom = geom1.combine(geom2)
 
+        # ------------------------------------------------------------------
+        # 2) If union geometry is multi-part, do NOT merge. Show information.
+        # ------------------------------------------------------------------
+        if union_geom.isMultipart():
+            plugin_tools.show_information("Shapes Cannot be merged")
+            self.layer.removeSelection()
+            self.selected_ids.clear()
+            print("Merge aborted because union is multi-part.")
+            return
+
         area1 = geom1.area()
         area2 = geom2.area()
         new_attrs = feat1.attributes() if area1 >= area2 else feat2.attributes()
 
-        print(f"Deleting original features: {feat1.id()} and {feat2.id()}")
+        # Delete original features
         self.layer.deleteFeature(feat1.id())
         self.layer.deleteFeature(feat2.id())
 

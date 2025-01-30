@@ -339,7 +339,6 @@
         "tutorial_vids\\import_kml_instead_VIDEO.mp4": "5de03f6ba6be194505e204fe1588ba8b25ebe853cbf8bfbd0e868da471212a25",
         "tutorial_vids\\intro.mp4": "342401cf1b2d3c3b70668f38717d5ca3d7fd8a65aec53f8a36175d480cc807b5"
     },
-    "PETER_ROSOR_lines_to_flights": {},
     "PETER_ROSOR_lines_to_flights_exp": {
         "delete_me.py": "aea880918933cbcc5bca9d49c456d045505c422d870ae3e47d3692314e086f0b",
         "Flight_area_Class.py": "dd785dd4faa5dc20a6ab904cedbfd8d4dba0d675b7c763afd9f99d2096d72e36",
@@ -408,10 +407,10 @@
         "tutorial_vids\\Survey_Manager_exe_path_VIDEO.mp4": "846cfb6cabcd3d7352c08f560bf5e846743f1e80efee3552a30e381d4c455139"
     },
     "PETER_ROSOR_mag_clipper": {
-        ".$stuff.drawio.bkp": "219597a21aa001d1bce64855bf05c025f40db34d53520cbe47d305b19af24e80",
+        ".$stuff.drawio.bkp": "2b88c85930feb9f54825c2747c550eef1800d8dc0ba427bd5e590ef6a282be6a",
         "detect_belonging_flight_name.py": "b47403660b90cc9539283f6eefe5e15218bd7d2028f1e3463aaafbcc16325ef9",
         "gui_run.py": "e1560736e69d1457e1f4be16942a60f3e1f113e4dba3457b6bbae879314aee45",
-        "metadata.txt": "3b0ea354935876d25f33cab663b2e8cb84d0cbf1f9ac48118362edcdb2ca701e",
+        "metadata.txt": "a2e45c737924ecbc94d0bfff6d6420d59721667b4f4f5638d9a2261d9b92e976",
         "pdf_export_setting_json_Sharj.py": "97db30cd8b2911256dd8022fb8a7bffa260682033ba3dc4380f1e115f98225b5",
         "plot_dataframe_to_pdf.py": "bb5db80ff96cc4e199131b187ccc1eedf39fa2c5309d01d6d5ee513d5dd8d5de",
         "plugin_add_custom_buttons.py": "e9c7fb981a30846b6584412d8a0c4262e5de0ce80793b4f7b5d049ebc27317a6",
@@ -429,7 +428,7 @@
         "segment_length_calculation_Sharj.py": "04af260e5d2fd931c702cc11f1a858ce8a1d55d2be5be5c4115b9512de46edac",
         "split.png": "fcb948aaaa0f9b3e2a265f574ccad042eabb29d99a614393d813371f96dd5e0b",
         "split_csv_by_flightlines.py": "6b8b2a703aff82446ff815f1a4f32675be6e6b0105da99da1450348a233a34ba",
-        "stuff.drawio": "31ad0bf89901e0ec80ef7dd5d66c6dbfa931dce62aee5c18338e838e0e7d242f",
+        "stuff.drawio": "040a45b9b7eac01d45bcfb2063edba86a6b1fc24ff2705af51f5f9202248ca4c",
         "SurveyManagerInstaller-3.0.1314.0.exe": "5e76bec0b453f4339fb86657a38e6b9014b8b639e2aef41145f5598abec65e9b",
         "surveymanger_automation.py": "018b932e67746a524350be42bf48b1be80f2215620881eeef3f41a8256e83921",
         "symbology-style.db": "53b65b580498d26d4f18115aee48761e9bebd70b6ce33a614a50cc5296c20c47",
@@ -2685,7 +2684,7 @@
         "tutorial_vids\\intro.mp4": "73f63b466595ec170f0905ad402f6fbde35a9bd73f1a20220d74ca37635c289d"
     },
     "PETER_ROSOR_tile_maker_exp": {
-        "metadata.txt": "1e0cb999f2182b7b0e8a9dec2c293b9a319ea70a0f69c9cc0bafdedc19fa8976",
+        "metadata.txt": "d4a433cd875b685a4e26c06fa407b724a11f84edd1eeb23abe5ec3696b693f88",
         "plotting.py": "6d4e31b03c5a742c9bdef0f92579bdc93ef304249c92fc582966bc48cbaadb49",
         "plugin_add_custom_buttons.py": "e9c7fb981a30846b6584412d8a0c4262e5de0ce80793b4f7b5d049ebc27317a6",
         "plugin_change_settings.py": "f1f92cd8d621e8697835419fd92357276205d0b79540c1c78ea9abad630f0efa",
@@ -2694,7 +2693,7 @@
         "plugin_icon_exp.png": "85d033a7801db228f00548cce0efd67b630e52ccc589ba4de71a3c343793d90b",
         "plugin_icon_non_exp.png": "c8fdf27eaa0c4913a644a662eb09086fcc15afdc1e4498fe4ca2e16a770c508f",
         "plugin_load_settings.py": "9bf5abbdb4def8e8f2963e0d6705f7f477cb83db7e5829f03305dec64b58d8c4",
-        "plugin_next_app_stage.py": "2777d1f05d72183b760a7c9c89d8a7f1aa44ef372cb88022d32519efd263787e",
+        "plugin_next_app_stage.py": "0462cba0be45e6b9b625ca255efe26fdd710a28f3d7d7e8034f9f6da902a9fab",
         "plugin_qgis_module.py": "7003467f9972921b2917bee0b284cf3f3d1835b8ae789c427e3e39e368a35d5b",
         "Plugin_run_location.txt": "4560364dfac699b43a80426f3bd66afe0cb2b2a512a8a006080808b961b918e6",
         "plugin_settings_suffixes.py": "6386b947887dc12087b80b5dccbd79ac46e5379dd6e7a7a15346891ba5dfd865",
@@ -2708,6 +2707,8 @@
         "plugin_settings\\settings_v3.json": "157cc1788c0196fcd952b41b28db92a96de9c643f4cb9946bb42f7fb5bfe6d28",
         "plugin_settings\\settings_v4.json": "251ff701929505511728c19680939781dae9012ecb77e58326a96bcf7c4605c2",
         "plugin_settings\\settings_v5.json": "44c0dd5afe72431d9c6ec41f71e6816f04cd3e3ae8556f57676438bd085b4b47",
+        "plugin_settings\\settings_v6.json": "644a2b7d16c16919144af887dc5066585c2aba6abac85b672912c41d34caae57",
+        "plugin_settings\\settings_v7.json": "36f7ce83b74769032e8559f6ed33f6c187a26c20508daad6433dee0629519eb6",
         "tutorial_vids\\intro.mp4": "f5dbd37aa787912e12e2fb27fc7d7c027796ab5497bd692dce343770850c9df3",
         "tutorial_vids\\Survey_Manager_exe_path_VIDEO.mp4": "846cfb6cabcd3d7352c08f560bf5e846743f1e80efee3552a30e381d4c455139"
     }
