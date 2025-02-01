@@ -2683,13 +2683,13 @@
         "plugin_settings\\settings_v2.json": "b89021dff55e4491a87e5c2095779789f26ab0d02bdad30f8efeddda0f34aeef",
         "tutorial_vids\\intro.mp4": "73f63b466595ec170f0905ad402f6fbde35a9bd73f1a20220d74ca37635c289d"
     },
-    "PETER_ROSOR_tile_maker_exp": {
-        "metadata.txt": "d4a433cd875b685a4e26c06fa407b724a11f84edd1eeb23abe5ec3696b693f88",
+    "PETER_ROSOR_tile_maker": {
+        "metadata.txt": "b9fdc0ac0aa2fcd6a46534c7eb183710dc4cb39f3608b1521cb10a81b894d253",
         "plotting.py": "6d4e31b03c5a742c9bdef0f92579bdc93ef304249c92fc582966bc48cbaadb49",
         "plugin_add_custom_buttons.py": "e9c7fb981a30846b6584412d8a0c4262e5de0ce80793b4f7b5d049ebc27317a6",
         "plugin_change_settings.py": "f1f92cd8d621e8697835419fd92357276205d0b79540c1c78ea9abad630f0efa",
         "plugin_common_module.py": "01d5d0dee81414e905cc3afec2cf553312cd264c8ed16b49b7ef5207913267e9",
-        "plugin_icon.png": "85d033a7801db228f00548cce0efd67b630e52ccc589ba4de71a3c343793d90b",
+        "plugin_icon.png": "c8fdf27eaa0c4913a644a662eb09086fcc15afdc1e4498fe4ca2e16a770c508f",
         "plugin_icon_exp.png": "85d033a7801db228f00548cce0efd67b630e52ccc589ba4de71a3c343793d90b",
         "plugin_icon_non_exp.png": "c8fdf27eaa0c4913a644a662eb09086fcc15afdc1e4498fe4ca2e16a770c508f",
         "plugin_load_settings.py": "9bf5abbdb4def8e8f2963e0d6705f7f477cb83db7e5829f03305dec64b58d8c4",
