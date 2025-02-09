@@ -1,0 +1,810 @@
+def compute_centerline(mask, max_dim_size=5000, clip_ends_factor=1.2, show_plot=False):
+    # Ensure mask is boolean
+    mask = mask.astype(bool)
+
+    # Downscale the mask if the longest dimension exceeds max_dim_size
+    original_shape = mask.shape
+    max_dim = max(original_shape)
+    print(f"{max_dim=}")
+    if max_dim > max_dim_size:
+        scale = max_dim_size / max_dim
+        new_shape = (int(mask.shape[0] * scale), int(mask.shape[1] * scale))
+        mask_resized = resize(mask, new_shape, order=0, preserve_range=True, anti_aliasing=False).astype(bool)
+    else:
+        mask_resized = mask
+        scale = 1.0
+    print(f"{scale=}")
+
+    # Compute skeleton of the mask
+    skeleton = skeletonize(mask_resized)
+
+    #plot_array(skeleton)
+
+    # Get coordinates of skeleton pixels
+    skel_coords = np.column_stack(np.nonzero(skeleton))
+
+    # Build KDTree for skeleton coordinates
+    tree = cKDTree(skel_coords)
+    # Find neighboring skeleton pixels within sqrt(2) distance
+    neighbor_lists = tree.query_ball_point(skel_coords, np.sqrt(2) + 0.1)
+
+    # Create the graph
+    G = nx.Graph()
+    G.add_nodes_from(range(len(skel_coords)))
+
+    # Add edges between neighboring skeleton pixels
+    for idx, neighbors in enumerate(neighbor_lists):
+        for neighbor_idx in neighbors:
+            if neighbor_idx != idx:
+                G.add_edge(idx, neighbor_idx)
+
+    # Compute degrees of nodes
+    degrees = dict(G.degree())
+
+    # Identify branch nodes (degree > 2)
+    branch_nodes = [node for node, degree in degrees.items() if degree > 2]
+    branch_coords = skel_coords[branch_nodes]
+
+    # Initialize an empty graph to store the simplified structure
+    H = nx.Graph()
+
+    # Keep track of visited edges to avoid redundant processing
+    visited_edges = set()
+
+    # Build the simplified graph
+    for n in branch_nodes:
+        for nbr in G.neighbors(n):
+            if (n, nbr) in visited_edges or (nbr, n) in visited_edges:
+                continue
+            path = [n, nbr]
+            visited_edges.add((n, nbr))
+
+            # Traverse through degree 2 nodes until a branch node is found
+            prev_node = n
+            current_node = nbr
+            path_length = 1
+            while degrees[current_node] == 2:
+                neighbors = list(G.neighbors(current_node))
+                next_node = neighbors[0] if neighbors[0] != prev_node else neighbors[1]
+                if (current_node, next_node) in visited_edges or (next_node, current_node) in visited_edges:
+                    break
+                visited_edges.add((current_node, next_node))
+                path_length += 1
+                prev_node = current_node
+                current_node = next_node
+            # Add edge only if the other endpoint is a branch node
+            if current_node in branch_nodes:
+                H.add_edge(n, current_node, weight=path_length)
+
+    # Compute distance transform
+    distance = distance_transform_edt(mask_resized)
+
+    # Compute biased distance transform
+    aspect_ratio = mask_resized.shape[1] / mask_resized.shape[0]
+
+    # Bias the distance computation by modifying grid spacing
+    grid_spacing = [1, 1 / aspect_ratio]  # Scale y-axis more if mask is "wide"
+    biased_distance = distance_transform_edt(mask_resized, sampling=grid_spacing)
+
+
+    # Remove loops
+    while True:
+        cycles = list(nx.cycle_basis(H))
+        if not cycles:
+            break
+
+        for cycle in cycles:
+            # Create edges for the current cycle
+            edges = [(cycle[i], cycle[(i + 1) % len(cycle)]) for i in range(len(cycle))]
+            edges = [edge for edge in edges if H.has_edge(*edge)]
+
+            if edges:
+                # Prioritize edge removal based on proximity to the edge of the mask
+                # Compute the average distance of the nodes forming each edge to the edge of the mask
+                edge_proximity_scores = {
+                    edge: (
+                                  distance[skel_coords[edge[0]][0], skel_coords[edge[0]][1]] +
+                                  distance[skel_coords[edge[1]][0], skel_coords[edge[1]][1]]
+                          ) / 2
+                    for edge in edges
+                }
+
+                # Find the edge with the smallest average distance (closest to the mask edge)
+                edge_to_remove = min(edge_proximity_scores, key=edge_proximity_scores.get)
+                H.remove_edge(*edge_to_remove)
+
+
+    # Simplify the graph
+    H = simplify_graph(H)
+
+    # Map node indices to their distances from the edge of the mask
+    node_distances = {
+        node: distance[skel_coords[node][0], skel_coords[node][1]]
+        for node in H.nodes()
+    }
+
+    # Initialize list to store distances of removed nodes
+    removed_node_distances = []
+
+    # Iteratively remove degree 1 nodes closest to nodes of degree >2
+    if show_plot:
+        fig, ax = plt.subplots(figsize=(8, 8))
+        plt.ion()  # Turn on interactive mode for dynamic plotting
+
+    iteration = 0
+    while True:
+        # Identify nodes of degree >2
+        degree_gt2_nodes = [node for node in H.nodes() if H.degree(node) > 2]
+
+        # If no nodes of degree >2, break the loop
+        if not degree_gt2_nodes:
+            break
+
+        # Find degree 1 nodes
+        degree_1_nodes = [node for node in H.nodes() if H.degree(node) == 1]
+        if not degree_1_nodes:
+            break
+
+        # For each degree-1 node, compute the shortest path length to the nearest node of degree >2
+        node_distance_to_gt2 = {}
+        for node in degree_1_nodes:
+            # Compute shortest paths from this node to all other nodes
+            lengths = nx.single_source_shortest_path_length(H, node)
+            # Filter lengths to nodes of degree >2
+            lengths_to_gt2 = [length for target_node, length in lengths.items() if target_node in degree_gt2_nodes]
+            if lengths_to_gt2:
+                min_distance = min(lengths_to_gt2)
+                node_distance_to_gt2[node] = min_distance
+            else:
+                # If no degree >2 nodes are reachable, assign a large distance
+                node_distance_to_gt2[node] = float('inf')
+
+        # Sort degree 1 nodes by distance to the nearest degree >2 node
+        # In case of ties, sort by distance to the edge (node_distances[node])
+        degree_1_nodes_sorted = sorted(
+            degree_1_nodes,
+            key=lambda node: (node_distance_to_gt2[node], node_distances[node])
+        )
+
+        # Remove the node closest to a degree >2 node
+        node_to_remove = degree_1_nodes_sorted[0]
+
+        # Save the distance from the edge of the node being removed
+        removed_node_distances.append(node_distances[node_to_remove])
+
+        H.remove_node(node_to_remove)
+
+        # Recalculate degrees and distances of nodes
+        node_distances = {
+            node: distance[skel_coords[node][0], skel_coords[node][1]]
+            for node in H.nodes()
+        }
+
+        # Visualization
+        if show_plot:
+            ax.clear()
+            ax.imshow(mask_resized, cmap='gray', origin='upper', alpha=0.5)
+
+            # Normalize distances for colormap
+            distances = np.array(list(node_distances.values()))
+            norm = plt.Normalize(vmin=distances.min(), vmax=distances.max())
+            cmap = plt.cm.viridis
+
+            # Plot the graph with remaining nodes
+            remaining_pos = {node: (skel_coords[node][1], skel_coords[node][0]) for node in H.nodes()}
+            node_colors = [cmap(norm(node_distances[node])) for node in H.nodes()]
+            nx.draw(
+                H, remaining_pos, edge_color='black', with_labels=False, node_size=50, ax=ax,
+                node_color=node_colors
+            )
+
+            # Highlight the removed node
+            removed_coords = (skel_coords[node_to_remove][1], skel_coords[node_to_remove][0])
+            ax.scatter(*removed_coords, color='red', s=100, label=f'Removed Node {iteration}')
+
+            ax.legend()
+            ax.set_title(f"Node Removal Iteration {iteration}")
+            plt.pause(0.1)  # Pause to visualize each step
+            iteration += 1
+
+    # After the while loop, remove degree-1 nodes at the ends of paths
+    if removed_node_distances:
+        max_removed_distance = max(removed_node_distances)
+        target_cumulative_distance = clip_ends_factor * max_removed_distance
+
+        # Remove nodes at the ends of the paths
+        for endpoint in [node for node in H.nodes() if H.degree(node) == 1]:
+            cumulative_distance = 0
+            current_node = endpoint
+            path_removed = []
+
+            while cumulative_distance < target_cumulative_distance:
+                # Identify neighbors of the current node
+                neighbors = list(H.neighbors(current_node))
+                if not neighbors:  # No neighbors left, stop
+                    break
+
+                # Choose the next node to remove (the only neighbor, since it's a path end)
+                next_node = neighbors[0]
+
+                # Add the edge weight to the cumulative distance
+                if H.has_edge(current_node, next_node):
+                    cumulative_distance += H[current_node][next_node].get("weight", 1)
+
+                # Remove the current node and record the removal
+                path_removed.append(current_node)
+                H.remove_node(current_node)
+
+                # Move to the next node
+                current_node = next_node
+
+            # Visualization for this endpoint's removal
+            if show_plot:
+                fig, ax = plt.subplots(figsize=(8, 8))
+                ax.imshow(mask_resized, cmap='gray', origin='upper', alpha=0.5)
+
+                # Plot the remaining graph
+                remaining_pos = {node: (skel_coords[node][1], skel_coords[node][0]) for node in H.nodes()}
+                nx.draw(
+                    H, remaining_pos, edge_color='black', with_labels=False, node_size=50, ax=ax,
+                    node_color='blue'
+                )
+
+                # Highlight removed nodes
+                removed_coords = np.array([(skel_coords[node][1], skel_coords[node][0]) for node in path_removed])
+                if removed_coords.size > 0:
+                    ax.scatter(removed_coords[:, 0], removed_coords[:, 1], color='orange', s=100, label='Removed Nodes')
+
+                ax.legend()
+                ax.set_title(f"Removing Nodes from Endpoint")
+                plt.pause(0.5)
+                plt.close(fig)
+
+    # Final visualization (optional)
+    if show_plot:
+        fig, ax = plt.subplots(figsize=(8, 8))
+        ax.imshow(mask_resized, cmap='gray', origin='upper', alpha=0.5)
+
+        # Plot the final graph
+        remaining_pos = {node: (skel_coords[node][1], skel_coords[node][0]) for node in H.nodes()}
+        nx.draw(
+            H, remaining_pos, edge_color='black', with_labels=False, node_size=50, ax=ax,
+            node_color='blue'
+        )
+
+        ax.set_title("Final Simplified Graph")
+        plt.ioff()
+        plt.show()
+
+    # Map node indices back to coordinates for plotting or further analysis
+    pos = {node: (skel_coords[node][1], skel_coords[node][0]) for node in H.nodes()}
+
+    # **Extract degree 1 nodes and their coordinates**
+    degree_1_nodes = [node for node in H.nodes() if H.degree(node) == 1]
+
+    degree_1_coords = np.array([pos[node] for node in degree_1_nodes])
+    # Use G to compute the shortest path between the two degree_1_nodes
+    shortest_path_nodes = nx.shortest_path(G, source=degree_1_nodes[0], target=degree_1_nodes[1])
+    shortest_path_coords = np.array([skel_coords[node] for node in shortest_path_nodes])
+
+    # Extract the endpoints of the shortest path
+    start_point = shortest_path_coords[0]
+    end_point = shortest_path_coords[-1]
+
+    # Plot the shortest path on the skeleton
+    if show_plot:
+        plt.figure(figsize=(8, 8))
+        plt.imshow(skeleton, cmap='gray', origin='upper')
+
+        # Plot the shortest path
+        plt.plot(shortest_path_coords[:, 1], shortest_path_coords[:, 0], color='yellow', linewidth=2,
+                 label='Shortest Path')
+
+        # Draw the simplified graph H
+        nx.draw(H, pos, node_color='red', with_labels=False, node_size=50, edge_color='blue')
+
+        # Highlight the endpoints
+        plt.scatter(degree_1_coords[:, 0], degree_1_coords[:, 1], color='green', s=100, marker='x', label='Endpoints')
+
+        plt.title('Final Simplified Graph with Shortest Path (Graph-Based)')
+        plt.axis('off')
+        plt.legend()
+        plt.show()
+
+    # Scale shortest path coordinates back to original size
+    if scale != 1.0:
+        shortest_path_coords_rescaled = shortest_path_coords / scale
+        start_point_rescaled = start_point / scale
+        end_point_rescaled = end_point / scale
+    else:
+        shortest_path_coords_rescaled = shortest_path_coords
+        start_point_rescaled = start_point
+        end_point_rescaled = end_point
+
+    # Mark the shortest path on the original mask
+    shortest_path_mask = np.zeros_like(mask, dtype=mask.dtype)
+    rows_rescaled = shortest_path_coords_rescaled[:, 0].astype(int)
+    cols_rescaled = shortest_path_coords_rescaled[:, 1].astype(int)
+    rows_rescaled = np.clip(rows_rescaled, 0, mask.shape[0] - 1)
+    cols_rescaled = np.clip(cols_rescaled, 0, mask.shape[1] - 1)
+    shortest_path_mask[rows_rescaled, cols_rescaled] = 1
+
+    # Return the upscaled shortest_path_mask
+    return shortest_path_mask, (start_point_rescaled, end_point_rescaled)
+
+
+
+def cut_out_pixels_old(cut_shifted, unit_vector, show_plot=False):
+    # Invert the cut_shifted mask to prepare for labeling
+    inv_mask = np.logical_not(cut_shifted)  # Path pixels are zeros, others are ones
+
+    # Label connected regions in the inverted mask
+    labeled_array, num_features = label(inv_mask)
+
+    # If there are more than two regions, find the two largest regions by area
+    if num_features > 2:
+        # Use bincount to get the size of each region
+        region_sizes = np.bincount(labeled_array.ravel())[1:]  # Ignore background label 0
+        largest_two_labels = region_sizes.argsort()[-2:] + 1  # Labels start from 1
+        labels_to_consider = largest_two_labels.tolist()
+    elif num_features == 2:
+        labels_to_consider = [1, 2]
+    else:
+        # Handle cases where there is only one region
+        labels_to_consider = [1]
+
+    # Manually compute centroids of the regions without generating large arrays
+    centroids = []
+    for label_value in labels_to_consider:
+        mask = (labeled_array == label_value)
+        centroid = compute_centroid(mask)
+        centroids.append(centroid)
+
+    # If only one region, we cannot compute vector between centroids
+    if len(centroids) == 2:
+        # Compute vector between the centroids
+        vec = np.array([
+            centroids[1][1] - centroids[0][1],
+            centroids[1][0] - centroids[0][0]
+        ])  # (x, y) format
+
+        # Normalize the vector
+        vec_norm = vec / np.linalg.norm(vec)
+
+        # Flip the unit_vector
+        flipped_unit_vector = (unit_vector[0], -unit_vector[1])
+
+        # Determine which region to keep based on the flipped_unit_vector
+        dot_product = np.dot(vec_norm, flipped_unit_vector)
+        if dot_product > 0:
+            keep_label = labels_to_consider[1]  # Corresponds to centroid1
+        else:
+            keep_label = labels_to_consider[0]  # Corresponds to centroid0
+    else:
+        # If only one region, keep it
+        keep_label = labels_to_consider[0]
+
+    # Create the final mask including the path
+    final_mask = np.logical_or(labeled_array == keep_label, cut_shifted == 1)
+
+    # Optionally plot inputs and outputs
+    if show_plot:
+        import matplotlib.pyplot as plt
+        fig, axes = plt.subplots(1, 2, figsize=(15, 5))
+        axes[0].imshow(cut_shifted, cmap='gray')
+        axes[0].set_title('Cut Shifted Mask')
+        axes[1].imshow(final_mask, cmap='gray')
+        axes[1].set_title('Final Mask')
+        plt.show()
+
+    return final_mask.astype(np.uint8)
+
+
+def compute_centerline(mask, intersections_pixel_coords, max_dim_size=5000, clip_ends_factor=1.2, show_plot=False):
+    # Ensure mask is boolean
+    mask = mask.astype(bool)
+
+    # Downscale the mask if the longest dimension exceeds max_dim_size
+    original_shape = mask.shape
+    max_dim = max(original_shape)
+    print(f"{max_dim=}")
+    if max_dim > max_dim_size:
+        scale = max_dim_size / max_dim
+        new_shape = (int(mask.shape[0] * scale), int(mask.shape[1] * scale))
+        mask_resized = resize(mask, new_shape, order=0, preserve_range=True, anti_aliasing=False).astype(bool)
+    else:
+        mask_resized = mask
+        scale = 1.0
+
+    # Adjust the intersection coordinates to match the resized mask
+    resized_intersections = [
+        (int(coord[0] * scale), int(coord[1] * scale)) for coord in intersections_pixel_coords
+    ]
+
+    mask_resized = binary_fill_holes(mask_resized)
+    print(f"{scale=}")
+
+    # Compute skeleton of the mask
+    skeleton = skeletonize(mask_resized)
+
+    #plot_array(skeleton)
+
+    # Get coordinates of skeleton pixels
+    skel_coords = np.column_stack(np.nonzero(skeleton))
+
+    # Build KDTree for skeleton coordinates
+    tree = cKDTree(skel_coords)
+    # Find neighboring skeleton pixels within sqrt(2) distance
+    neighbor_lists = tree.query_ball_point(skel_coords, np.sqrt(2) + 0.1)
+
+    # Create the graph
+    G = nx.Graph()
+    G.add_nodes_from(range(len(skel_coords)))
+
+    # Add edges between neighboring skeleton pixels
+    for idx, neighbors in enumerate(neighbor_lists):
+        for neighbor_idx in neighbors:
+            if neighbor_idx != idx:
+                G.add_edge(idx, neighbor_idx)
+
+    # Compute degrees of nodes
+    degrees = dict(G.degree())
+
+    # Identify branch nodes (degree > 2)
+    branch_nodes = [node for node, degree in degrees.items() if degree > 2]
+    branch_coords = skel_coords[branch_nodes]
+
+    # Initialize an empty graph to store the simplified structure
+    H = nx.Graph()
+
+    # Keep track of visited edges to avoid redundant processing
+    visited_edges = set()
+
+    # Build the simplified graph
+    for n in branch_nodes:
+        for nbr in G.neighbors(n):
+            if (n, nbr) in visited_edges or (nbr, n) in visited_edges:
+                continue
+            path = [n, nbr]
+            visited_edges.add((n, nbr))
+
+            # Traverse through degree 2 nodes until a branch node is found
+            prev_node = n
+            current_node = nbr
+            path_length = 1
+            while degrees[current_node] == 2:
+                neighbors = list(G.neighbors(current_node))
+                next_node = neighbors[0] if neighbors[0] != prev_node else neighbors[1]
+                if (current_node, next_node) in visited_edges or (next_node, current_node) in visited_edges:
+                    break
+                visited_edges.add((current_node, next_node))
+                path_length += 1
+                prev_node = current_node
+                current_node = next_node
+            # Add edge only if the other endpoint is a branch node
+            if current_node in branch_nodes:
+                H.add_edge(n, current_node, weight=path_length)
+
+    # Compute distance transform
+    distance = distance_transform_edt(mask_resized)
+
+    H = keep_largest_component(H)
+
+    # Remove loops
+    while True:
+        cycles = list(nx.cycle_basis(H))
+        if not cycles:
+            break
+
+        for cycle in cycles:
+            # Create edges for the current cycle
+            edges = [(cycle[i], cycle[(i + 1) % len(cycle)]) for i in range(len(cycle))]
+            edges = [edge for edge in edges if H.has_edge(*edge)]
+
+            if edges:
+                # Prioritize edge removal based on proximity to the edge of the mask
+                # Compute the average distance of the nodes forming each edge to the edge of the mask
+                edge_proximity_scores = {
+                    edge: (
+                                  distance[skel_coords[edge[0]][0], skel_coords[edge[0]][1]] +
+                                  distance[skel_coords[edge[1]][0], skel_coords[edge[1]][1]]
+                          ) / 2
+                    for edge in edges
+                }
+
+                # Find the edge with the smallest average distance (closest to the mask edge)
+                edge_to_remove = min(edge_proximity_scores, key=edge_proximity_scores.get)
+                H.remove_edge(*edge_to_remove)
+
+
+
+    # Simplify the graph
+    H = simplify_graph(H)
+
+    # After loop removal plot
+    if show_plot:
+        fig, ax = plt.subplots(figsize=(8, 8))
+
+        # Extract node positions
+        pos = {node: (skel_coords[node][1], skel_coords[node][0]) for node in H.nodes()}
+
+        # Draw the graph
+        nx.draw(
+            H, pos, edge_color='blue', node_size=50, with_labels=False, ax=ax, node_color='orange'
+        )
+
+        # Plot the intersections
+        intersections_x, intersections_y = zip(*resized_intersections)  # Separate x and y coords
+        ax.scatter(intersections_x, intersections_y, color='red', s=100, label="Intersections", zorder=5)
+
+        # Set aspect ratio, title, and legend
+        ax.set_aspect('equal')
+        ax.set_title("Graph State After Removing Loops with Intersections")
+        ax.legend()
+        plt.show()
+
+
+    # Identify nodes of degree >2
+    degree_gt2_nodes = [node for node in H.nodes() if H.degree(node) > 2]
+
+    # Map node indices to their distances from the edge of the mask
+    node_distances = {
+        node: distance[skel_coords[node][0], skel_coords[node][1]]
+        for node in H.nodes()
+    }
+
+    # Initialize list to store distances of removed nodes
+    removed_node_distances = []
+
+
+
+    # Iteratively remove degree 1 nodes closest to nodes of degree >2
+    if show_plot and degree_gt2_nodes:
+        anim_fig, ax = plt.subplots(figsize=(8, 8))
+        plt.ion()  # Turn on interactive mode for dynamic plotting
+
+
+    iteration = 0
+    while True:
+        # Identify nodes of degree >2
+        degree_gt2_nodes = [node for node in H.nodes() if H.degree(node) > 2]
+        # If no nodes of degree >2, break the loop
+        if not degree_gt2_nodes:
+            break
+
+        # Find degree 1 nodes
+        degree_1_nodes = [node for node in H.nodes() if H.degree(node) == 1]
+        if not degree_1_nodes:
+            break
+
+        # For each degree-1 node, compute the shortest path length to the nearest node of degree >2
+        node_distance_to_gt2 = {}
+        for node in degree_1_nodes:
+            # Compute shortest paths from this node to all other nodes
+            lengths = nx.single_source_shortest_path_length(H, node)
+            # Filter lengths to nodes of degree >2
+            lengths_to_gt2 = [length for target_node, length in lengths.items() if target_node in degree_gt2_nodes]
+            if lengths_to_gt2:
+                min_distance = min(lengths_to_gt2)
+                node_distance_to_gt2[node] = min_distance
+            else:
+                # If no degree >2 nodes are reachable, assign a large distance
+                node_distance_to_gt2[node] = float('inf')
+
+        # Sort degree 1 nodes by distance to the nearest degree >2 node
+        # In case of ties, sort by distance to the edge (node_distances[node])
+        degree_1_nodes_sorted = sorted(
+            degree_1_nodes,
+            key=lambda node: (node_distance_to_gt2[node], node_distances[node])
+        )
+
+        ''' maybe some other culling method is better hmm....'''
+
+        # Remove the node closest to a degree >2 node
+        node_to_remove = degree_1_nodes_sorted[0]
+
+        # Save the distance from the edge of the node being removed
+        removed_node_distances.append(node_distances[node_to_remove])
+
+        H.remove_node(node_to_remove)
+
+        # Recalculate degrees and distances of nodes
+        node_distances = {
+            node: distance[skel_coords[node][0], skel_coords[node][1]]
+            for node in H.nodes()
+        }
+        # Visualization
+        if show_plot:
+            ax.clear()
+            ax.imshow(mask_resized, cmap='gray', origin='upper', alpha=0.5)
+
+            # Normalize distances for colormap
+            distances = np.array(list(node_distances.values()))
+            norm = plt.Normalize(vmin=distances.min(), vmax=distances.max())
+            cmap = plt.cm.viridis
+
+            # Plot the intersections
+            intersections_x, intersections_y = zip(*resized_intersections)  # Separate x and y coords
+            ax.scatter(intersections_x, intersections_y, color='red', s=100, label="Intersections", zorder=5)
+
+            # Plot the graph with remaining nodes
+            remaining_pos = {node: (skel_coords[node][1], skel_coords[node][0]) for node in H.nodes()}
+            node_colors = [cmap(norm(node_distances[node])) for node in H.nodes()]
+            nx.draw(
+                H, remaining_pos, edge_color='black', with_labels=False, node_size=50, ax=ax,
+                node_color=node_colors
+            )
+
+            # Highlight the removed node
+            removed_coords = (skel_coords[node_to_remove][1], skel_coords[node_to_remove][0])
+            ax.scatter(*removed_coords, color='red', s=100, label=f'Removed Node {iteration}')
+
+            ax.legend()
+            ax.set_title(f"Node Removal Iteration {iteration}")
+            plt.pause(1)  # Pause to visualize each step
+            iteration += 1
+
+    try:
+        plt.close(anim_fig)
+    except UnboundLocalError:
+        pass  # Safely ignore if anim_fig doesn't have a close method
+
+
+    # Re-connect the closest two degree-1 nodes if we have more than two endpoints
+    degree_1_nodes = [node for node in H.nodes() if H.degree(node) == 1]
+    if len(degree_1_nodes) > 2:
+        # Find the closest pair of endpoints based on Euclidean distance between their skeleton coordinates
+        dists = []
+        for i in range(len(degree_1_nodes)):
+            for j in range(i + 1, len(degree_1_nodes)):
+                node1 = degree_1_nodes[i]
+                node2 = degree_1_nodes[j]
+                coord1 = skel_coords[node1]
+                coord2 = skel_coords[node2]
+                dist = np.linalg.norm(coord1 - coord2)
+                dists.append((dist, node1, node2))
+
+        # Sort by distance and pick the shortest one
+        dists.sort(key=lambda x: x[0])
+        if dists:
+            closest_dist, node_a, node_b = dists[0]
+            # Add an edge between these two closest endpoints
+            H.add_edge(node_a, node_b, weight=closest_dist)
+
+    # Calculate the average edge length in the graph
+    if len(H.edges()) > 0:
+        total_edge_weight = sum(H[u][v].get("weight", 1) for u, v in H.edges())
+        num_edges = len(H.edges())
+        average_edge_length = total_edge_weight / num_edges
+    else:
+        average_edge_length = 0  # If no edges exist, average is zero
+        assert False, 'Average edge length: {average_edge_length}'
+
+    # After the while loop, remove degree-1 nodes at the ends of paths
+    if removed_node_distances:
+        max_removed_distance = max(removed_node_distances)
+        target_cumulative_distance = clip_ends_factor * max_removed_distance
+    else:
+        target_cumulative_distance = average_edge_length
+
+    '''
+    # Remove nodes at the ends of the paths
+    for endpoint in [node for node in H.nodes() if H.degree(node) == 1]:
+        cumulative_distance = 0
+        current_node = endpoint
+        path_removed = []
+
+        while cumulative_distance < target_cumulative_distance:
+            # Identify neighbors of the current node
+            neighbors = list(H.neighbors(current_node))
+            if not neighbors:  # No neighbors left, stop
+                break
+
+            # Choose the next node to remove (the only neighbor, since it's a path end)
+            next_node = neighbors[0]
+
+            # Add the edge weight to the cumulative distance
+            if H.has_edge(current_node, next_node):
+                cumulative_distance += H[current_node][next_node].get("weight", 1)
+
+            # Remove the current node and record the removal
+            path_removed.append(current_node)
+            H.remove_node(current_node)
+
+            # Move to the next node
+            current_node = next_node
+
+        # Visualization for this endpoint's removal
+        if show_plot:
+            fig, ax = plt.subplots(figsize=(8, 8))
+            ax.imshow(mask_resized, cmap='gray', origin='upper', alpha=0.5)
+
+            # Plot the remaining graph
+            remaining_pos = {node: (skel_coords[node][1], skel_coords[node][0]) for node in H.nodes()}
+            nx.draw(
+                H, remaining_pos, edge_color='black', with_labels=False, node_size=50, ax=ax,
+                node_color='blue'
+            )
+
+            # Highlight removed nodes
+            removed_coords = np.array([(skel_coords[node][1], skel_coords[node][0]) for node in path_removed])
+            if removed_coords.size > 0:
+                ax.scatter(removed_coords[:, 0], removed_coords[:, 1], color='orange', s=100, label='Removed Nodes')
+
+            ax.legend()
+            ax.set_title(f"Removing Nodes from Endpoint")
+            plt.pause(0.5)
+            plt.close(fig)
+    '''
+    # Final visualization (optional)
+    if show_plot:
+        fig, ax = plt.subplots(figsize=(8, 8))
+        ax.imshow(mask_resized, cmap='gray', origin='upper', alpha=0.5)
+
+        # Plot the final graph
+        remaining_pos = {node: (skel_coords[node][1], skel_coords[node][0]) for node in H.nodes()}
+        nx.draw(
+            H, remaining_pos, edge_color='black', with_labels=False, node_size=50, ax=ax,
+            node_color='blue'
+        )
+
+        ax.set_title("Final Simplified Graph")
+        plt.ioff()
+        plt.show()
+
+    # Map node indices back to coordinates for plotting or further analysis
+    pos = {node: (skel_coords[node][1], skel_coords[node][0]) for node in H.nodes()}
+
+    # **Extract degree 1 nodes and their coordinates**
+    degree_1_nodes = [node for node in H.nodes() if H.degree(node) == 1]
+
+    degree_1_coords = np.array([pos[node] for node in degree_1_nodes])
+    # Use G to compute the shortest path between the two degree_1_nodes
+    shortest_path_nodes = nx.shortest_path(G, source=degree_1_nodes[0], target=degree_1_nodes[1])
+    shortest_path_coords = np.array([skel_coords[node] for node in shortest_path_nodes])
+
+    # Extract the endpoints of the shortest path
+    start_point = shortest_path_coords[0]
+    end_point = shortest_path_coords[-1]
+
+    # Plot the shortest path on the skeleton
+    if show_plot:
+        plt.figure(figsize=(8, 8))
+        plt.imshow(skeleton, cmap='gray', origin='upper')
+
+        # Plot the shortest path
+        plt.plot(shortest_path_coords[:, 1], shortest_path_coords[:, 0], color='yellow', linewidth=2,
+                 label='Shortest Path')
+
+        # Draw the simplified graph H
+        nx.draw(H, pos, node_color='red', with_labels=False, node_size=50, edge_color='blue')
+
+        # Highlight the endpoints
+        plt.scatter(degree_1_coords[:, 0], degree_1_coords[:, 1], color='green', s=100, marker='x',
+                    label='Endpoints')
+
+        plt.title('Final Simplified Graph with Shortest Path (Graph-Based)')
+        plt.axis('off')
+        plt.legend()
+        plt.show()
+
+    # Scale shortest path coordinates back to original size
+    if scale != 1.0:
+        shortest_path_coords_rescaled = shortest_path_coords / scale
+        start_point_rescaled = start_point / scale
+        end_point_rescaled = end_point / scale
+    else:
+        shortest_path_coords_rescaled = shortest_path_coords
+        start_point_rescaled = start_point
+        end_point_rescaled = end_point
+
+    # Mark the shortest path on the original mask
+    shortest_path_mask = np.zeros_like(mask, dtype=mask.dtype)
+    rows_rescaled = shortest_path_coords_rescaled[:, 0].astype(int)
+    cols_rescaled = shortest_path_coords_rescaled[:, 1].astype(int)
+    rows_rescaled = np.clip(rows_rescaled, 0, mask.shape[0] - 1)
+    cols_rescaled = np.clip(cols_rescaled, 0, mask.shape[1] - 1)
+    shortest_path_mask[rows_rescaled, cols_rescaled] = 1
+
+    # Return the upscaled shortest_path_mask
+    return shortest_path_mask, (start_point_rescaled, end_point_rescaled)
