@@ -278,9 +278,27 @@ def parse_qlr_to_md(qlr_path, output_md_path):
     qlr_path (str): Path to the QLR file.
     output_md_path (str): Path to save the generated MD file.
     """
+    if not os.path.exists(qlr_path):
+        raise FileNotFoundError(f"QLR file not found: {qlr_path}")
+
     # Parse the QLR file
     tree = ET.parse(qlr_path)
     root = tree.getroot()
+
+    # Function to extract and validate the folder path
+    def resolve_source_path(source):
+        if source.startswith("./"):
+            # Resolve relative path based on QLR file location
+            qlr_folder = os.path.dirname(os.path.abspath(qlr_path))
+            resolved_path = os.path.join(qlr_folder, source[2:])
+        else:
+            resolved_path = source  # Assume it's an absolute path
+
+        # Validate the resolved path
+        if not os.path.exists(os.path.dirname(resolved_path)):
+            raise FileNotFoundError(f"Could not resolve valid folder for source: {source}")
+
+        return resolved_path.replace("\\", "/")  # Normalize for consistency
 
     # Recursively process the tree
     def process_node(node, indent_level=0):
@@ -290,8 +308,12 @@ def parse_qlr_to_md(qlr_path, output_md_path):
             if name:  # Only include groups with names
                 md_lines.append(f"{'    ' * indent_level}-{name}")
         elif node.tag == "layer-tree-layer":
-            source = node.attrib.get("source", "Unknown Source").replace("./", "R:\\ORTHO_STUFF\\Aurora_ortho_chunks\\")
-            md_lines.append(f"{'    ' * indent_level}-\"{source}\"")
+            source = node.attrib.get("source", "Unknown Source").strip()
+            try:
+                resolved_source = resolve_source_path(source)
+                md_lines.append(f"{'    ' * indent_level}-\"{resolved_source}\"")
+            except FileNotFoundError as e:
+                md_lines.append(f"{'    ' * indent_level}-\"Error: {e}\"")  # Log the error in the MD
         # Process children
         for child in node:
             md_lines.extend(process_node(child, indent_level + 1))

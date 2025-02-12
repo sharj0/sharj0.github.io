@@ -46,11 +46,20 @@ def align_rasters(tif_files,
         top_left_y = geotransform[3]
         pixel_size_y = geotransform[5]
 
+        if epsg_int_override:
+            srs = osr.SpatialReference()
+            srs.ImportFromEPSG(epsg_int_override)  # EPSG code for WGS 84 / UTM zone 21N
+            outp_epsg = srs.ExportToWkt()  # Get the WKT string
+
+        else:
+            outp_epsg = input_crs
+
         if is_raster_aligned(geotransform, target_GSD, debug_print=False):
-            print(f"{input_file} is already aligned. Skipping alignment.")
-            output_files[i] = input_file  # Use original file path if already aligned
-            dataset = None
-            continue
+            if outp_epsg == input_crs:
+                print(f"{input_file} is already aligned. Skipping alignment.")
+                output_files[i] = input_file  # Use original file path if already aligned
+                dataset = None
+                continue
 
         raster_x_size = dataset.RasterXSize
         raster_y_size = dataset.RasterYSize
@@ -75,14 +84,6 @@ def align_rasters(tif_files,
 
         output_data_type = dataset.GetRasterBand(1).DataType
 
-        if epsg_int_override:
-            srs = osr.SpatialReference()
-            srs.ImportFromEPSG(epsg_int_override)  # EPSG code for WGS 84 / UTM zone 21N
-            outp_epsg = srs.ExportToWkt()  # Get the WKT string
-
-        else:
-            outp_epsg=input_crs
-
         warp_options = gdal.WarpOptions(
             format='GTiff',
             outputBounds=(new_left, new_bottom, new_right, new_top),
@@ -95,7 +96,8 @@ def align_rasters(tif_files,
             callback=progress_callback,
             callback_data=None
         )
-        print(f"Shifting raster {os.path.basename(output_file)}")
+        print(f"\n[{i+1}/{len(tif_files)}]  Shifting raster {os.path.basename(output_file)}")
+
         print(f"{input_file} -> {output_file}")
         os.makedirs(output_folder, exist_ok=True)
         gdal.Warp(output_file, dataset, options=warp_options)
@@ -327,19 +329,18 @@ def progress_callback(complete, message, _userdata):
     A simple progress callback that prints the percentage of completion.
     """
     percent = int(complete * 100)
-    print(f"Alignment: {percent}% completed", end="\r")
-    # Return 1 to signal GDAL to continue processing
+    print(f"Alignment: {percent}% completed", end="\r", flush=True)
     return 1
 
 if __name__ == '__main__':
-    #folder_path = r"E:\ORTHO_STUFF\DEL_AREA\UN-ALIGNED\TOF2"
+    #folder_path = r"D:\Ban_ortho\split_patched_UNaligned_chunks"
     #align_raster_list = get_list_of_paths_os_walk_folder(folder_path, ".tiff")
     '''
     OR
     '''
-    align_raster_list = [r"R:\ORTHO_STUFF\BAN_TIMMINS\split_patched_UNaligned_chunks\TOF2_20_to_25_better.tiff"]
+    align_raster_list = [r"D:\Ban_ortho\split_patched_UNaligned_chunks\TOF_2_26_to_51_Merge_fix_fixx.tiff"]
 
-    output_folder = r"R:\ORTHO_STUFF\BAN_TIMMINS"
+    output_folder = r"D:\Ban_ortho\Aligned_chunks"
 
     print("starting")
 
@@ -355,5 +356,3 @@ if __name__ == '__main__':
     align_rasters(align_raster_list, output_folder, target_GSD_cm=5, load_into_QGIS=False, sample_alg='bilinear', do_save_metrics_to_csv=True, beep_when_finished=True, epsg_int_override=6660)
 
     #build_single_internal_overview(output_file, target_resolution=2000)
-
-

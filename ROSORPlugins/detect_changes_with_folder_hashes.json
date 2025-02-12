@@ -339,6 +339,7 @@
         "tutorial_vids\\import_kml_instead_VIDEO.mp4": "5de03f6ba6be194505e204fe1588ba8b25ebe853cbf8bfbd0e868da471212a25",
         "tutorial_vids\\intro.mp4": "342401cf1b2d3c3b70668f38717d5ca3d7fd8a65aec53f8a36175d480cc807b5"
     },
+    "PETER_ROSOR_lines_to_flights": {},
     "PETER_ROSOR_lines_to_flights_exp": {
         "delete_me.py": "aea880918933cbcc5bca9d49c456d045505c422d870ae3e47d3692314e086f0b",
         "Flight_area_Class.py": "dd785dd4faa5dc20a6ab904cedbfd8d4dba0d675b7c763afd9f99d2096d72e36",
@@ -407,10 +408,10 @@
         "tutorial_vids\\Survey_Manager_exe_path_VIDEO.mp4": "846cfb6cabcd3d7352c08f560bf5e846743f1e80efee3552a30e381d4c455139"
     },
     "PETER_ROSOR_mag_clipper": {
-        ".$stuff.drawio.bkp": "2b88c85930feb9f54825c2747c550eef1800d8dc0ba427bd5e590ef6a282be6a",
+        ".$stuff.drawio.bkp": "219597a21aa001d1bce64855bf05c025f40db34d53520cbe47d305b19af24e80",
         "detect_belonging_flight_name.py": "b47403660b90cc9539283f6eefe5e15218bd7d2028f1e3463aaafbcc16325ef9",
         "gui_run.py": "e1560736e69d1457e1f4be16942a60f3e1f113e4dba3457b6bbae879314aee45",
-        "metadata.txt": "a2e45c737924ecbc94d0bfff6d6420d59721667b4f4f5638d9a2261d9b92e976",
+        "metadata.txt": "66844640256381eac70fd2f876321541137eb5c1907c16617127b4a70e1e401c",
         "pdf_export_setting_json_Sharj.py": "97db30cd8b2911256dd8022fb8a7bffa260682033ba3dc4380f1e115f98225b5",
         "plot_dataframe_to_pdf.py": "bb5db80ff96cc4e199131b187ccc1eedf39fa2c5309d01d6d5ee513d5dd8d5de",
         "plugin_add_custom_buttons.py": "e9c7fb981a30846b6584412d8a0c4262e5de0ce80793b4f7b5d049ebc27317a6",
@@ -428,7 +429,7 @@
         "segment_length_calculation_Sharj.py": "04af260e5d2fd931c702cc11f1a858ce8a1d55d2be5be5c4115b9512de46edac",
         "split.png": "fcb948aaaa0f9b3e2a265f574ccad042eabb29d99a614393d813371f96dd5e0b",
         "split_csv_by_flightlines.py": "6b8b2a703aff82446ff815f1a4f32675be6e6b0105da99da1450348a233a34ba",
-        "stuff.drawio": "040a45b9b7eac01d45bcfb2063edba86a6b1fc24ff2705af51f5f9202248ca4c",
+        "stuff.drawio": "31ad0bf89901e0ec80ef7dd5d66c6dbfa931dce62aee5c18338e838e0e7d242f",
         "SurveyManagerInstaller-3.0.1314.0.exe": "5e76bec0b453f4339fb86657a38e6b9014b8b639e2aef41145f5598abec65e9b",
         "surveymanger_automation.py": "018b932e67746a524350be42bf48b1be80f2215620881eeef3f41a8256e83921",
         "symbology-style.db": "53b65b580498d26d4f18115aee48761e9bebd70b6ce33a614a50cc5296c20c47",
@@ -1019,13 +1020,13 @@
         "tutorial_vids\\Y_axis_display_range_override_VIDEO.mp4": "9e2f25e4e83c6c90abf4663d75762508004df67dc1ca78e3bfa175498597f4e1"
     },
     "PETER_ROSOR_Ortho_Photo_Merger": {
-        "align_rasters.py": "eceb0489e89792aa24aec4020c03f4e518aa6aab929aafd4fbf23913cbbbea07",
+        "align_rasters.py": "dcca52e43a1f72a07a902cceb7ee97b859c040246aa8647de6bceb6189bda08b",
         "Load_into_QGIS.py": "602945f8c4652b0e8e2214e088943c128eb514db601605efd73ca7d3d9f185c6",
         "merge_tree_example.md": "f7d0b3cdeeb3e74c01e351f07641ff997e4b2dea03e02316742683ea6ed58520",
         "merge_tree_example.mermaidchart": "9d09714c32c10416e13b4197eac91074225f3d484654c6ae6d55f15f2f02751f",
         "merge_two_tiffs.py": "f172f3e905d1e64e9c337b2af48d0de264ecc80a0fdfff00dde150793ba35089",
         "merge_two_tiffs_old.py": "4f123a286e2640da4ba12560306ee54f144388b0535735e25b67d6344afde0b9",
-        "metadata.txt": "7efc77535f20f2c1bef6f4e43a8ddb9664085a095fb50622f972b7c6c342be16",
+        "metadata.txt": "827a40c9f80b952d8a1ea55254b22d088347a97bc24215c1489410f33eb0fcf5",
         "old_funcs.txt": "34558ffb368232e932e62196e7730b7546ca6d59d7f58c591b957191f7b76d35",
         "overlap_cutline_funcs.py": "59e42c96c8de4c8eec3d2a22118f4312e898600bc7d4b180cb6b780a4d8a07c4",
         "pickle code reference .txt": "b601fdd06bb7af85ca23a2aa4b0345ba36f2faa2616b5e907fbece39ef9f7ab6",
@@ -1035,7 +1036,7 @@
         "plugin_common_module.py": "01d5d0dee81414e905cc3afec2cf553312cd264c8ed16b49b7ef5207913267e9",
         "plugin_icon.png": "d20125832f39cfb3822ee76d9f4b1dc8d00c10f6218246a47203d667f6301f62",
         "plugin_load_settings.py": "b3c10e3dedcd8f3b2c867f1ab013ab6d545688da4c8071c77c683f7571073ebf",
-        "plugin_next_app_stage.py": "83251ac49cb7af850c901853d18427337f7855ff5d70a74e3240fb14a6d7eaba",
+        "plugin_next_app_stage.py": "1c00fb74f520a7f2592200e70ac97d2b25e311e2a1dcb3b7a944f4907d1e6a6d",
         "plugin_qgis_module.py": "7003467f9972921b2917bee0b284cf3f3d1835b8ae789c427e3e39e368a35d5b",
         "Plugin_run_location.txt": "4560364dfac699b43a80426f3bd66afe0cb2b2a512a8a006080808b961b918e6",
         "plugin_settings_suffixes.py": "6386b947887dc12087b80b5dccbd79ac46e5379dd6e7a7a15346891ba5dfd865",
@@ -2579,6 +2580,9 @@
         "plugin_3rd_party_libs\\tifffile\\__main__.py": "4966ca62acae468bd0c09aa4267cd8b5bc0065850b1d691e839dc56390d7a553",
         "plugin_settings\\settings.json": "992599c181b05ac4885650a751011df19ec613b753c027887f45006edc899687",
         "plugin_settings\\settings_v2.json": "b1a8318ecdcdd415e3409736e59854105b2c0f676b792b2e52eaba4a011154c3",
+        "plugin_settings\\settings_v3.json": "40cbdbda38a74bcc63f5027da50f2137a8b2ff05017ccbd2275abc756e17c098",
+        "plugin_settings\\settings_v4.json": "b17c1fad0d999829b2452182cffabf5734f8ccdd7d3316629d5b7e0de0365ecd",
+        "plugin_settings\\settings_v5.json": "f3b70c66ada98b3246842f7696c47d42e3698f49f9a23bba2dc41ad3f20f0354",
         "style_files\\centreline_mask.qml": "2f6e2cde7aafc0b3d30f418663057710298ac5dfeb73bf1a149243e030aabc60",
         "style_files\\cut_path_mask.qml": "74cf9534730bc544d85e74293c24136b69a31805f15c2039e1ef70e0620de387",
         "style_files\\cut_path_mask_input_frame.qml": "74cf9534730bc544d85e74293c24136b69a31805f15c2039e1ef70e0620de387",
@@ -2637,7 +2641,7 @@
         "tutorial_vids\\intro.mp4": "73f63b466595ec170f0905ad402f6fbde35a9bd73f1a20220d74ca37635c289d"
     },
     "PETER_ROSOR_tile_maker": {
-        "metadata.txt": "b9fdc0ac0aa2fcd6a46534c7eb183710dc4cb39f3608b1521cb10a81b894d253",
+        "metadata.txt": "91cec25fc8638f7a2151dc8c86a6311a6ddbea84615729ef5ee1c605a842a7a1",
         "plotting.py": "6d4e31b03c5a742c9bdef0f92579bdc93ef304249c92fc582966bc48cbaadb49",
         "plugin_add_custom_buttons.py": "e9c7fb981a30846b6584412d8a0c4262e5de0ce80793b4f7b5d049ebc27317a6",
         "plugin_change_settings.py": "f1f92cd8d621e8697835419fd92357276205d0b79540c1c78ea9abad630f0efa",
@@ -2651,7 +2655,7 @@
         "Plugin_run_location.txt": "4560364dfac699b43a80426f3bd66afe0cb2b2a512a8a006080808b961b918e6",
         "plugin_settings_suffixes.py": "6386b947887dc12087b80b5dccbd79ac46e5379dd6e7a7a15346891ba5dfd865",
         "plugin_tools.py": "3aa0c932d5dc14868086f0b4c3bf0e2f87c8961c4cc1a4a577dd3ba64a5fcfc4",
-        "style_file.qml": "09e6695797efd9d27a1c06fd6ad6a1dfdb672138908dceed8b453d3ebf3550c7",
+        "style_file.qml": "aa4d14fc9f6b2a27b9b5d2186dcf2268dffb72f415991fc878d79ec7434f97d8",
         "vid_icon.png": "6016adcb9c7f108b9e8696f3917eba370aa43b76db1a94c7bfb4afa51b4d3497",
         "__debug__.txt": "657fa5d209e30f4480e6d15b09b0ad3dcfe84f3e74170b283c6bbc208790d043",
         "__init__.py": "ec3f8091e2bad64b399dd71140a3a8dd05ceb02174e64d0e7a5f4e911d2e1424",
@@ -2664,5 +2668,6 @@
         "plugin_settings\\settings_v7.json": "36f7ce83b74769032e8559f6ed33f6c187a26c20508daad6433dee0629519eb6",
         "tutorial_vids\\intro.mp4": "f5dbd37aa787912e12e2fb27fc7d7c027796ab5497bd692dce343770850c9df3",
         "tutorial_vids\\Survey_Manager_exe_path_VIDEO.mp4": "846cfb6cabcd3d7352c08f560bf5e846743f1e80efee3552a30e381d4c455139"
-    }
+    },
+    "PETER_ROSOR_tile_maker_exp": {}
 }
