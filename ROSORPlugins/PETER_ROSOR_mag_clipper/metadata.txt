@@ -2,7 +2,7 @@
 name= Mag Clipper & QaQc
 qgisMinimumVersion=3.0
 description=ROSOR's tools to clip mag data
-version=1.2025.2.12.1
+version=1.2025.2.17.1
 author=Pyotyr Young and Sharjeel Awon
 email=pyotyr@msn.com, pyotyr@rosor.ca
 icon=plugin_icon.png

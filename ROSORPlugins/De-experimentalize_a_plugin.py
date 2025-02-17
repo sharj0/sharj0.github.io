@@ -2,7 +2,7 @@
 import os
 import shutil
 
-target_plugin = r"C:\Users\pyoty\Documents\GitHub\test_braaahnch\sharj0.github.io\ROSORPlugins\PETER_ROSOR_tile_maker_exp"
+target_plugin = r"C:\Users\pyoty\Documents\GitHub\test_braaahnch\sharj0.github.io\ROSORPlugins\PETER_ROSOR_geotiff_offset_editor"
 
 # ------------------------------------------------------------------------------
 # This function validates whether a string ends in "exp" or "experimental"
