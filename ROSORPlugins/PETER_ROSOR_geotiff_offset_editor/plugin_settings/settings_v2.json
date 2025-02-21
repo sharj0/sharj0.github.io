@@ -1,0 +1,8 @@
+{
+    "GeoTiff Layer": "R:\\BAN_LIDAR_FIXING_STUFF\\Fix_clif_Tof2_Flt23-2024-10-10-19-53-04_417562.730_417730.235\\Tof2_Flt23-2024-10-10-19-53-04_417562.730_417730.235_Convert to Las_clif_correcter_v2.tiff",
+    "GeoTiff Layer_SELECT_LAYER": "true",
+    "GeoTiff Layer_COMMENT": "Select the layer you wanna edit",
+    "Extend interpolated data out to the sides": true,
+    "Extend interpolated data out to the sides_COMMENT": "This will place the interpolated data out perpendicularly to the sides",
+    "Close this window on accept": true
+}

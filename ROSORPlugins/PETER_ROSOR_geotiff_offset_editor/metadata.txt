@@ -1,9 +1,9 @@
 [general]
-name= Geotiff offset editor Experimental
+name= Geotiff offset editor
 qgisMinimumVersion=3.0
 description= Graphical tool for you to edit geotiffs that are meant to apply offsets to .las files.
 version=1.2024.11.12.1
 author=Pyotyr Young and Sharjeel Awon
 email=pyotyr@msn.com, pyotyr@rosor.ca
 icon=plugin_icon.png
-experimental=True
+experimental=False
