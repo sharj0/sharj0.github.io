@@ -1,0 +1,14 @@
+{
+    "\ud83d\udcc2 Input folder": "R:\\BAN_LIDAR_FIXING_STUFF\\Fix_cliff_Tof2_Flt15_Ln4\\profiles",
+    "\ud83d\udcc2 Input folder_SELECT_FOLDER": "true",
+    "\ud83d\udcc2 Input folder_COMMENT": "This is the folder that will be imported. All it's sub-folders too (recursively) and how they are structured.",
+    "Do not Load files less than X MB": "1",
+    "Do not Load files less than X MB_COMMENT": "Set to zero to load all file sizes",
+    "Apply colors": false,
+    "Apply same colors to las's with same names": false,
+    "Collapse groups_RADIO": {
+        "Completely": false,
+        "Only bottom level": true
+    },
+    "Close this window on accept": true
+}

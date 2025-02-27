@@ -17,12 +17,9 @@ import json
 from pathlib import Path
 from pathspec import PathSpec
 
-#made by sharj mostly😀 << peter wrote this
+# made by sharj mostly😀 << peter wrote this
 
 HASH_FILE = "detect_changes_with_folder_hashes.json"
-
-
-
 
 def calculate_folder_hash_old(folder_path):
     # Initialize SHA256 hash object

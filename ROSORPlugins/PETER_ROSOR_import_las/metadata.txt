@@ -1,0 +1,8 @@
+[general]
+name= Import LAS
+qgisMinimumVersion=3.0
+description=ROSOR's tool to mass import las files folder and match the file structure using layer groups.
+version=1.2025.1.28.1
+author=Pyotyr Young and Sharjeel Awon
+email=pyotyr@msn.com, pyotyr@rosor.ca
+icon=plugin_icon.png
