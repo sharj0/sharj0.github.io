@@ -1,7 +1,8 @@
 import os
 import shutil
 
-target_plugin = r"C:\Users\pyoty\Documents\GitHub\test_braaahnch\sharj0.github.io\ROSORPlugins\PETER_ROSOR_geotiff_offset_editor"
+plugin_dir = os.path.dirname(__file__)
+target_plugin = plugin_dir + r"\PETER_ROSOR_flightline_creator"
 
 # ------------------------------------------------------------------------------
 # This function checks if a string ends in "exp" or "experimental" (any case).
