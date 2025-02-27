@@ -188,7 +188,7 @@ def main(settings_file_path):
             swaths_out_kml_path = swaths_out_path[:-4]+'.kml'
             output_swaths_to_kml(swaths_out_path, swaths_out_kml_path)
 
-        save_excel_file(excel_out_path, new_poly, combined_lines, crs, utm_letter)
+        save_excel_file(excel_out_path, new_poly, combined_lines, crs, utm_letter, flight_line_spacing, tie_line_spacing)
 
         kmls_to_combine_paths = [swaths_out_kml_path, lines_out_kml_path, poly_out_kml_path]
         combined_kml_path = os.path.join(out_folder_path, f'Combined_kmls_{pure_name}{version}.kml')
