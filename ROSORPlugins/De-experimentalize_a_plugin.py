@@ -2,24 +2,11 @@
 import os
 import shutil
 
-plugin_dir = os.path.dirname(__file__)
-target_plugin = plugin_dir + r"\PETER_ROSOR_flightline_creator"
+#plugin_dir = os.path.dirname(__file__)
+#target_plugin = plugin_dir + r"C:\Users\pyoty\Documents\GitHub\test_braaahnch\sharj0.github.io\ROSORPlugins\PETER_ROSOR_geotiff_offset_editor_exp"
 
-# ------------------------------------------------------------------------------
-# This function validates whether a string ends in "exp" or "experimental"
-# (any case). If it does, returns True and the original string without
-# that suffix (and any trailing underscores). Otherwise returns False, original.
-#
-# Examples:
-#   parse_experimental("MyPlugin_exp")        -> (True, "MyPlugin")
-#   parse_experimental("MyPlugin_ExPeriMenTal") -> (True, "MyPlugin")
-#   parse_experimental("MyPlugin")            -> (False, "MyPlugin")
-#
-# The rules:
-# 1) Check if the string ends with "exp" or "experimental" ignoring case.
-# 2) Remove that suffix.
-# 3) Remove trailing underscores after the suffix.
-# ------------------------------------------------------------------------------
+target_plugin = r"C:\Users\pyoty\Documents\GitHub\test_braaahnch\sharj0.github.io\ROSORPlugins\PETER_ROSOR_geotiff_offset_editor_exp"
+
 def parse_experimental(input_string: str):
     lowered = input_string.lower()
     # Possible suffixes

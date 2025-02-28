@@ -2,7 +2,7 @@
     "GeoTiff Layer": "R:\\BAN_LIDAR_FIXING_STUFF\\Fix_cliff_Tof2_Flt15_Ln4\\TEST_WITH_Tof2_Flt15_Ln4-2024-10-10-17-52-50_410660.645_410816.020_clif_corrector - Copy.tiff",
     "GeoTiff Layer_SELECT_LAYER": "true",
     "GeoTiff Layer_COMMENT": "Select the layer you wanna edit",
-    "Multiply Mode": true,
+    "Multiply Mode": false,
     "Multiply Mode_COMMENT": "Instead of assigning pixel values directly, the interpolated values will be used to multipy the existing pixel values.\n So if you click on pix val 0 -> 1 halfway is 0.5 so the existing pix at that location will be *0.5",
     "Close this window on accept": true
 }
