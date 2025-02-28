@@ -189,28 +189,33 @@ class RasterInterpolationMapTool(QgsMapTool):
     - Has "Undo" & "Exit" buttons on the map canvas.
     """
 
-    def __init__(self, canvas, raster_layer, geotransform, multiply_mode):
+    # In RasterInterpolationMapTool class:
+
+    # In the RasterInterpolationMapTool class:
+    def __init__(self, canvas, raster_layer, geotransform, multiply_mode, addition_mode, assignment_mode,
+                 blocking_value, do_extend_perpendicularly):
         super().__init__(canvas)
         self.canvas = canvas
         self.rlayer = raster_layer
         self.geotransform = geotransform
         self.multiply_mode = multiply_mode
+        self.addition_mode = addition_mode
+        self.assignment_mode = assignment_mode
+        self.blocking_value = blocking_value
+        self.do_extend_perpendicularly = do_extend_perpendicularly
         self.provider = self.rlayer.dataProvider()
         self.first_click_info = None  # (row, col, old_val)
         self.last_line_pixel_values = []
 
-        # Rubber band for hover highlighting (blue after first click)
+        # Setup rubber bands and buttons (unchanged) ...
         self.hover_rubber = QgsRubberBand(self.canvas, QgsWkbTypes.PolygonGeometry)
         self.hover_rubber.setWidth(2)
         self.hover_rubber.hide()
-
-        # New persistent rubber band for first-clicked pixel (red)
         self.first_click_rubber = QgsRubberBand(self.canvas, QgsWkbTypes.PolygonGeometry)
         self.first_click_rubber.setWidth(2)
         self.first_click_rubber.setColor(QColor(255, 0, 0, 150))
         self.first_click_rubber.setFillColor(QColor(255, 0, 0, 60))
         self.first_click_rubber.hide()
-
         self.undo_button = self._make_button("Undo", (10, 10), self.on_undo_clicked, bg="#444")
         self.exit_button = self._make_button("Exit", (90, 10), self.exitTool, bg="red")
         QgsProject.instance().layersWillBeRemoved.connect(self.onLayerRemoved)
@@ -310,58 +315,57 @@ class RasterInterpolationMapTool(QgsMapTool):
 
     def compute_updated_pixels(self, r1, c1, v1, r2, c2, v2):
         """
-        Computes the updated pixel coordinates and interpolated values along the line from
-        (r1, c1) to (r2, c2) and its perpendicular extensions.
-        Returns updated_rows, updated_cols, updated_vals as NumPy arrays.
+        Compute the updated pixel coordinates and interpolated values along the line.
+        If self.do_extend_perpendicularly is True, also extend perpendicularly until a blocking_value
+        is encountered; otherwise, only the straight-line interpolation is returned.
         """
-
-        # Interpolate along the line using Bresenham.
-        line_pixels = np.array(get_line_pixels(r1, c1, r2, c2))  # shape: (n, 2)
+        line_pixels = np.array(get_line_pixels(r1, c1, r2, c2))
         n = len(line_pixels)
         fractions = np.linspace(0, 1, n)
         new_vals_line = v1 + fractions * (v2 - v1)
 
-        # Start with the pixels along the line.
         updated_rows = line_pixels[:, 0].tolist()
         updated_cols = line_pixels[:, 1].tolist()
         updated_vals = new_vals_line.tolist()
 
-        # Compute perpendicular extension based on the line’s angle.
-        raw_angle = angle_between_pixels(r1, c1, r2, c2)
-        rounded_angle = round_angle_to_45(raw_angle)
-        (pdr, pdc) = perpendicular_direction(rounded_angle)
-        for idx in range(n):
-            base_r = line_pixels[idx, 0]
-            base_c = line_pixels[idx, 1]
-            val_to_extend = new_vals_line[idx]
-            # Extend in the positive perpendicular direction.
-            rX, cX = base_r + pdr, base_c + pdc
-            while 0 <= rX < self.rlayer.height() and 0 <= cX < self.rlayer.width():
-                updated_rows.append(rX)
-                updated_cols.append(cX)
-                updated_vals.append(val_to_extend)
-                rX += pdr
-                cX += pdc
+        if self.do_extend_perpendicularly:
+            raw_angle = angle_between_pixels(r1, c1, r2, c2)
+            rounded_angle = round_angle_to_45(raw_angle)
+            (pdr, pdc) = perpendicular_direction(rounded_angle)
+            for idx in range(n):
+                base_r = line_pixels[idx, 0]
+                base_c = line_pixels[idx, 1]
+                val_to_extend = new_vals_line[idx]
 
-            # Extend in the negative perpendicular direction.
-            rX, cX = base_r - pdr, base_c - pdc
-            while 0 <= rX < self.rlayer.height() and 0 <= cX < self.rlayer.width():
-                updated_rows.append(rX)
-                updated_cols.append(cX)
-                updated_vals.append(val_to_extend)
-                rX -= pdr
-                cX -= pdc
+                # Extend in the positive perpendicular direction.
+                rX, cX = base_r + pdr, base_c + pdc
+                while 0 <= rX < self.rlayer.height() and 0 <= cX < self.rlayer.width():
+                    if self.get_pixel_value(rX, cX) == self.blocking_value:
+                        break
+                    updated_rows.append(rX)
+                    updated_cols.append(cX)
+                    updated_vals.append(val_to_extend)
+                    rX += pdr
+                    cX += pdc
+
+                # Extend in the negative perpendicular direction.
+                rX, cX = base_r - pdr, base_c - pdc
+                while 0 <= rX < self.rlayer.height() and 0 <= cX < self.rlayer.width():
+                    if self.get_pixel_value(rX, cX) == self.blocking_value:
+                        break
+                    updated_rows.append(rX)
+                    updated_cols.append(cX)
+                    updated_vals.append(val_to_extend)
+                    rX -= pdr
+                    cX -= pdc
 
         return np.array(updated_rows), np.array(updated_cols), np.array(updated_vals, dtype=np.float32)
 
     def apply_updates(self, updated_rows, updated_cols, updated_vals):
         """
-        Applies the computed updates to the raster layer.
-        If self.multiply_mode is True, multiplies existing pixel values by the interpolated values.
-        Otherwise, directly assigns the interpolated values.
+        Applies the computed updates to the raster layer using the selected mode,
+        regardless of whether perpendicular extension is enabled.
         """
-
-        # Determine the bounding box for the update.
         min_row = int(updated_rows.min())
         max_row = int(updated_rows.max())
         min_col = int(updated_cols.min())
@@ -369,33 +373,25 @@ class RasterInterpolationMapTool(QgsMapTool):
         block_height = max_row - min_row + 1
         block_width = max_col - min_col + 1
 
-        # Compute relative indices within the block.
         rel_rows = updated_rows - min_row
         rel_cols = updated_cols - min_col
 
-        # Open the dataset for update.
         dataset = gdal.Open(self.rlayer.source(), gdal.GA_Update)
         band = dataset.GetRasterBand(1)
 
-        # Save entire block as undo information.
         undo_block = band.ReadAsArray(min_col, min_row, block_width, block_height).copy()
         self.last_block_info = (min_row, min_col, undo_block)
-
-        # Make a working copy of the block.
         block_array = undo_block.copy()
 
         if self.multiply_mode:
-            # Multiply each existing value by the interpolated factor.
             block_array[rel_rows, rel_cols] = undo_block[rel_rows, rel_cols] * updated_vals
-        else:
-            # Directly assign the interpolated values.
+        elif self.addition_mode:
+            block_array[rel_rows, rel_cols] = undo_block[rel_rows, rel_cols] + updated_vals
+        elif self.assignment_mode:
             block_array[rel_rows, rel_cols] = updated_vals
 
-        # Write the updated block back to the raster.
         band.WriteArray(block_array, min_col, min_row)
         dataset.FlushCache()
-
-        # Reload the layer to reflect the changes.
         self.rlayer.reload()
 
     def on_undo_clicked(self):
@@ -533,8 +529,12 @@ def compute_geotransform(rlayer):
 def main(settings_path):
     settings_dict = plugin_load_settings.run(settings_path)
     raster_path = settings_dict['GeoTiff Layer']
-    multiply_mode = settings_dict["Multiply Mode"]
-    settings_dict = None  # no longer needed
+    do_extend_perpendicularly = settings_dict["Extend perpendicularly"]
+    blocking_value = float(settings_dict["Blocking Value"])  # NEW: get the blocking value from settings
+    assignment_mode = settings_dict["Assignment"]
+    addition_mode = settings_dict["Addition"]
+    multiply_mode = settings_dict["Multiplication"]
+    settings_dict = None
 
     rlayer = check_if_layer_loaded(raster_path)
     if not rlayer:
@@ -546,10 +546,9 @@ def main(settings_path):
         debug_print("Provider is invalid, cannot edit raster.")
         return
 
-    if provider.dataType(1) != 6:  # 6 == GDT_Float32 in QGIS
+    if provider.dataType(1) != 6:
         debug_print("Warning: the raster is NOT float32. Continuing anyway...")
 
-    # Use the new function to compute geotransform
     geotransform = compute_geotransform(rlayer)
     debug_print(f"Computed geotransform: {geotransform}")
 
@@ -557,6 +556,12 @@ def main(settings_path):
         iface.mapCanvas(),
         rlayer,
         geotransform,
-        multiply_mode
+        multiply_mode,
+        addition_mode,
+        assignment_mode,
+        blocking_value,
+        do_extend_perpendicularly,
     )
     iface.mapCanvas().setMapTool(interpolation_tool)
+
+
