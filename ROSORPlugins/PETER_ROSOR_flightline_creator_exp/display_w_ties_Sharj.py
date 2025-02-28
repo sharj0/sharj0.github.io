@@ -196,6 +196,11 @@ class InteractivePlotWidget(QWidget):
 
         # Iterate over the polygon's vertices to find the closest one to the click
         for i, coord in enumerate(poly_layer_coords):
+
+            #skip the first vertex since its the same as the last
+            if i == 0:
+                continue
+
             x, y = coord[:2]
             dist = np.linalg.norm([event.xdata - x, event.ydata - y])
             if dist < min_dist:
@@ -232,9 +237,14 @@ class InteractivePlotWidget(QWidget):
             new_poly_layer_coords[self.closest_vertex_index][1] + dy
         )
 
-        #remake the poly_layer using coordinate list (I needed to convert from Polygon to MultiPolygon to QgsVector multipolygon for compatibility sake as that is what the poly_layer is initially imported as
-        self.poly_layer = convert_shapely_poly_to_layer(MultiPolygon([Polygon(new_poly_layer_coords)]))
+        # Ensure the polygon remains closed
+        num_vertices = len(new_poly_layer_coords)
+        if self.closest_vertex_index == num_vertices - 1:
+            # If the last vertex is moved, update the first vertex to match
+            new_poly_layer_coords[0] = new_poly_layer_coords[-1]
 
+        #remake the poly_layer using coordinate list
+        self.poly_layer = convert_shapely_poly_to_layer(MultiPolygon([Polygon(new_poly_layer_coords)]))
 
         # Update the flight lines and tie lines live
         self.update_flight_lines()
