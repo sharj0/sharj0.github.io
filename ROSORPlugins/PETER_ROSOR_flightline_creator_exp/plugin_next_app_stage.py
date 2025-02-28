@@ -28,13 +28,15 @@ from .output_to_kml import \
     save_kml_polygon
 
 import time
-from qgis.core import QgsGeometry, QgsWkbTypes, QgsVectorLayer
+from qgis.core import QgsGeometry, QgsWkbTypes, QgsVectorLayer, QgsProcessing
+from  qgis import processing
 import numpy as np
 
 def main(settings_file_path):
     # load settings and allow for the re-naming of settings with a conversion step between the .json name and the internal code
     settings_dict = load_data.settings(settings_file_path)
     poly_file = settings_dict['Polygon_file']
+    poly_buffer_distance = settings_dict['Polygon_buffer_distance']
     place_output_folder_into = settings_dict['Output_folder']
     convert_to_specific_UTM_zone = settings_dict['Convert_to_specific_UTM_Zone']
     open_KML_files_when_complete = settings_dict['Open_KML_files_when_complete']
@@ -73,12 +75,28 @@ def main(settings_file_path):
 
     poly_file, poly_layer, utm_letter = open_different_kinds_of_input_polys(poly_file, convert_to_specific_UTM_zone)
 
+    if poly_buffer_distance != 0:
+        #add buffer to poly_layer
+        buffer_segments = 1
+        buffered_layer = processing.run("native:buffer", {
+            'INPUT': poly_layer,
+            'DISTANCE': poly_buffer_distance,
+            'SEGMENTS': buffer_segments,
+            'END_CAP_STYLE': 0,  # Round end cap style
+            'JOIN_STYLE': 1,  # Round join style
+            'MITER_LIMIT': 2,
+            'DISSOLVE': False,  # Do not dissolve boundaries
+            'OUTPUT': 'memory:'  # Output to memory (or specify a file path)
+        })['OUTPUT']
+    else:
+        buffered_layer = poly_layer
 
-    anchor_xy = extract_and_check_anchor_coordinates(anchor_coordinates_str, poly_layer)
+
+    anchor_xy = extract_and_check_anchor_coordinates(anchor_coordinates_str, buffered_layer)
     generated_anchor_coordinates = False
     if anchor_xy is None:
         print('auto generating anchor coordinates')
-        anchor_xy = get_anchor_xy(poly_layer)
+        anchor_xy = get_anchor_xy(buffered_layer)
         generated_anchor_coordinates = True
 
     if not tie_line_spacing == 0:
@@ -89,7 +107,7 @@ def main(settings_file_path):
                                                delete_lines_smaller_than,
                                                anchor_xy)
 
-        flt_lines = generate_lines(poly_layer,
+        flt_lines = generate_lines(buffered_layer,
                                    tie_line_box_buffer,# this is set to buffer the shape differently
                                    *the_rest_of_the_flt_line_gen_params)
 
@@ -101,11 +119,11 @@ def main(settings_file_path):
                        delete_lines_smaller_than,
                        anchor_xy)
 
-        tie_lines = generate_lines(poly_layer,
+        tie_lines = generate_lines(buffered_layer,
                                    tie_line_box_buffer,# this is set to buffer the shape differently
                                    *the_rest_of_the_tie_line_gen_params)
 
-        results = display_w_ties_Sharj.gui(poly_layer,
+        results = display_w_ties_Sharj.gui(buffered_layer,
                                      flt_lines,
                                      tie_lines,
                                      flight_line_spacing,
@@ -116,12 +134,10 @@ def main(settings_file_path):
                                      flight_line_buffer_distance,
                                      tie_line_buffer_distance,
                                      the_rest_of_the_flt_line_gen_params,
-                                     the_rest_of_the_tie_line_gen_params)
+                                     the_rest_of_the_tie_line_gen_params,
+                                     poly_layer)
 
         result, new_flt_lines, new_tie_lines, new_poly = results
-
-    # I should remove this, but I need a filter for when a user accidentally sets tie line to zero
-    # I think it's okay to fall back on in case of the above
     else:
         tie_lines = []
         flt_lines = generate_lines(poly_layer,

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+    <Style id="orangeOutline">
+        <LineStyle>
+            <color>ff00a5ff</color> <!-- Orange color -->
+            <width>4</width>
+        </LineStyle>
+        <PolyStyle>
+            <fill>0</fill> <!-- No fill -->
+        </PolyStyle>
+    </Style>
+    <Placemark>
+        <styleUrl>#orangeOutline</styleUrl>
+        <Polygon>
+            <tessellate>1</tessellate>
+            <outerBoundaryIs>
+                <LinearRing>
+                    <coordinates>-130.63883822926994,61.44991993780963 -130.63907384530782,61.45440675251237 -130.62126082851063,61.45461988058009 -130.62102777033624,61.45013302631133 -130.61821562635592,61.45016645840651 -130.61751812393697,61.43670585602353 -130.6081482970113,61.43681681548121 -130.60768552690223,61.427826689604345 -130.6779375158998,61.426979099098716 -130.67817852199698,61.431465840336614 -130.68379926678813,61.43139645553312 -130.68501040773947,61.453846375943584 -130.67563537830517,61.453962000398725 -130.6753945124935,61.449475268259974 -130.63883822926994,61.44991993780963</coordinates>
+                </LinearRing>
+            </outerBoundaryIs>
+        </Polygon>
+    </Placemark>
+</Document>
+</kml>

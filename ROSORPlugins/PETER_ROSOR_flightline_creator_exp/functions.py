@@ -162,7 +162,7 @@ def make_next_folder(directory, original_foldername):
     os.makedirs(new_full_path)
     return new_full_path, version_number
 
-def save_excel_file(excel_path, polygon_geometry, output_lines, crs, utm_letter,  flight_line_spacing, tie_line_spacing):
+def save_excel_file(excel_path, polygon_geometry, output_lines, crs, utm_letter, flight_line_spacing, tie_line_spacing):
     # Check if the geometry is a MultiPolygon
     if polygon_geometry.geom_type == 'MultiPolygon':
         polygons = list(polygon_geometry)
@@ -220,7 +220,7 @@ def save_excel_file(excel_path, polygon_geometry, output_lines, crs, utm_letter,
     worksheet.write(7, 7, 'UTM Zone')
     worksheet.write(7, 8, utm_zone)
 
-    #Write the line spacings
+    # Write the line spacings
     worksheet.write(9, 7, "Line Spacing")
     worksheet.write(10, 7, "Flight")
     worksheet.write(10, 8, flight_line_spacing)
