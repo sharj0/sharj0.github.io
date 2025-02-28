@@ -43,6 +43,7 @@ class InteractivePlotWidget(QWidget):
                  tie_line_box_buffer,
                  flt_line_spacing,
                  tie_line_spacing,
+                 unbuffered_poly,
                  parent=None):
 
         super().__init__(parent)
@@ -57,27 +58,20 @@ class InteractivePlotWidget(QWidget):
         # Add axes to the figure
         self.ax = self.figure.add_subplot(111)
 
+
+        # Panning variables
+        self.panning = False
+        self.pan_start = None
+        self.plot_x_lims = None
+        self.plot_y_lims = None
+
         # Initialize plot and interaction variables
         self.dragging_line = None
         self.start_point = None
         self.closest_vertex_index = None
 
-        # self.the_rest_of_the_flt_line_gen_params = None
-        # self.the_rest_of_the_tie_line_gen_params = None
-        # self.anchor_xy = None
-        # self.poly_layer = None
-        # self.flt_line_buffer_distance = None
-        # self.tie_line_buffer_distance = None
-        # self.tie_line_box_buffer = None
-        # self.flt_line_spacing = None
-        # self.tie_line_spacing = None
-        # self.flt_lines = None
-        # self.tie_lines = None
-        # self.new_flt_lines = None
-        # self.new_tie_lines = None
-
-        #store the original poly_layer
-        self.original_poly_layer = poly_layer
+        #store the original poly_layer (this is for a reset button hopefully)
+        self.initial_poly_layer = poly_layer
 
         # Initialization parameters
         self.the_rest_of_the_flt_line_gen_params = the_rest_of_the_flt_line_gen_params
@@ -89,6 +83,7 @@ class InteractivePlotWidget(QWidget):
         self.tie_line_box_buffer = tie_line_box_buffer
         self.flt_line_spacing = flt_line_spacing
         self.tie_line_spacing = tie_line_spacing
+        self.unbuffered_poly = unbuffered_poly
 
         # These are regeneration parameters (everytime a change happens, these are regenerated using generate_lines function)
         self.flt_lines = []
@@ -113,8 +108,6 @@ class InteractivePlotWidget(QWidget):
         self.cid_motion = self.canvas.mpl_connect('motion_notify_event', self.on_motion)
 
 
-
-    #plot the
     def plot(self, flt_lines, tie_lines, new_flt_lines, new_tie_lines, new_poly, anchor_xy, poly_layer):
 
         # store the current poly layer into the class for use in on_motion and on_press
@@ -152,12 +145,12 @@ class InteractivePlotWidget(QWidget):
             new_tie_line.plot(self.ax, color='red', linestyle='-', linewidth=0.5)
 
         x, y = Polygon(polygon_coords[0]).exterior.xy
-        self.ax.plot(x, y, color='black', linestyle=':', marker=".", linewidth=2, markersize=10, alpha=1)
+        self.ax.plot(x, y, color='darkgreen', linestyle='-', marker=".", linewidth=2, markersize=10, alpha=1, label = "Buffered")
 
-        original_poly_coords = extract_polygon_coords(next(self.original_poly_layer.getFeatures()).geometry())
+        original_poly_coords = extract_polygon_coords(next(self.unbuffered_poly.getFeatures()).geometry())
 
         x, y = Polygon(original_poly_coords[0]).exterior.xy
-        self.ax.plot(x, y, color='darkgreen', linestyle='-', linewidth=2, alpha=1)
+        self.ax.plot(x, y, color='coral', linestyle='-', linewidth=2, alpha=1, label="Unbuffered")
         self.ax.fill(x, y, color="red", alpha=1)
 
         intersection = Polygon(original_poly_coords[0]).intersection(new_poly)
@@ -180,12 +173,15 @@ class InteractivePlotWidget(QWidget):
         self.ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f'{y:,.0f}'))
         self.ax.set_aspect('equal', adjustable='box')
 
+        self.ax.legend(loc='upper left', bbox_to_anchor=(1, 1), fontsize='small', title='Legend', title_fontsize='medium')
+
         # Draw the canvas to update the plot
         self.canvas.draw()
 
+    # This function checks to see if a click is near any of the vertices to set the dragging boolean on
+    def on_press(self, event, threshold=25):
 
-    # This function checks to see if a click is near any of the vertices in the grey poly_layer to set the dragging boolean on for the on_motion function
-    def on_press(self, event, threshold=100):
+
         # Adjust threshold as needed
         if event.inaxes != self.ax:
             return
@@ -239,21 +235,14 @@ class InteractivePlotWidget(QWidget):
         #remake the poly_layer using coordinate list (I needed to convert from Polygon to MultiPolygon to QgsVector multipolygon for compatibility sake as that is what the poly_layer is initially imported as
         self.poly_layer = convert_shapely_poly_to_layer(MultiPolygon([Polygon(new_poly_layer_coords)]))
 
-        # self.plot(
-        #     flt_lines=self.flt_lines,
-        #     tie_lines=self.tie_lines,
-        #     new_flt_lines=self.new_flt_lines,
-        #     new_tie_lines=self.new_tie_lines,
-        #     new_poly=self.new_poly,
-        #     anchor_xy=self.anchor_xy,
-        #     poly_layer=updated_poly_layer
-        # )
 
         # Update the flight lines and tie lines live
         self.update_flight_lines()
 
     #Release function to set the dragging line booleans false/None when mouse drag is let go
     def on_release(self, event):
+
+
         if self.dragging_line is None:
             return
         self.dragging_line = None
@@ -281,8 +270,6 @@ class InteractivePlotWidget(QWidget):
                 flt_lines=None,
                 tie_lines=None
             )
-
-        # self.compute_LKM_from_lines(flt_lines=self.new_flt_lines_qgis_format,tie_lines=self.new_tie_lines_qgis_format)
 
     #modifies the input parameters for update flight lines and reruns said function with newly stored values in the class
     def update_params_through_sliders(self, new_flt_line_angle, new_flt_line_translation, new_tie_line_translation):
@@ -592,7 +579,8 @@ def gui(poly_layer,
         flt_line_buffer_distance,
         tie_line_buffer_distance,
         the_rest_of_the_flt_line_gen_params,
-        the_rest_of_the_tie_line_gen_params):
+        the_rest_of_the_tie_line_gen_params,
+        unbuffered_poly = None):
     matplotlib.use('Qt5Agg')
 
     dialog = QDialog()
@@ -622,7 +610,8 @@ def gui(poly_layer,
         tie_line_buffer_distance=tie_line_buffer_distance,
         tie_line_box_buffer=tie_line_box_buffer,
         flt_line_spacing=flt_line_spacing,
-        tie_line_spacing=tie_line_spacing
+        tie_line_spacing=tie_line_spacing,
+        unbuffered_poly=unbuffered_poly
     )
 
     #the plot needs to start somewhere, and that is here as update_flight_lines plots at the end

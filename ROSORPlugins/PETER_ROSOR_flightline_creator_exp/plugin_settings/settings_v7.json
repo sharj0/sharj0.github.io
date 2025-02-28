@@ -1,10 +1,10 @@
 {
     "Output Sensor Type_RADIO": {
-        "Mag": false,
+        "Mag": true,
         "Mag_COMMENT": "This will NOT output swaths. It will append '_MAG' to the output package.",
         "Lidar": false,
         "Lidar_COMMENT": "This will output swaths. It will append '_LIDAR' to the output package.",
-        "Ortho": true,
+        "Ortho": false,
         "Ortho_COMMENT": "This will output swaths. It will append '_ORTHO' to the output package.",
         "None": false,
         "None_COMMENT": "This will output swaths. It will not append anything to the output package."
@@ -12,7 +12,9 @@
     "Input File": {
         "Polygon_file": "C:\\Users\\Sharj\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_flightline_creator\\test_data\\Priority 1 extra.kml",
         "Polygon_file_SELECT_LAYER": "true",
-        "Polygon_file_COMMENT": "Select your boundary area file. '.kml' and '.shp' accepted."
+        "Polygon_file_COMMENT": "Select your boundary area file. '.kml' and '.shp' accepted.",
+        "Polygon_buffer_distance": 100.0,
+        "Polygon_buffer_distance_COMMENT": "This will add a buffer to the input polygon (metres)"
     },
     "Output": {
         "Output_folder": "",
@@ -34,7 +36,7 @@
         "flight_line_shift_sideways_COMMENT": "meters"
     },
     "Tie Line Parameters": {
-        "tie_line_spacing": 500.0,
+        "tie_line_spacing": 500,
         "tie_line_spacing_COMMENT": "meters, set to '0' to not create tie lines",
         "tie_line_buffer_distance": 15.0,
         "tie_line_buffer_distance_COMMENT": "meters",

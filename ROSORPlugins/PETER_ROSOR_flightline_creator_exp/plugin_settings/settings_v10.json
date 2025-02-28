@@ -12,7 +12,9 @@
     "Input File": {
         "Polygon_file": "C:\\Users\\Sharj\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_flightline_creator\\test_data\\Priority 1 extra.kml",
         "Polygon_file_SELECT_LAYER": "true",
-        "Polygon_file_COMMENT": "Select your boundary area file. '.kml' and '.shp' accepted."
+        "Polygon_file_COMMENT": "Select your boundary area file. '.kml' and '.shp' accepted.",
+        "Polygon_buffer_distance": 20,
+        "Polygon_buffer_distance_COMMENT": "This will add a buffer to the input polygon (metres)"
     },
     "Output": {
         "Output_folder": "",
