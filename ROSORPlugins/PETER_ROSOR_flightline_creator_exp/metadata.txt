@@ -2,7 +2,7 @@
 name= Flightline Creator Experimental
 qgisMinimumVersion=3.0
 description=ROSOR's tools flightline making
-version=1.2025.2.28.3
+version=1.2025.3.1.1
 author=Pyotyr Young and Sharjeel Awon
 email=pyotyr@msn.com, pyotyr@rosor.ca
 icon=plugin_icon.png
