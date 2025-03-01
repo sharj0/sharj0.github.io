@@ -69,7 +69,7 @@ def get_wholest(start: float, end: float) -> float:
     numbers = np.arange(start, end + 1)
 
     # Find the largest power of 10 that is less than or equal to the end of the range
-    max_divisor = 10 ** int(np.log10(np.abs(end)))
+    max_divisor = 10 ** int(np.log10(end))
 
     while max_divisor >= 1:
         # Check if any number in the range is divisible by the current divisor
