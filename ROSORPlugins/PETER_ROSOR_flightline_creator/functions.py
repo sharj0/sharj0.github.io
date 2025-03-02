@@ -69,7 +69,7 @@ def get_wholest(start: float, end: float) -> float:
     numbers = np.arange(start, end + 1)
 
     # Find the largest power of 10 that is less than or equal to the end of the range
-    max_divisor = 10 ** int(np.log10(np.abs(end)))
+    max_divisor = 10 ** int(np.log10(end))
 
     while max_divisor >= 1:
         # Check if any number in the range is divisible by the current divisor
@@ -497,10 +497,16 @@ def open_different_kinds_of_input_polys(poly_file, convert_to_specific_UTM_zone)
         show_error(message)
         raise message
 
+    crs_uses_meters = poly_layer.sourceCrs().mapUnits() == QgsUnitTypes.DistanceMeters
+
+    crs_is_utm = '+proj=utm' in poly_layer.sourceCrs().toProj4()
+
+    useable_crs = crs_uses_meters and crs_is_utm
+
     # Check if the CRS units are in meters
-    if poly_layer.sourceCrs().mapUnits() != QgsUnitTypes.DistanceMeters:
+    if not useable_crs:
         try:
-            if get_crs(poly_layer) == 'epsg:4326':
+            if get_crs(poly_layer) in ['epsg:4326']:
                 poly_file, utm_letter = save_input_layer_as_utm_shapefile(poly_layer, poly_file, convert_to_specific_UTM_zone)
                 poly_layer = QgsVectorLayer(poly_file, "poly", "ogr")
             else:
@@ -514,7 +520,7 @@ def open_different_kinds_of_input_polys(poly_file, convert_to_specific_UTM_zone)
                     poly_layer = QgsVectorLayer(output_shp_path, "poly", "ogr")
                     poly_file = output_shp_path
         except:
-            error_text = "Layer units are not in meters"
+            error_text = "Cannot auto convert crs"
             show_error(error_text)
             raise error_text
     else:

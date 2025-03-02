@@ -23,6 +23,7 @@ from PyQt5.QtWidgets import QDialog, QVBoxLayout, QPushButton, QSizePolicy, QHBo
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtWidgets import QMenu, QAction
 
 from qgis.core import QgsGeometry, QgsWkbTypes, QgsPointXY, QgsPoint, QgsVectorLayer, QgsUnitTypes, QgsProject, \
     QgsFeature
@@ -43,6 +44,7 @@ class InteractivePlotWidget(QWidget):
                  tie_line_box_buffer,
                  flt_line_spacing,
                  tie_line_spacing,
+                 unbuffered_poly,
                  parent=None):
 
         super().__init__(parent)
@@ -57,27 +59,33 @@ class InteractivePlotWidget(QWidget):
         # Add axes to the figure
         self.ax = self.figure.add_subplot(111)
 
+        self.instruction_text = self.figure.text(
+            0.99,  # x position (right-aligned)
+            0.01,  # y position (bottom-aligned)
+            "Right-click to add/remove vertices",  # Text content
+            ha="right",  # Horizontal alignment
+            va="bottom",  # Vertical alignment
+            fontsize=9,  # Font size
+            color="black",  # Text color
+            alpha=1,  # Transparency
+            bbox=dict(boxstyle="square,pad=0.5", facecolor="white", edgecolor="white", alpha=0.7)  # Background box
+        )
+        self.instruction_text.set_text("Move Vertex: Hover over point, left click and drag\nAdd Vertex: Hover over line and right click\nRemove Vertex: Hover over point and right click")
+
+        # Panning variables
+        self.panning = False
+        self.pan_start = None
+        self.plot_x_lims = None
+        self.plot_y_lims = None
+
         # Initialize plot and interaction variables
         self.dragging_line = None
         self.start_point = None
         self.closest_vertex_index = None
+        self.closest_line_index = None
 
-        # self.the_rest_of_the_flt_line_gen_params = None
-        # self.the_rest_of_the_tie_line_gen_params = None
-        # self.anchor_xy = None
-        # self.poly_layer = None
-        # self.flt_line_buffer_distance = None
-        # self.tie_line_buffer_distance = None
-        # self.tie_line_box_buffer = None
-        # self.flt_line_spacing = None
-        # self.tie_line_spacing = None
-        # self.flt_lines = None
-        # self.tie_lines = None
-        # self.new_flt_lines = None
-        # self.new_tie_lines = None
-
-        #store the original poly_layer
-        self.original_poly_layer = poly_layer
+        #store the original poly_layer (this is for a reset button hopefully)
+        self.initial_poly_layer = poly_layer
 
         # Initialization parameters
         self.the_rest_of_the_flt_line_gen_params = the_rest_of_the_flt_line_gen_params
@@ -89,6 +97,7 @@ class InteractivePlotWidget(QWidget):
         self.tie_line_box_buffer = tie_line_box_buffer
         self.flt_line_spacing = flt_line_spacing
         self.tie_line_spacing = tie_line_spacing
+        self.unbuffered_poly = unbuffered_poly
 
         # These are regeneration parameters (everytime a change happens, these are regenerated using generate_lines function)
         self.flt_lines = []
@@ -112,9 +121,16 @@ class InteractivePlotWidget(QWidget):
         self.cid_release = self.canvas.mpl_connect('button_release_event', self.on_release)
         self.cid_motion = self.canvas.mpl_connect('motion_notify_event', self.on_motion)
 
+        # Initialize variables for hover effects
+        self.hovered_vertex = None
+        self.hovered_line = None
+        self.vertex_artists = []  # Store vertex artists for highlighting
+        self.line_artists = []  # Store line artists for highlighting
+
+        # Connect the motion_notify_event for hover effects
+        self.cid_motion = self.canvas.mpl_connect('motion_notify_event', self.on_hover)
 
 
-    #plot the
     def plot(self, flt_lines, tie_lines, new_flt_lines, new_tie_lines, new_poly, anchor_xy, poly_layer):
 
         # store the current poly layer into the class for use in on_motion and on_press
@@ -152,12 +168,12 @@ class InteractivePlotWidget(QWidget):
             new_tie_line.plot(self.ax, color='red', linestyle='-', linewidth=0.5)
 
         x, y = Polygon(polygon_coords[0]).exterior.xy
-        self.ax.plot(x, y, color='black', linestyle=':', marker=".", linewidth=2, markersize=10, alpha=1)
+        self.ax.plot(x, y, color='darkgreen', linestyle='-', marker=".", linewidth=2, markersize=10, alpha=1, label = "Buffered")
 
-        original_poly_coords = extract_polygon_coords(next(self.original_poly_layer.getFeatures()).geometry())
+        original_poly_coords = extract_polygon_coords(next(self.unbuffered_poly.getFeatures()).geometry())
 
         x, y = Polygon(original_poly_coords[0]).exterior.xy
-        self.ax.plot(x, y, color='darkgreen', linestyle='-', linewidth=2, alpha=1)
+        self.ax.plot(x, y, color='coral', linestyle='-', linewidth=2, alpha=1, label="Unbuffered")
         self.ax.fill(x, y, color="red", alpha=1)
 
         intersection = Polygon(original_poly_coords[0]).intersection(new_poly)
@@ -180,25 +196,130 @@ class InteractivePlotWidget(QWidget):
         self.ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f'{y:,.0f}'))
         self.ax.set_aspect('equal', adjustable='box')
 
+        self.ax.legend(loc='upper left', bbox_to_anchor=(1, 1), fontsize='small', title='Legend', title_fontsize='medium')
+
         # Draw the canvas to update the plot
         self.canvas.draw()
 
+    def get_scaled_threshold(self, event, pixel_threshold=20):
+        """Convert a pixel threshold to data coordinates based on the current zoom level."""
+        # Get the current axis limits
+        xlim = self.ax.get_xlim()
+        ylim = self.ax.get_ylim()
 
-    # This function checks to see if a click is near any of the vertices in the grey poly_layer to set the dragging boolean on for the on_motion function
-    def on_press(self, event, threshold=100):
+        # Get the figure size in pixels
+        fig_width, fig_height = self.canvas.get_width_height()
+
+        # Calculate the scaling factors for x and y axes
+        x_scale = (xlim[1] - xlim[0]) / fig_width
+        y_scale = (ylim[1] - ylim[0]) / fig_height
+
+        # Use the average scaling factor to convert the pixel threshold to data coordinates
+        scale_factor = (x_scale + y_scale) / 2
+        return pixel_threshold * scale_factor
+
+    # This function checks to see if a click is near any of the vertices to set the dragging boolean on
+    def on_press(self, event):
+
         # Adjust threshold as needed
         if event.inaxes != self.ax:
             return
 
-        # Initialize variables to find the closest vertex
-        closest_vertex_index = None
-        min_dist = float('inf')
+        if self.is_near_vertex(event) is True and event.button == 1:
+            self.dragging_line = True
+            self.start_point = (event.xdata,  event.ydata)
+        else:
+            self.dragging_line = None
+
+        if event.button == 3:  # Right-click
+            if self.is_near_vertex(event) or self.is_near_line(event):
+                self.show_context_menu(event)
+                return
+
+    #The on motion function moves a poly_layer vertex within the threshold from on_press along the mouse point data
+    def on_motion(self, event):
+
+        #checkes whether mouse is within the axes boolean and dragging line boolean limiters
+        if event.inaxes != self.ax:
+            return
+
+        if self.dragging_line is not None:
+            # takes the mouse movement and subtracts from the starting click in the on_press function to get the x and y deltas
+            dx = event.xdata - self.start_point[0]
+            dy = event.ydata - self.start_point[1]
+            self.start_point = (event.xdata, event.ydata)
+
+            # Get the original polygon coordinates
+            updated_features = next(self.poly_layer.getFeatures())
+            new_poly_layer_coords = extract_polygon_coords(updated_features.geometry())[0]
+
+            # Update only the closest vertex coordinates
+            new_poly_layer_coords[self.closest_vertex_index] = (
+                new_poly_layer_coords[self.closest_vertex_index][0] + dx,
+                new_poly_layer_coords[self.closest_vertex_index][1] + dy
+            )
+
+            # Ensure the polygon remains closed by updating the last vertex if the first vertex is moved, and vice versa
+            num_vertices = len(new_poly_layer_coords)
+            if self.closest_vertex_index == 0:
+                # If the first vertex is moved, update the last vertex to match
+                new_poly_layer_coords[-1] = new_poly_layer_coords[0]
+            elif self.closest_vertex_index == num_vertices - 1:
+                # If the last vertex is moved, update the first vertex to match
+                new_poly_layer_coords[0] = new_poly_layer_coords[-1]
+
+            #remake the poly_layer using coordinate list
+            self.poly_layer = convert_shapely_poly_to_layer(MultiPolygon([Polygon(new_poly_layer_coords)]))
+
+            # Update the flight lines and tie lines live
+            self.update_flight_lines()
+
+    #Release function to set the dragging line booleans false/None when mouse drag is let go
+    def on_release(self, event):
+
+        if self.dragging_line is None:
+            return
+        self.dragging_line = None
+
+    def on_hover(self, event):
+        """Handle mouse motion events for hover effects."""
+        if event.inaxes != self.ax:
+            return
+
+        # Check if the mouse is near a vertex
+        self.hovered_vertex = self.is_near_vertex(event)
+        if self.hovered_vertex is True:
+            # Highlight the vertex and clear any line highlights
+            self.highlight_vertex(self.closest_vertex_index)
+            self.clear_line_highlight()
+        else:
+            # If no vertex is near, check if the mouse is near a line
+            self.hovered_line = self.is_near_line(event)
+            if self.hovered_line is True:
+                # Highlight the line and clear any vertex highlights
+                self.highlight_line(self.closest_line_index)
+                self.clear_vertex_highlight()
+            else:
+                # If neither is near, clear all highlights
+                self.clear_vertex_highlight()
+                self.clear_line_highlight()
+
+        # Redraw the canvas
+        self.canvas.draw()
+
+    def is_near_vertex(self, event):
+        """Find the closest vertex to the mouse position."""
+
+        threshold = self.get_scaled_threshold(event)
 
         # Get the current polygon coordinates
         current_features = next(self.poly_layer.getFeatures())
         poly_layer_coords = extract_polygon_coords(current_features.geometry())[0]
 
-        # Iterate over the polygon's vertices to find the closest one to the click
+        # Iterate over the polygon's vertices to find the closest one to the mouse
+        closest_vertex_index = None
+        min_dist = float('inf')
+
         for i, coord in enumerate(poly_layer_coords):
             x, y = coord[:2]
             dist = np.linalg.norm([event.xdata - x, event.ydata - y])
@@ -206,59 +327,189 @@ class InteractivePlotWidget(QWidget):
                 min_dist = dist
                 closest_vertex_index = i
 
-        # If the closest vertex is within a reasonable distance, enable dragging, get the closest vertex and store starting click point value
+        # Return the closest vertex if it is within the threshold
         if min_dist < threshold:
-            self.dragging_line = True
-            self.start_point = (event.xdata, event.ydata)
             self.closest_vertex_index = closest_vertex_index
+            return True
         else:
-            self.dragging_line = None
+            self.closest_vertex_index = None
+            return False
 
-    #The on motion function moves a poly_layer vertex within the threshold from on_press along the mouse point data
-    def on_motion(self, event):
+    def is_near_line(self, event):
+        """Find the closest line to the mouse position."""
 
-        #checkes whether mouse is within the axes boolean and dragging line boolean limiters
-        if event.inaxes != self.ax or self.dragging_line is None:
-            return
+        threshold = self.get_scaled_threshold(event)
 
-        # takes the mouse movement and subtracts from the starting click in the on_press function to get the x and y deltas
-        dx = event.xdata - self.start_point[0]
-        dy = event.ydata - self.start_point[1]
-        self.start_point = (event.xdata, event.ydata)
+        # Get the current polygon coordinates
+        current_features = next(self.poly_layer.getFeatures())
+        poly_layer_coords = extract_polygon_coords(current_features.geometry())[0]
 
-        # Get the original polygon coordinates
-        updated_features = next(self.poly_layer.getFeatures())
-        new_poly_layer_coords = extract_polygon_coords(updated_features.geometry())[0]
+        # Iterate over the polygon's edges to find the closest one to the mouse
+        closest_line_index = None
+        min_dist = float('inf')
+        for i in range(len(poly_layer_coords)):
+            x1, y1 = poly_layer_coords[i]
+            x2, y2 = poly_layer_coords[(i + 1) % len(poly_layer_coords)]
 
-        # Update only the closest vertex coordinates
-        new_poly_layer_coords[self.closest_vertex_index] = (
-            new_poly_layer_coords[self.closest_vertex_index][0] + dx,
-            new_poly_layer_coords[self.closest_vertex_index][1] + dy
+            # Calculate the distance from the mouse to the line
+            edge_length = np.linalg.norm([x2 - x1, y2 - y1])
+            if edge_length == 0:
+                continue
+
+            # Project the mouse point onto the line
+            t = ((event.xdata - x1) * (x2 - x1) + (event.ydata - y1) * (y2 - y1)) / (edge_length ** 2)
+            t = max(0, min(1, t))  # Clamp t to the edge
+            proj_x = x1 + t * (x2 - x1)
+            proj_y = y1 + t * (y2 - y1)
+
+            dist = np.linalg.norm([event.xdata - proj_x, event.ydata - proj_y])
+            if dist < min_dist:
+                min_dist = dist
+                closest_line_index = i
+
+        # Return the closest line if it is within the threshold
+        if min_dist < threshold:
+            self.closest_line_index = closest_line_index
+            return True
+        else:
+            self.closest_line_index = None
+            return False
+
+
+    def highlight_vertex(self, vertex_index):
+        """Highlight the specified vertex."""
+        # Clear previous vertex highlights
+        self.clear_vertex_highlight()
+
+        # Get the current polygon coordinates
+        current_features = next(self.poly_layer.getFeatures())
+        poly_layer_coords = extract_polygon_coords(current_features.geometry())[0]
+
+        # Plot the highlighted vertex
+        x, y = poly_layer_coords[vertex_index]
+        artist = self.ax.plot(x, y, marker='o', markersize=10, color='red', alpha=0.8)[0]
+        self.vertex_artists.append(artist)
+
+    def highlight_line(self, line_index):
+        """Highlight the specified line."""
+        # Clear previous line highlights
+        self.clear_line_highlight()
+
+        # Get the current polygon coordinates
+        current_features = next(self.poly_layer.getFeatures())
+        poly_layer_coords = extract_polygon_coords(current_features.geometry())[0]
+
+        # Plot the highlighted line
+        x1, y1 = poly_layer_coords[line_index]
+        x2, y2 = poly_layer_coords[(line_index + 1) % len(poly_layer_coords)]
+        artist = self.ax.plot([x1, x2], [y1, y2], color='red', linewidth=3, alpha=0.8)[0]
+        self.line_artists.append(artist)
+
+    def clear_vertex_highlight(self):
+        """Clear all vertex highlights."""
+        for artist in self.vertex_artists:
+            artist.remove()
+        self.vertex_artists.clear()
+
+    def clear_line_highlight(self):
+        """Clear all line highlights."""
+        for artist in self.line_artists:
+            artist.remove()
+        self.line_artists.clear()
+
+    def show_context_menu(self, event):
+        """Display a context menu"""
+        # Create a QMenu
+        context_menu = QMenu(self)
+
+        # Add a conditional action to remove a vertex
+        if self.is_near_vertex(event):
+            remove_vertex_action = QAction("Remove Vertex", self)
+            remove_vertex_action.triggered.connect(self.remove_vertex)
+            context_menu.addAction(remove_vertex_action)
+        else:
+            # Add an action to add a vertex
+            add_vertex_action = QAction("Add Vertex", self)
+            add_vertex_action.triggered.connect(lambda: self.add_vertex(event))
+            context_menu.addAction(add_vertex_action)
+
+        # Get the global position of the mouse cursor
+        global_pos = self.canvas.mapToGlobal(
+            self.canvas.mapFromParent(event.guiEvent.pos())
         )
+        # Show the context menu at the cursor position
+        context_menu.exec_(global_pos)
 
-        #remake the poly_layer using coordinate list (I needed to convert from Polygon to MultiPolygon to QgsVector multipolygon for compatibility sake as that is what the poly_layer is initially imported as
-        self.poly_layer = convert_shapely_poly_to_layer(MultiPolygon([Polygon(new_poly_layer_coords)]))
+    def add_vertex(self, event):
+        """Add a vertex to the polygon at the clicked location."""
+        # Get the current polygon coordinates
+        current_features = next(self.poly_layer.getFeatures())
+        poly_layer_coords = extract_polygon_coords(current_features.geometry())[0]
 
-        # self.plot(
-        #     flt_lines=self.flt_lines,
-        #     tie_lines=self.tie_lines,
-        #     new_flt_lines=self.new_flt_lines,
-        #     new_tie_lines=self.new_tie_lines,
-        #     new_poly=self.new_poly,
-        #     anchor_xy=self.anchor_xy,
-        #     poly_layer=updated_poly_layer
-        # )
+        # Find the closest edge to the click location
+        min_dist = float('inf')
+        insert_index = 0
 
-        # Update the flight lines and tie lines live
+        for i in range(len(poly_layer_coords)):
+            # Get the current and next vertex (to form an edge)
+            x1, y1 = poly_layer_coords[i]
+            x2, y2 = poly_layer_coords[(i + 1) % len(poly_layer_coords)]
+
+            # Calculate the distance from the click to the edge
+            edge_length = np.linalg.norm([x2 - x1, y2 - y1])
+            if edge_length == 0:
+                continue
+
+            # Project the click point onto the edge
+            t = ((event.xdata - x1) * (x2 - x1) + (event.ydata - y1) * (y2 - y1)) / (edge_length ** 2)
+            t = max(0, min(1, t))  # Clamp t to the edge
+            proj_x = x1 + t * (x2 - x1)
+            proj_y = y1 + t * (y2 - y1)
+
+            dist = np.linalg.norm([event.xdata - proj_x, event.ydata - proj_y])
+            if dist < min_dist:
+                min_dist = dist
+                insert_index = i + 1
+
+        # Insert the new vertex at the closest edge
+        new_vertex = (event.xdata, event.ydata)
+        poly_layer_coords.insert(insert_index, new_vertex)
+
+        # Update the polygon layer
+        self.poly_layer = convert_shapely_poly_to_layer(MultiPolygon([Polygon(poly_layer_coords)]))
+
+        # Redraw the plot
         self.update_flight_lines()
+        self.canvas.draw()
 
-    #Release function to set the dragging line booleans false/None when mouse drag is let go
-    def on_release(self, event):
-        if self.dragging_line is None:
+    def remove_vertex(self):
+        """Remove the closest vertex from the polygon."""
+        if self.closest_vertex_index is None:
             return
-        self.dragging_line = None
 
-    # this function reruns the update_flight_lines function in the out code (it is called in other functions everytime a change is made)
+        # Get the current polygon coordinates
+        current_features = next(self.poly_layer.getFeatures())
+        poly_layer_coords = extract_polygon_coords(current_features.geometry())[0]
+
+        # Ensure the polygon has at least 4 vertices (3 unique vertices + closing vertex)
+        if len(poly_layer_coords) > 4:  # Allow removing the start/end vertex
+            # Remove the closest vertex
+            poly_layer_coords.pop(self.closest_vertex_index)
+
+            # If the start/end vertex was removed, update the last vertex to match the new start vertex
+            if self.closest_vertex_index == 0 or self.closest_vertex_index == len(poly_layer_coords):
+                poly_layer_coords[-1] = poly_layer_coords[0]
+
+            # Update the polygon layer
+            self.poly_layer = convert_shapely_poly_to_layer(MultiPolygon([Polygon(poly_layer_coords)]))
+
+            # Redraw the plot
+            self.update_flight_lines()
+            self.canvas.draw()
+        else:
+            print("Cannot remove vertex: Polygon must have at least 3 vertices.")
+
+    # this function reruns the update_flight_lines function in the out code
     # It stores the desired output variables back into the class as they were initialized as None
     def update_flight_lines(self):
         """Calls the update_flight_lines function with current parameters."""
@@ -281,8 +532,6 @@ class InteractivePlotWidget(QWidget):
                 flt_lines=None,
                 tie_lines=None
             )
-
-        # self.compute_LKM_from_lines(flt_lines=self.new_flt_lines_qgis_format,tie_lines=self.new_tie_lines_qgis_format)
 
     #modifies the input parameters for update flight lines and reruns said function with newly stored values in the class
     def update_params_through_sliders(self, new_flt_line_angle, new_flt_line_translation, new_tie_line_translation):
@@ -315,7 +564,7 @@ class InteractivePlotWidget(QWidget):
 
         self.total_LKMs = self.LKMs
         self.updated_LKM.emit(self.total_LKMs)
-        print(f"Total LKMs: {self.total_LKMs/1000:.3f} km")
+        # print(f"Total LKMs: {self.total_LKMs/1000:.3f} km")
 
 
     # this returns the desired output variables so that an outside function can access the desired values
@@ -592,7 +841,8 @@ def gui(poly_layer,
         flt_line_buffer_distance,
         tie_line_buffer_distance,
         the_rest_of_the_flt_line_gen_params,
-        the_rest_of_the_tie_line_gen_params):
+        the_rest_of_the_tie_line_gen_params,
+        unbuffered_poly = None):
     matplotlib.use('Qt5Agg')
 
     dialog = QDialog()
@@ -622,7 +872,8 @@ def gui(poly_layer,
         tie_line_buffer_distance=tie_line_buffer_distance,
         tie_line_box_buffer=tie_line_box_buffer,
         flt_line_spacing=flt_line_spacing,
-        tie_line_spacing=tie_line_spacing
+        tie_line_spacing=tie_line_spacing,
+        unbuffered_poly=unbuffered_poly
     )
 
     #the plot needs to start somewhere, and that is here as update_flight_lines plots at the end
