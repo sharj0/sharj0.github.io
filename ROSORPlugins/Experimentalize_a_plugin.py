@@ -1,8 +1,8 @@
 import os
 import shutil
 
-plugin_dir = os.path.dirname(__file__)
-# plugin_dir = r"C:\Users\Sharj\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins"
+# plugin_dir = os.path.dirname(__file__)
+plugin_dir = r"C:\Users\Sharj\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins"
 target_plugin = plugin_dir + r"\PETER_ROSOR_flightline_creator"
 
 # ------------------------------------------------------------------------------
