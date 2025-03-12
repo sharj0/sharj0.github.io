@@ -659,12 +659,20 @@ def convert_shapely_poly_to_layer(shapely_poly):
     return layer
 
 
-def extract_polygon_coords(multi_polygon_geom):
+def extract_polygon_coords(geom): # peter added chaange to fix "Polygon geometry cannot be converted to a multipolygon. Only multi polygon or curves are permitted."
+    # Check if the geometry is multipart
+    if geom.isMultipart():
+        # If it's a multipolygon, use asMultiPolygon()
+        polygons = geom.asMultiPolygon()
+    else:
+        # If it's a single polygon, wrap the asPolygon() output in a list
+        polygons = [geom.asPolygon()]
+
     coords = []
-    for polygon in multi_polygon_geom.asMultiPolygon():
+    for polygon in polygons:
         # Each polygon is a list of rings (first ring is exterior, others are holes)
         for ring in polygon:
-            # Extract (x, y) ignoring z-coordinate
+            # Extract (x, y) ignoring the z-coordinate
             ring_coords = [(pt.x(), pt.y()) for pt in ring]
             coords.append(ring_coords)
     return coords

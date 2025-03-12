@@ -27,10 +27,8 @@ from .output_to_kml import \
     line_geometries_to_kml,\
     save_kml_polygon
 
-import time
-from qgis.core import QgsGeometry, QgsWkbTypes, QgsVectorLayer, QgsProcessing
-from  qgis import processing
-import numpy as np
+from qgis.core import QgsGeometry, QgsVectorLayer, QgsFeature
+
 
 def main(settings_file_path):
     # load settings and allow for the re-naming of settings with a conversion step between the .json name and the internal code
@@ -76,18 +74,26 @@ def main(settings_file_path):
     poly_file, poly_layer, utm_letter = open_different_kinds_of_input_polys(poly_file, convert_to_specific_UTM_zone)
 
     if poly_buffer_distance != 0:
-        #add buffer to poly_layer
-        buffer_segments = 1
-        buffered_layer = processing.run("native:buffer", {
-            'INPUT': poly_layer,
-            'DISTANCE': poly_buffer_distance,
-            'SEGMENTS': buffer_segments,
-            'END_CAP_STYLE': 0,  # Round end cap style
-            'JOIN_STYLE': 1,  # Round join style
-            'MITER_LIMIT': 2,
-            'DISSOLVE': False,  # Do not dissolve boundaries
-            'OUTPUT': 'memory:'  # Output to memory (or specify a file path)
-        })['OUTPUT']
+        # Create a new memory layer for the buffered features
+        buffered_layer = QgsVectorLayer("Polygon?crs=" + poly_layer.crs().authid(), "Buffered", "memory")
+        buffered_provider = buffered_layer.dataProvider()
+        buffered_provider.addAttributes(poly_layer.fields())
+        buffered_layer.updateFields()
+
+        # Parameters for the buffer operation:
+        buffer_distance = poly_buffer_distance
+
+        # Iterate over each feature and apply the miter buffer
+        for feat in poly_layer.getFeatures():
+            geom = feat.geometry()
+            # Create a buffered geometry with miter join style
+            buffered_geom = geom.buffer(buffer_distance, 5, QgsGeometry.EndCapStyle.Flat, QgsGeometry.JoinStyle.Miter, 5)
+            new_feat = QgsFeature()
+            new_feat.setGeometry(buffered_geom)
+            new_feat.setAttributes(feat.attributes())
+            buffered_provider.addFeature(new_feat)
+
+        buffered_layer.updateExtents()
     else:
         buffered_layer = poly_layer
 
