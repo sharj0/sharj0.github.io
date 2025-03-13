@@ -1,8 +1,10 @@
 import os
 
 from .my_class_definitions import (EndPoint, FltLine, TieLine)
-from .functions import get_anchor_xy, show_information, convert_shapely_poly_to_layer, extract_polygon_coords, \
-    get_line_coords, convert_lines_to_my_format, convert_and_list_polygons
+from .functions import get_anchor_xy, show_information
+from .display_functions import (convert_shapely_poly_to_layer, extract_polygon_coords,
+                                get_line_coords, convert_lines_to_my_format, convert_and_list_polygons,
+                                convert_to_0_180, wrap_around)
 from .generate_lines import generate_lines
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -157,7 +159,7 @@ class InteractivePlotWidget(QWidget):
 
         # Example plotting logic
         self.ax.clear()  # Clear previous plot
-
+ 
         if self.plot_x_lims:
             self.ax.set_xlim(self.plot_x_lims)
 
@@ -857,54 +859,20 @@ def gui(poly_layer,
 
     dialog_layout.addLayout(reset_button_layout)
 
-    # i need this class to be able to pass anchor_xy to the function below
-    class G():
-        def __init__(self):
-            pass
-
-    g = G()
-    g.anchor_xy = anchor_xy
-
-    def copy_anchor_coords_to_clipboard():
-        clipboard = QApplication.clipboard()
-        if not generated_anchor_coordinates:
-            g.anchor_xy = get_anchor_xy(poly_layer)
-        clipboard.setText(f"{g.anchor_xy[0]}, {g.anchor_xy[1]}")
-        message = f'Copied anchor coords {g.anchor_xy} to clipboard'
-        show_information(message)
-        print(message)
-
-    copy_coords_btn = QPushButton("Copy Generated Anchor Coordinates to Clipboard")
-    font = copy_coords_btn.font()
-    font.setPointSize(12)  # Adjust font size as needed
-    copy_coords_btn.setFont(font)
-    copy_coords_btn.setFixedSize(400, 30)
-    copy_coords_btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-    # Connect the button's 'clicked' signal to the 'copy_anchor_coords_to_clipboard' slot
-    copy_coords_btn.clicked.connect(copy_anchor_coords_to_clipboard)
-    bottom_bar_layout.addWidget(copy_coords_btn)
-
-    """Sharj"""
-    # Creating slider widgets for translation (I could change this to a input box but I find it more intuitive to slide and translate)
-    # The slider has a set range (I'm thinking of changing it to the min and max distance from anchor but that is beyond my pay grade)
-    # The slider DOES NOT WORK with floating point values, so I have to use integers (damn you QWidgets)
-    # Live readings of the value are shown to the user (I might change that to an input box later)
 
     # angle_label = QLabel("Flight Line Angle:", dialog)
     # angle_label.setFixedSize(150, 20)
     # dialog_layout.addWidget(angle_label)
 
+    flight_line_spacing = the_rest_of_the_flt_line_gen_params[0]
+    flight_line_angle = the_rest_of_the_flt_line_gen_params[1]
+    flight_line_shift_sideways = the_rest_of_the_flt_line_gen_params[2]
+
     angle_slider = QSlider(Qt.Horizontal, dialog)
     angle_slider.setMinimum(0)
     angle_slider.setMaximum(180)
 
-    def convert_to_0_180(degree):
-        normalized_degree = (int(degree) + 360) % 360  # Normalize to the range [0, 360)
-        if normalized_degree > 180:
-            return normalized_degree - 180
-        return normalized_degree
-
-    normalized_degree = convert_to_0_180(the_rest_of_the_flt_line_gen_params[1])
+    normalized_degree = convert_to_0_180(flight_line_angle)
 
     angle_slider.setValue(int(normalized_degree))  # Assuming flight_line_angle is the second element
     angle_slider.setFixedSize(400, 20)
@@ -921,15 +889,9 @@ def gui(poly_layer,
 
     flt_line_translation_slider = QSlider(Qt.Horizontal, dialog)
     flt_line_translation_slider.setMinimum(0)
-    flt_line_translation_slider.setMaximum(int(flt_line_spacing))
+    flt_line_translation_slider.setMaximum(int(flight_line_spacing))
 
-    def wrap_around(value, min_val=0, max_val=100):
-        range_width = max_val - min_val
-        # Normalize value to be within the range [0, range_width)
-        normalized_value = (value - min_val) % range_width
-        return normalized_value + min_val
-
-    flt_translation_value = wrap_around(int(the_rest_of_the_flt_line_gen_params[2]),0,int(flt_line_spacing))
+    flt_translation_value = wrap_around(int(flight_line_shift_sideways),0,int(flight_line_spacing))
 
     flt_line_translation_slider.setValue(int(flt_translation_value))  # Assuming flt_shift is third element
     flt_line_translation_slider.setFixedSize(400, 20)
@@ -987,7 +949,6 @@ def gui(poly_layer,
         )
     )
 
-    #Live monitoring of the values
     def update_angle_label(value):
         angle_value_label.setText(f"Flight Line Angle: {value} degrees")
 
@@ -1008,13 +969,37 @@ def gui(poly_layer,
     display_LKMs_live_label.setFont(display_LKMs_live_label_font_size)
     dialog_layout.addWidget(display_LKMs_live_label)
 
-
     def update_LKMs_live_label(value):
         display_LKMs_live_label.setText(f"Total LKMs: {value/1000:.3f} km")
 
     interactive_plot_widget.updated_LKM.connect(update_LKMs_live_label)
 
-    """Sharj"""
+    # i need this class to be able to pass anchor_xy to the function below
+    class G():
+        def __init__(self):
+            pass
+
+    g = G()
+    g.anchor_xy = anchor_xy
+
+    def copy_anchor_coords_to_clipboard():
+        clipboard = QApplication.clipboard()
+        if not generated_anchor_coordinates:
+            g.anchor_xy = get_anchor_xy(poly_layer)
+        clipboard.setText(f"{g.anchor_xy[0]}, {g.anchor_xy[1]}")
+        message = f'Copied anchor coords {g.anchor_xy} to clipboard'
+        show_information(message)
+        print(message)
+
+    copy_coords_btn = QPushButton("Copy Generated Anchor Coordinates to Clipboard")
+    font = copy_coords_btn.font()
+    font.setPointSize(12)  # Adjust font size as needed
+    copy_coords_btn.setFont(font)
+    copy_coords_btn.setFixedSize(400, 30)
+    copy_coords_btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    # Connect the button's 'clicked' signal to the 'copy_anchor_coords_to_clipboard' slot
+    copy_coords_btn.clicked.connect(copy_anchor_coords_to_clipboard)
+    bottom_bar_layout.addWidget(copy_coords_btn)
 
     btn_accept = QPushButton("Accept and Save", dialog)
     font = btn_accept.font()

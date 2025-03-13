@@ -1,9 +1,9 @@
 import os
 
 from .my_class_definitions import (EndPoint, FltLine, TieLine)
-from .functions import get_anchor_xy, show_information, convert_shapely_poly_to_layer, extract_polygon_coords, \
-    get_line_coords, convert_lines_to_my_format, convert_and_list_polygons
-from .generate_lines import generate_lines
+from .functions import get_anchor_xy, show_information
+from .display_functions import (convert_shapely_poly_to_layer, extract_polygon_coords,
+                                convert_lines_to_my_format, convert_to_0_180, wrap_around)
 from .generate_lines import generate_lines
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -53,6 +53,20 @@ class InteractivePlotWidget(QWidget):
         # Add axes to the figure
         self.ax = self.figure.add_subplot(111)
 
+        self.instruction_text = self.figure.text(
+            0.99,  # x position (right-aligned)
+            0.01,  # y position (bottom-aligned)
+            "Right-click to add/remove vertices",  # Text content
+            ha="right",  # Horizontal alignment
+            va="bottom",  # Vertical alignment
+            fontsize=9,  # Font size
+            color="black",  # Text color
+            alpha=1,  # Transparency
+            bbox=dict(boxstyle="square,pad=0.5", facecolor="white", edgecolor="white", alpha=0.7)  # Background box
+        )
+        self.instruction_text.set_text("Move Vertex: Hover over point, left click and drag\nAdd Vertex: Hover over line and right click\nRemove Vertex: Hover over point and right click")
+
+
         # store the original poly_layer (this is for a reset button hopefully)
         self.initial_poly_layer = poly_layer
         self.initial_poly_coords = extract_polygon_coords(next(poly_layer.getFeatures()).geometry())[0]
@@ -94,6 +108,16 @@ class InteractivePlotWidget(QWidget):
         self.closest_vertex_index = None
         self.closest_line_index = None
 
+    def restore_initial_polygon(self):
+
+        """Restore the polygon to its initial state."""
+        # Restore the initial polygon coordinates
+        self.poly_layer = convert_shapely_poly_to_layer(MultiPolygon([Polygon(self.initial_poly_coords)]))
+
+        # Redraw the plot with the initial polygon
+        self.update_flight_lines()
+        self.canvas.draw()
+
     def plot(self, flt_lines, anchor_xy, poly_layer):
 
         self.poly_layer = poly_layer
@@ -110,6 +134,8 @@ class InteractivePlotWidget(QWidget):
 
         self.flt_lines = flt_lines
         self.anchor_xy = anchor_xy
+
+        self.compute_LKM_from_lines(self.flt_lines)
 
         if isinstance(flt_lines[0], QgsGeometry):
             flt_lines = convert_lines_to_my_format(flt_lines)
@@ -486,8 +512,24 @@ class InteractivePlotWidget(QWidget):
                 flt_lines=None
             )
 
+    def update_params_through_sliders(self, new_flt_line_angle, new_flt_line_translation):
+        self.the_rest_of_the_flt_line_gen_params = (
+            self.the_rest_of_the_flt_line_gen_params[0],
+            new_flt_line_angle,
+            new_flt_line_translation,
+            self.the_rest_of_the_flt_line_gen_params[3],
+            self.the_rest_of_the_flt_line_gen_params[4],
+            self.the_rest_of_the_flt_line_gen_params[5]
+        )
+        self.update_flight_lines()
+
     def compute_LKM_from_lines(self, flt_lines):
         self.LKMs = 0.0
+
+        print(flt_lines)
+
+        if isinstance(flt_lines[0], QgsGeometry):
+            flt_lines = convert_lines_to_my_format(flt_lines)
 
         for flt_line in flt_lines:
             self.LKMs += flt_line.length()
@@ -526,25 +568,6 @@ class CustomNavigationToolbar(NavigationToolbar):
         else:
             self._actions_disabled = False
 
-# def plotting(flt_lines, polygon_coords, anchor_xy):
-#     # Create the figure
-#     fig = plt.figure(figsize=(12, 10))
-#     ax = plt.subplot2grid((12, 12), (0, 0), rowspan=12, colspan=12)
-#
-#     #plot the old data
-#     for ring_coords in polygon_coords:
-#         x, y = zip(*ring_coords)
-#         ax.plot(x, y, color='black', linestyle='-', linewidth=0.7)
-#     for flt_line in flt_lines:
-#         flt_line.plot(ax, color='blue', linestyle='-', linewidth=0.5)
-#
-#     ax.text(*anchor_xy, '⚓', fontsize=15, ha='center', va='center')
-#     ax.xaxis.set_major_formatter(ticker.StrMethodFormatter('{x:,.0f}'))
-#     ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:,.0f}'))
-#     ax.set_aspect('equal', adjustable='box')
-#     return fig
-
-
 def update_flight_lines(the_rest_of_the_flt_line_gen_params,
                         anchor_xy,
                         poly_layer,
@@ -556,9 +579,6 @@ def update_flight_lines(the_rest_of_the_flt_line_gen_params,
         flt_lines = generate_lines(poly_layer,
                                    flt_line_buffer_distance,
                                    *the_rest_of_the_flt_line_gen_params)
-
-    # Extracting coordinates for flight lines and tie lines
-    flt_lines_coords = get_line_coords(flt_lines)
 
     # Plotting the polygon geometry
     polygon_feature = next(poly_layer.getFeatures())
@@ -595,10 +615,6 @@ def gui(poly_layer,
     # QVBoxLayout for dialog
     dialog_layout = QVBoxLayout(dialog)
 
-    flt_lines_coords = get_line_coords(flt_lines)
-
-    # flt_lines = [FltLine(EndPoint(*coord[0]), EndPoint(*coord[1])) for coord in flt_lines_coords]
-
     interactive_plot_widget = InteractivePlotWidget(
         poly_layer,
         anchor_xy,
@@ -627,9 +643,94 @@ def gui(poly_layer,
 
     toolbar = CustomNavigationToolbar(interactive_plot_widget.canvas, dialog)
     bottom_bar_layout.addWidget(toolbar)
-
     # Add a stretch first to push everything after it to the right
     bottom_bar_layout.addStretch(1)
+
+    # Create a layout for the Undo button
+    reset_button_layout = QHBoxLayout()
+    reset_button_layout.addStretch(1)  # Push the button to the right
+
+    # Add the Undo button
+    undo_button = QPushButton("Reset", dialog)
+    font = undo_button.font()
+    font.setPointSize(12)  # Adjust font size as needed
+    undo_button.setFont(font)
+    undo_button.setFixedSize(100, 30)
+    undo_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    undo_button.clicked.connect(interactive_plot_widget.restore_initial_polygon)
+    reset_button_layout.addWidget(undo_button)
+
+    dialog_layout.addLayout(reset_button_layout)
+
+    flight_line_spacing = the_rest_of_the_flt_line_gen_params[0]
+    flight_line_angle = the_rest_of_the_flt_line_gen_params[1]
+    flight_line_shift_sideways = the_rest_of_the_flt_line_gen_params[2]
+
+    angle_slider = QSlider(Qt.Horizontal, dialog)
+    angle_slider.setMinimum(0)
+    angle_slider.setMaximum(180)
+
+    normalized_degree = convert_to_0_180(flight_line_angle)
+
+    angle_slider.setValue(int(normalized_degree))
+    angle_slider.setFixedSize(400, 20)
+
+    angle_value_label = QLabel(f"Flight Line Angle: {angle_slider.value()} degrees", dialog)
+    angle_value_label.setFixedSize(150, 20)
+
+    dialog_layout.addWidget(angle_value_label)
+    dialog_layout.addWidget(angle_slider)
+
+    flt_line_translation_slider = QSlider(Qt.Horizontal, dialog)
+    flt_line_translation_slider.setMinimum(0)
+    flt_line_translation_slider.setMaximum(int(flight_line_spacing))
+
+    flt_translation_value = wrap_around(int(flight_line_shift_sideways), 0, int(flight_line_spacing))
+
+    flt_line_translation_slider.setValue(int(flt_translation_value))  # Assuming flt_shift is third element
+    flt_line_translation_slider.setFixedSize(400, 20)
+    flt_line_translation_value_label = QLabel(f"Flight Line Translation: {flt_line_translation_slider.value()} m",
+                                              dialog)
+    flt_line_translation_value_label.setFixedSize(150, 20)
+
+    dialog_layout.addWidget(flt_line_translation_value_label)
+    dialog_layout.addWidget(flt_line_translation_slider)
+
+    angle_slider.valueChanged.connect(
+        lambda value: interactive_plot_widget.update_params_through_sliders(
+            new_flt_line_angle=value,
+            new_flt_line_translation=flt_line_translation_slider.value()
+        )
+    )
+
+    flt_line_translation_slider.valueChanged.connect(
+        lambda value: interactive_plot_widget.update_params_through_sliders(
+            new_flt_line_angle=angle_slider.value(),
+            new_flt_line_translation=value
+        )
+    )
+
+    def update_angle_label(value):
+        angle_value_label.setText(f"Flight Line Angle: {value} degrees")
+
+    def update_flt_label(value):
+        flt_line_translation_value_label.setText(f"Flight Line Translation: {value} m")
+
+    angle_slider.valueChanged.connect(update_angle_label)
+    flt_line_translation_slider.valueChanged.connect(update_flt_label)
+
+
+    display_LKMs_live_label = QLabel(f"Total LKMs: {interactive_plot_widget.total_LKMs/1000:.3f} km")
+    display_LKMs_live_label.setFixedSize(400,20)
+    display_LKMs_live_label_font_size = QFont()
+    display_LKMs_live_label_font_size.setPointSize(12)
+    display_LKMs_live_label.setFont(display_LKMs_live_label_font_size)
+    dialog_layout.addWidget(display_LKMs_live_label)
+
+    def update_LKMs_live_label(value):
+        display_LKMs_live_label.setText(f"Total LKMs: {value/1000:.3f} km")
+
+    interactive_plot_widget.updated_LKM.connect(update_LKMs_live_label)
 
     # i need this class to be able to pass anchor_xy to the function below
     class G():
