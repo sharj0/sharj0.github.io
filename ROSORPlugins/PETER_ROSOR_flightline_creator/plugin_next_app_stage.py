@@ -27,10 +27,8 @@ from .output_to_kml import \
     line_geometries_to_kml,\
     save_kml_polygon
 
-import time
-from qgis.core import QgsGeometry, QgsWkbTypes, QgsVectorLayer, QgsProcessing
-from  qgis import processing
-import numpy as np
+from qgis.core import QgsGeometry, QgsVectorLayer, QgsFeature
+
 
 def main(settings_file_path):
     # load settings and allow for the re-naming of settings with a conversion step between the .json name and the internal code
@@ -76,18 +74,26 @@ def main(settings_file_path):
     poly_file, poly_layer, utm_letter = open_different_kinds_of_input_polys(poly_file, convert_to_specific_UTM_zone)
 
     if poly_buffer_distance != 0:
-        #add buffer to poly_layer
-        buffer_segments = 1
-        buffered_layer = processing.run("native:buffer", {
-            'INPUT': poly_layer,
-            'DISTANCE': poly_buffer_distance,
-            'SEGMENTS': buffer_segments,
-            'END_CAP_STYLE': 0,  # Round end cap style
-            'JOIN_STYLE': 1,  # Round join style
-            'MITER_LIMIT': 2,
-            'DISSOLVE': False,  # Do not dissolve boundaries
-            'OUTPUT': 'memory:'  # Output to memory (or specify a file path)
-        })['OUTPUT']
+        # Create a new memory layer for the buffered features
+        buffered_layer = QgsVectorLayer("Polygon?crs=" + poly_layer.crs().authid(), "Buffered", "memory")
+        buffered_provider = buffered_layer.dataProvider()
+        buffered_provider.addAttributes(poly_layer.fields())
+        buffered_layer.updateFields()
+
+        # Parameters for the buffer operation:
+        buffer_distance = poly_buffer_distance
+
+        # Iterate over each feature and apply the miter buffer
+        for feat in poly_layer.getFeatures():
+            geom = feat.geometry()
+            # Create a buffered geometry with miter join style
+            buffered_geom = geom.buffer(buffer_distance, 5, QgsGeometry.EndCapStyle.Flat, QgsGeometry.JoinStyle.Miter, 5)
+            new_feat = QgsFeature()
+            new_feat.setGeometry(buffered_geom)
+            new_feat.setAttributes(feat.attributes())
+            buffered_provider.addFeature(new_feat)
+
+        buffered_layer.updateExtents()
     else:
         buffered_layer = poly_layer
 
@@ -124,20 +130,26 @@ def main(settings_file_path):
                                    *the_rest_of_the_tie_line_gen_params)
 
         results = display_w_ties_Sharj.gui(buffered_layer,
-                                     flt_lines,
-                                     tie_lines,
-                                     flight_line_spacing,
-                                     tie_line_spacing,
-                                     tie_line_box_buffer,
-                                     anchor_xy,
-                                     generated_anchor_coordinates,
-                                     flight_line_buffer_distance,
-                                     tie_line_buffer_distance,
-                                     the_rest_of_the_flt_line_gen_params,
-                                     the_rest_of_the_tie_line_gen_params,
-                                     poly_layer)
+                                           flt_lines,
+                                           tie_lines,
+                                           flight_line_spacing,
+                                           tie_line_spacing,
+                                           tie_line_box_buffer,
+                                           anchor_xy,
+                                           generated_anchor_coordinates,
+                                           flight_line_buffer_distance,
+                                           tie_line_buffer_distance,
+                                           the_rest_of_the_flt_line_gen_params,
+                                           the_rest_of_the_tie_line_gen_params,
+                                           poly_layer)
 
-        result, new_flt_lines, new_tie_lines, new_poly = results
+        (result,
+         new_flt_lines,
+         new_tie_lines,
+         new_poly,
+         the_rest_of_the_flt_line_gen_params,
+         the_rest_of_the_tie_line_gen_params) = results
+
     else:
         tie_lines = []
         flt_lines = generate_lines(poly_layer,
@@ -207,7 +219,18 @@ def main(settings_file_path):
             swaths_out_kml_path = swaths_out_path[:-4]+'.kml'
             output_swaths_to_kml(swaths_out_path, swaths_out_kml_path)
 
-        save_excel_file(excel_out_path, new_poly, combined_lines, crs, utm_letter, flight_line_spacing, tie_line_spacing)
+        flight_line_spacing = the_rest_of_the_flt_line_gen_params[0]
+        flight_line_angle = the_rest_of_the_flt_line_gen_params[1]
+        tie_line_spacing = the_rest_of_the_tie_line_gen_params[0]
+
+        save_excel_file(excel_out_path,
+                        new_poly,
+                        combined_lines,
+                        crs,
+                        utm_letter,
+                        flight_line_spacing,
+                        tie_line_spacing,
+                        flight_line_angle)
 
         kmls_to_combine_paths = [swaths_out_kml_path, lines_out_kml_path, poly_out_kml_path]
         combined_kml_path = os.path.join(out_folder_path, f'Combined_kmls_{pure_name}{version}.kml')

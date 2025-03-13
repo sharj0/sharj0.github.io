@@ -570,8 +570,11 @@ class InteractivePlotWidget(QWidget):
     # this returns the desired output variables so that an outside function can access the desired values
     def get_results(self):
         self.update_flight_lines()
-        return self.new_flt_lines_qgis_format, self.new_tie_lines_qgis_format, self.new_poly
-
+        return (self.new_flt_lines_qgis_format,
+                self.new_tie_lines_qgis_format,
+                self.new_poly,
+                self.the_rest_of_the_flt_line_gen_params,
+                self.the_rest_of_the_tie_line_gen_params)
 
 class CustomNavigationToolbar(NavigationToolbar):
     def __init__(self, canvas, parent, coordinates=True):
@@ -659,12 +662,21 @@ def convert_shapely_poly_to_layer(shapely_poly):
     return layer
 
 
-def extract_polygon_coords(multi_polygon_geom):
+def extract_polygon_coords(geom):
+    # peter added chaange to fix "Polygon geometry cannot be converted to a multipolygon. Only multi polygon or curves are permitted."
+    # Check if the geometry is multipart
+    if geom.isMultipart():
+        # If it's a multipolygon, use asMultiPolygon()
+        polygons = geom.asMultiPolygon()
+    else:
+        # If it's a single polygon, wrap the asPolygon() output in a list
+        polygons = [geom.asPolygon()]
+
     coords = []
-    for polygon in multi_polygon_geom.asMultiPolygon():
+    for polygon in polygons:
         # Each polygon is a list of rings (first ring is exterior, others are holes)
         for ring in polygon:
-            # Extract (x, y) ignoring z-coordinate
+            # Extract (x, y) ignoring the z-coordinate
             ring_coords = [(pt.x(), pt.y()) for pt in ring]
             coords.append(ring_coords)
     return coords
@@ -1085,10 +1097,11 @@ def gui(poly_layer,
 
     result = dialog.exec_() == QDialog.Accepted
 
+    outputs = []
+
     # runs the get_results function of the class to return the final output
-    # maybe add a button to reset to initial condition (but too much work rn)
     if result:
-        new_flt_lines_qgis_format, new_tie_lines_qgis_format, new_poly = interactive_plot_widget.get_results()
+        outputs = interactive_plot_widget.get_results()
 
     del dialog
-    return result, new_flt_lines_qgis_format, new_tie_lines_qgis_format, new_poly
+    return result, *outputs

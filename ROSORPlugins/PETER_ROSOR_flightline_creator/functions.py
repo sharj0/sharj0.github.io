@@ -162,7 +162,15 @@ def make_next_folder(directory, original_foldername):
     os.makedirs(new_full_path)
     return new_full_path, version_number
 
-def save_excel_file(excel_path, polygon_geometry, output_lines, crs, utm_letter, flight_line_spacing, tie_line_spacing):
+def save_excel_file(excel_path,
+                    polygon_geometry,
+                    output_lines,
+                    crs,
+                    utm_letter,
+                    flight_line_spacing,
+                    tie_line_spacing,
+                    flight_line_angle):
+
     # Check if the geometry is a MultiPolygon
     if polygon_geometry.geom_type == 'MultiPolygon':
         polygons = list(polygon_geometry)
@@ -226,6 +234,14 @@ def save_excel_file(excel_path, polygon_geometry, output_lines, crs, utm_letter,
     worksheet.write(10, 8, flight_line_spacing)
     worksheet.write(11, 7, "Tie")
     worksheet.write(11, 8, tie_line_spacing)
+
+    # Write flightline angle
+    worksheet.write(13, 7, "Line Angles (degrees CW of North)")
+    worksheet.write(14, 7, "Flight")
+    worksheet.write(14, 8, flight_line_angle)
+    worksheet.write(15, 7, "Tie")
+    worksheet.write(15, 8, flight_line_angle+90)
+
 
     try:
         workbook.save(excel_path)
