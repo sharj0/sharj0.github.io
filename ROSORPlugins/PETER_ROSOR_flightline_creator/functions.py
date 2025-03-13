@@ -230,14 +230,14 @@ def save_excel_file(excel_path,
 
     # Write the line spacings
     worksheet.write(9, 7, "Line Spacing")
-    worksheet.write(10, 7, "Flight")
+    worksheet.write(10, 7, "Traverse")
     worksheet.write(10, 8, flight_line_spacing)
     worksheet.write(11, 7, "Tie")
     worksheet.write(11, 8, tie_line_spacing)
 
     # Write flightline angle
     worksheet.write(13, 7, "Line Angles (degrees CW of North)")
-    worksheet.write(14, 7, "Flight")
+    worksheet.write(14, 7, "Traverse")
     worksheet.write(14, 8, flight_line_angle)
     worksheet.write(15, 7, "Tie")
     worksheet.write(15, 8, flight_line_angle+90)
