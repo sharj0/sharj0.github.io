@@ -540,7 +540,9 @@ class InteractivePlotWidget(QWidget):
 
     def get_results(self):
         self.update_flight_lines()
-        return self.flt_lines, self.bounding_poly
+        return (self.flt_lines,
+                self.bounding_poly.poly,
+                self.the_rest_of_the_flt_line_gen_params)
 
 class CustomNavigationToolbar(NavigationToolbar):
     def __init__(self, canvas, parent, coordinates=True):
@@ -775,10 +777,12 @@ def gui(poly_layer,
 
     result = dialog.exec_() == QDialog.Accepted
 
-    new_flt_lines = flt_lines
+    # new_flt_lines = flt_lines
+
+    outputs = []
 
     if result:
-        new_flt_lines, bounding_polygon = interactive_plot_widget.get_results()
+        outputs = interactive_plot_widget.get_results()
 
     del dialog
-    return result, new_flt_lines, bounding_polygon.poly
+    return result, *outputs

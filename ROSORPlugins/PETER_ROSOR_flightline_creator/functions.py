@@ -164,7 +164,7 @@ def make_next_folder(directory, original_foldername):
     os.makedirs(new_full_path)
     return new_full_path, version_number
 
-def save_excel_file(excel_path, polygon_geometry, output_lines, crs, utm_letter, flight_line_spacing, tie_line_spacing):
+def save_excel_file(excel_path, polygon_geometry, output_lines, crs, utm_letter, flight_line_spacing, tie_line_spacing, flight_line_angle):
     # Check if the geometry is a MultiPolygon
     if polygon_geometry.geom_type == 'MultiPolygon':
         polygons = list(polygon_geometry)
@@ -223,11 +223,19 @@ def save_excel_file(excel_path, polygon_geometry, output_lines, crs, utm_letter,
     worksheet.write(7, 8, utm_zone)
 
     # Write the line spacings
-    worksheet.write(9, 7, "Line Spacing")
-    worksheet.write(10, 7, "Flight")
+    worksheet.write(9, 7, "Line Spacing (metres)")
+    worksheet.write(10, 7, "Traverse")
     worksheet.write(10, 8, flight_line_spacing)
     worksheet.write(11, 7, "Tie")
     worksheet.write(11, 8, tie_line_spacing)
+
+    worksheet.write(13, 7, "Line Angle (degrees CW from North)")
+    worksheet.write(14, 7, "Traverse")
+    worksheet.write(14, 8, flight_line_angle)
+
+    if tie_line_spacing != 0:
+        worksheet.write(15, 7, "Tie")
+        worksheet.write(15, 8, flight_line_angle+90)
 
     try:
         workbook.save(excel_path)

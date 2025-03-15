@@ -633,8 +633,6 @@ def get_closest_tie_intersection(flt_line, tie_line_list, from_line_start_perspe
     return closest_intersection, closest_tie_line, closest_distance
 
 # This function regenerates flight and tie lines using all the input parameters that are passed through it
-# It does not require flt_lines and tie_lines input as it will generate them if they don't exist
-# I just took peters old code and made it into a singular function
 def update_flight_lines(the_rest_of_the_flt_line_gen_params,
                         the_rest_of_the_tie_line_gen_params,
                         anchor_xy,
@@ -648,6 +646,7 @@ def update_flight_lines(the_rest_of_the_flt_line_gen_params,
                         flt_lines=None,
                         tie_lines=None,
                         ):
+
     if flt_lines is None:
         flt_lines = generate_lines(poly_layer,
                                    tie_line_box_buffer,  # this is set to buffer the shape differently

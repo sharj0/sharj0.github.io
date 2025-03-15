@@ -151,6 +151,9 @@ def generate_lines(poly_layer,
                    delete_small_lines=1,
                    anchor_xy=(600000, 5390000)):
 
+    if input_angle_cwN % 90 == 0: #band-aid fix
+        input_angle_cwN += 1e-10
+
     anchor_x, anchor_y = anchor_xy
 
     extent = poly_layer.sourceExtent()
