@@ -7,6 +7,8 @@ from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature, QgsField,
                        QgsGeometry, QgsLineString, QgsPoint, QgsPointXY,
                        QgsProject, QgsVectorFileWriter, QgsVectorLayer,
                        QgsWkbTypes, QgsLayerTreeGroup, QgsUnitTypes)
+from .my_class_definitions import (EndPoint, FltLine, TieLine)
+
 import numpy as np
 from PyQt5.QtWidgets import QMessageBox
 import shutil
@@ -162,15 +164,7 @@ def make_next_folder(directory, original_foldername):
     os.makedirs(new_full_path)
     return new_full_path, version_number
 
-def save_excel_file(excel_path,
-                    polygon_geometry,
-                    output_lines,
-                    crs,
-                    utm_letter,
-                    flight_line_spacing,
-                    tie_line_spacing,
-                    flight_line_angle):
-
+def save_excel_file(excel_path, polygon_geometry, output_lines, crs, utm_letter, flight_line_spacing, tie_line_spacing):
     # Check if the geometry is a MultiPolygon
     if polygon_geometry.geom_type == 'MultiPolygon':
         polygons = list(polygon_geometry)
@@ -230,18 +224,10 @@ def save_excel_file(excel_path,
 
     # Write the line spacings
     worksheet.write(9, 7, "Line Spacing")
-    worksheet.write(10, 7, "Traverse")
+    worksheet.write(10, 7, "Flight")
     worksheet.write(10, 8, flight_line_spacing)
     worksheet.write(11, 7, "Tie")
     worksheet.write(11, 8, tie_line_spacing)
-
-    # Write flightline angle
-    worksheet.write(13, 7, "Line Angles (degrees CW of North)")
-    worksheet.write(14, 7, "Traverse")
-    worksheet.write(14, 8, flight_line_angle)
-    worksheet.write(15, 7, "Tie")
-    worksheet.write(15, 8, flight_line_angle+90)
-
 
     try:
         workbook.save(excel_path)
@@ -468,86 +454,80 @@ def reproject_and_save_layer(original_layer, epsg_code, output_file_path):
         raise message
         return False
 
-def save_input_layer_as_utm_shapefile(poly_kml_layer, poly_file, convert_to_specific_UTM_zone):
+
+def save_input_layer_as_utm_shapefile(poly_kml_layer, poly_file, Convert_to_specific_crs):
     for indx, feature in enumerate(poly_kml_layer.getFeatures()):
         if indx > 0:
             continue
         centroid = feature.geometry().centroid().asPoint()
 
-    if centroid.y() < 0:
-        message = f"This app cannot handle southern hemisphere things yet sorry." \
-                  f"\n latitude: {centroid.y()} "
-        show_error(message)
-
-    if convert_to_specific_UTM_zone in [0, '0', '0.0']:
-        utm_zone, utm_letter = select_utm_zone_based_off_lat_lon(centroid.y(),centroid.x())
+    # Remove the previous error for southern hemisphere coordinates.
+    # Instead, the EPSG code will be determined based on the sign of the latitude.
+    if Convert_to_specific_crs in [0, '0', '0.0', None, '']:
+        utm_zone, utm_letter = select_utm_zone_based_off_lat_lon(centroid.y(), centroid.x())
+        utm_zone_padded = str(utm_zone).zfill(2)
+        # Assign EPSG code based on hemisphere: 326 for northern, 327 for southern.
+        if centroid.y() >= 0:
+            epsg_code = 'EPSG:326' + utm_zone_padded
+        else:
+            epsg_code = 'EPSG:327' + utm_zone_padded
     else:
-        utm_zone = convert_to_specific_UTM_zone
-
-    # Pad the UTM zone to two digits
-    utm_zone_padded = str(utm_zone).zfill(2)
-
-    # Create the EPSG code
-    epsg_code = 'EPSG:326' + utm_zone_padded
-
-
+        epsg_code = Convert_to_specific_crs
+        _, utm_letter = select_utm_zone_based_off_lat_lon(centroid.y(), centroid.x())
 
     output_shp_path = os.path.splitext(poly_file)[0] + "_UTM.shp"
     reproject_and_save_layer(poly_kml_layer, epsg_code, output_shp_path)
-
     return output_shp_path, utm_letter
 
-def open_different_kinds_of_input_polys(poly_file, convert_to_specific_UTM_zone):
+
+def open_different_kinds_of_input_polys(poly_file, Convert_to_specific_crs):
     if poly_file.endswith('.kml'):
         poly_kml_layer = QgsVectorLayer(poly_file, "poly", "ogr")
         if not poly_kml_layer.isValid():
             print("Layer is not valid!")
-        poly_file, utm_letter = save_input_layer_as_utm_shapefile(poly_kml_layer, poly_file, convert_to_specific_UTM_zone)
+        poly_file, utm_letter = save_input_layer_as_utm_shapefile(poly_kml_layer, poly_file, Convert_to_specific_crs)
         poly_layer = QgsVectorLayer(poly_file, "poly", "ogr")
     elif poly_file.endswith('.shp'):
         poly_layer = QgsVectorLayer(poly_file, "poly", "ogr")
     else:
-        message = f"Unknown file type selected: " \
-                  f"\n{poly_file} " \
-                  f"\nOnly '.kml' and '.shp' are accepted."
+        message = f"Unknown file type selected: \n{poly_file} \nOnly '.kml' and '.shp' are accepted."
         show_error(message)
         raise message
 
     crs_uses_meters = poly_layer.sourceCrs().mapUnits() == QgsUnitTypes.DistanceMeters
-
     crs_is_utm = '+proj=utm' in poly_layer.sourceCrs().toProj4()
-
     useable_crs = crs_uses_meters and crs_is_utm
 
-    # Check if the CRS units are in meters
     if not useable_crs:
         try:
             if get_crs(poly_layer) in ['epsg:4326']:
-                poly_file, utm_letter = save_input_layer_as_utm_shapefile(poly_layer, poly_file, convert_to_specific_UTM_zone)
+                poly_file, utm_letter = save_input_layer_as_utm_shapefile(poly_layer, poly_file,
+                                                                          Convert_to_specific_crs)
                 poly_layer = QgsVectorLayer(poly_file, "poly", "ogr")
             else:
-                if convert_to_specific_UTM_zone in [0, '0', '0.0']:
+                if Convert_to_specific_crs in [0, '0', '0.0', None, '']:
                     error_text = "Input layer coordinates not recognised, try specifying a UTM zone to convert it to"
                     show_error(error_text)
                     raise error_text
                 else:
                     output_shp_path = os.path.splitext(poly_file)[0] + "_UTM.shp"
-                    reproject_and_save_layer(poly_layer, convert_to_specific_UTM_zone, output_shp_path)
+                    reproject_and_save_layer(poly_layer, Convert_to_specific_crs, output_shp_path)
                     poly_layer = QgsVectorLayer(output_shp_path, "poly", "ogr")
                     poly_file = output_shp_path
-        except:
-            error_text = "Cannot auto convert crs"
+        except Exception as e:
+            error_text = "Cannot auto convert CRS"
             show_error(error_text)
-            raise error_text
+            raise error_text from e
     else:
+        # If the layer already uses a UTM CRS, extract the UTM zone via reverse conversion.
         for indx, feature in enumerate(poly_layer.getFeatures()):
             if indx > 0:
                 continue
             centroid = feature.geometry().centroid().asPoint()
-
         lat, lon = utm_to_lat_lon(centroid[0], centroid[1], get_crs(poly_layer))
         utm_zone, utm_letter = select_utm_zone_based_off_lat_lon(lat, lon)
     return poly_file, poly_layer, utm_letter
+
 
 def utm_to_lat_lon(easting, northing, crs):
     """

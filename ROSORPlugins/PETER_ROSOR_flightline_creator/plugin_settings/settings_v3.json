@@ -1,8 +1,8 @@
 {
     "Output Sensor Type_RADIO": {
-        "Mag": true,
+        "Mag": false,
         "Mag_COMMENT": "This will NOT output swaths. It will append '_MAG' to the output package.",
-        "Lidar": false,
+        "Lidar": true,
         "Lidar_COMMENT": "This will output swaths. It will append '_LIDAR' to the output package.",
         "Ortho": false,
         "Ortho_COMMENT": "This will output swaths. It will append '_ORTHO' to the output package.",
@@ -10,25 +10,25 @@
         "None_COMMENT": "This will output swaths. It will not append anything to the output package."
     },
     "Input File": {
-        "Polygon_file": "C:\\Users\\Sharj\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_flightline_creator\\test_data\\Priority 1 extra.kml",
+        "Polygon_file": "G:\\Shared drives\\Rosor\\2024 - 2025\\Projects\\2501-45-dm-ventures-guyana\\3.Planning\\Making Flights\\temp_can_delete\\test.shp",
         "Polygon_file_SELECT_LAYER": "true",
         "Polygon_file_COMMENT": "Select your boundary area file. '.kml' and '.shp' accepted.",
-        "Polygon_buffer_distance": 100.0,
+        "Polygon_buffer_distance": 5,
         "Polygon_buffer_distance_COMMENT": "This will add a buffer to the input polygon (metres)"
     },
     "Output": {
         "Output_folder": "",
         "Output_folder_SELECT_FOLDER": "true",
         "Output_folder_COMMENT": "An output package will be created in this folder. Leave empty for output to be created next to the input Polygon file.",
-        "Convert_to_specific_UTM_Zone": 0.0,
-        "Convert_to_specific_UTM_Zone_COMMENT": "leave as '0' to auto detect UTM_Zone",
-        "Open_KML_files_when_complete": true,
+        "Convert_to_specific_crs": 32617,
+        "Convert_to_specific_crs_COMMENT": "leave as '0' to auto detect UTM_Zone",
+        "Open_KML_files_when_complete": false,
         "Open_KML_files_when_complete_COMMENT": "This will open all the created kml files in their default app (e.g. Google earth pro)"
     },
     "Flight Line Parameters": {
         "flight_line_angle": 0,
         "flight_line_angle_COMMENT": "degrees CW of North, (tie line angle set automatically to flight_line_angle + 90 degrees)",
-        "flight_line_spacing": 50.0,
+        "flight_line_spacing": 84,
         "flight_line_spacing_COMMENT": "meters, a.k.a. traverse line",
         "flight_line_buffer_distance": 0.0,
         "flight_line_buffer_distance_COMMENT": "meters",
@@ -36,7 +36,7 @@
         "flight_line_shift_sideways_COMMENT": "meters"
     },
     "Tie Line Parameters": {
-        "tie_line_spacing": 500,
+        "tie_line_spacing": 0,
         "tie_line_spacing_COMMENT": "meters, set to '0' to not create tie lines",
         "tie_line_buffer_distance": 15.0,
         "tie_line_buffer_distance_COMMENT": "meters",
@@ -59,5 +59,5 @@
         "swath_width": 169,
         "swath_width_COMMENT": "The width of the rectangles that are placed around the output lines"
     },
-    "Close this window on accept": false
+    "Close this window on accept": true
 }

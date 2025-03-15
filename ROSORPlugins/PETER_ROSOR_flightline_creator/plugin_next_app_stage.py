@@ -4,7 +4,7 @@ This is where the substance of the plugin begins. In main()
 '''
 
 import os
-from . import load_data, display_w_ties_Sharj, display_no_ties
+from . import load_data, display_w_ties, display_no_ties
 from .functions import \
     get_name, \
     get_crs,\
@@ -27,8 +27,10 @@ from .output_to_kml import \
     line_geometries_to_kml,\
     save_kml_polygon
 
-from qgis.core import QgsGeometry, QgsVectorLayer, QgsFeature
-
+import time
+from qgis.core import QgsGeometry, QgsWkbTypes, QgsVectorLayer, QgsProcessing, QgsFeature
+from  qgis import processing
+import numpy as np
 
 def main(settings_file_path):
     # load settings and allow for the re-naming of settings with a conversion step between the .json name and the internal code
@@ -36,7 +38,7 @@ def main(settings_file_path):
     poly_file = settings_dict['Polygon_file']
     poly_buffer_distance = settings_dict['Polygon_buffer_distance']
     place_output_folder_into = settings_dict['Output_folder']
-    convert_to_specific_UTM_zone = settings_dict['Convert_to_specific_UTM_Zone']
+    Convert_to_specific_crs = settings_dict['Convert_to_specific_crs']
     open_KML_files_when_complete = settings_dict['Open_KML_files_when_complete']
 
     flight_line_angle = settings_dict['flight_line_angle']
@@ -71,7 +73,8 @@ def main(settings_file_path):
         show_error(message)
         return
 
-    poly_file, poly_layer, utm_letter = open_different_kinds_of_input_polys(poly_file, convert_to_specific_UTM_zone)
+    poly_file, poly_layer, utm_letter = open_different_kinds_of_input_polys(poly_file, Convert_to_specific_crs)
+
 
     if poly_buffer_distance != 0:
         # Create a new memory layer for the buffered features
@@ -97,7 +100,6 @@ def main(settings_file_path):
     else:
         buffered_layer = poly_layer
 
-
     anchor_xy = extract_and_check_anchor_coordinates(anchor_coordinates_str, buffered_layer)
     generated_anchor_coordinates = False
     if anchor_xy is None:
@@ -105,13 +107,14 @@ def main(settings_file_path):
         anchor_xy = get_anchor_xy(buffered_layer)
         generated_anchor_coordinates = True
 
+    the_rest_of_the_flt_line_gen_params = (flight_line_spacing,
+                                           flight_line_angle,
+                                           flight_line_shift_sideways,
+                                           merge_gaps_smaller_than,
+                                           delete_lines_smaller_than,
+                                           anchor_xy)
+
     if not tie_line_spacing == 0:
-        the_rest_of_the_flt_line_gen_params = (flight_line_spacing,
-                                               flight_line_angle,
-                                               flight_line_shift_sideways,
-                                               merge_gaps_smaller_than,
-                                               delete_lines_smaller_than,
-                                               anchor_xy)
 
         flt_lines = generate_lines(buffered_layer,
                                    tie_line_box_buffer,# this is set to buffer the shape differently
@@ -129,43 +132,34 @@ def main(settings_file_path):
                                    tie_line_box_buffer,# this is set to buffer the shape differently
                                    *the_rest_of_the_tie_line_gen_params)
 
-        results = display_w_ties_Sharj.gui(buffered_layer,
-                                           flt_lines,
-                                           tie_lines,
-                                           flight_line_spacing,
-                                           tie_line_spacing,
-                                           tie_line_box_buffer,
-                                           anchor_xy,
-                                           generated_anchor_coordinates,
-                                           flight_line_buffer_distance,
-                                           tie_line_buffer_distance,
-                                           the_rest_of_the_flt_line_gen_params,
-                                           the_rest_of_the_tie_line_gen_params,
-                                           poly_layer)
+        results = display_w_ties.gui(buffered_layer,
+                                     flt_lines,
+                                     tie_lines,
+                                     flight_line_spacing,
+                                     tie_line_spacing,
+                                     tie_line_box_buffer,
+                                     anchor_xy,
+                                     generated_anchor_coordinates,
+                                     flight_line_buffer_distance,
+                                     tie_line_buffer_distance,
+                                     the_rest_of_the_flt_line_gen_params,
+                                     the_rest_of_the_tie_line_gen_params,
+                                     poly_layer)
 
-        (result,
-         new_flt_lines,
-         new_tie_lines,
-         new_poly,
-         the_rest_of_the_flt_line_gen_params,
-         the_rest_of_the_tie_line_gen_params) = results
-
+        result, new_flt_lines, new_tie_lines, new_poly = results
     else:
-        tie_lines = []
-        flt_lines = generate_lines(poly_layer,
+        flt_lines = generate_lines(buffered_layer,
                                    flight_line_buffer_distance,
-                                   flight_line_spacing,
-                                   flight_line_angle,
-                                   flight_line_shift_sideways,
-                                   merge_gaps_smaller_than,
-                                   delete_lines_smaller_than,
-                                   anchor_xy)
-        new_flt_lines = flt_lines
+                                   *the_rest_of_the_flt_line_gen_params
+                                   )
         new_tie_lines = []
-        result, new_poly = display_no_ties.gui(poly_layer,
-                                               flt_lines,
-                                               anchor_xy,
-                                               generated_anchor_coordinates)
+        result, new_flt_lines, new_poly = display_no_ties.gui(buffered_layer,
+                                                              flt_lines,
+                                                              anchor_xy,
+                                                              generated_anchor_coordinates,
+                                                              flight_line_buffer_distance,
+                                                              the_rest_of_the_flt_line_gen_params,
+                                                              poly_layer)
 
 
     if result:
@@ -219,18 +213,7 @@ def main(settings_file_path):
             swaths_out_kml_path = swaths_out_path[:-4]+'.kml'
             output_swaths_to_kml(swaths_out_path, swaths_out_kml_path)
 
-        flight_line_spacing = the_rest_of_the_flt_line_gen_params[0]
-        flight_line_angle = the_rest_of_the_flt_line_gen_params[1]
-        tie_line_spacing = the_rest_of_the_tie_line_gen_params[0]
-
-        save_excel_file(excel_out_path,
-                        new_poly,
-                        combined_lines,
-                        crs,
-                        utm_letter,
-                        flight_line_spacing,
-                        tie_line_spacing,
-                        flight_line_angle)
+        save_excel_file(excel_out_path, new_poly, combined_lines, crs, utm_letter, flight_line_spacing, tie_line_spacing)
 
         kmls_to_combine_paths = [swaths_out_kml_path, lines_out_kml_path, poly_out_kml_path]
         combined_kml_path = os.path.join(out_folder_path, f'Combined_kmls_{pure_name}{version}.kml')
