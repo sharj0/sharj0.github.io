@@ -146,7 +146,8 @@ def main(settings_file_path):
                                      the_rest_of_the_tie_line_gen_params,
                                      poly_layer)
 
-        result, new_flt_lines, new_tie_lines, new_poly = results
+        result, new_flt_lines, new_tie_lines, new_poly = results[:4]
+        sharj_what_are_these = results[4:]
     else:
         flt_lines = generate_lines(buffered_layer,
                                    flight_line_buffer_distance,
