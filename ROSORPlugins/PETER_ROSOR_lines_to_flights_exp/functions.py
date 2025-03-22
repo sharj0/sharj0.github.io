@@ -1,4 +1,6 @@
 import numpy as np
+import pickle
+import os
 
 def calculate_projection(point, angle):
     """Calculate the projection of a point on a line defined by an angle."""
@@ -35,3 +37,25 @@ def sort_lines_and_tofs(lines, tofs, sort_angle):
     sorted_tofs = [tof for tof, proj in tofs_with_projections]
 
     return sorted_lines, sorted_tofs
+
+
+def get_name_of_non_existing_output_file(base_filepath, additional_suffix='', new_extention=''):
+    # Function to create a unique file path by adding a version number
+    base, ext = os.path.splitext(base_filepath)
+    if new_extention:
+        ext = new_extention
+    new_out_file_path = f"{base}{additional_suffix}{ext}"
+
+    if not os.path.exists(new_out_file_path):
+        return new_out_file_path
+
+    version = 2
+    while os.path.exists(f"{base}{additional_suffix}_v{version}{ext}"):
+        version += 1
+    return f"{base}{additional_suffix}_v{version}{ext}"
+
+
+def load_pickle(pickle_path_in):
+    with open(pickle_path_in, 'rb') as file:
+        pickled_obj = pickle.load(file)
+    return pickled_obj

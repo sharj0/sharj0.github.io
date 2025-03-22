@@ -13,9 +13,9 @@
         "Survey_Manager_exe_path": "C:\\Users\\pyoty\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\exclude.txt",
         "Survey_Manager_exe_path_SELECT_FILE": "true",
         "Survey_Manager_exe_path_COMMENT": "Survey Manager app opens \".magdata\" files. It can be downloaded https://www.geometrics.com/product/magarrow/",
-        "Survey_Manager_exe_path_VIDEO": "Survey_Manager_exe_path_VIDEO.mp4",
+        "Survey_Manager_exe_path_VIDEO": "intro.mp4",
         "test_boolean_with_vid": true,
-        "test_boolean_with_vid_VIDEO": "Survey_Manager_exe_path_VIDEO.mp4"
+        "test_boolean_with_vid_VIDEO": "intro.mp4"
     },
     "Input files": {
         "Magdata_folder_path": "C:\\Users\\pyoty\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_plugin_template",

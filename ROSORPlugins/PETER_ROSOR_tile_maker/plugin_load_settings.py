@@ -5,11 +5,10 @@ A CHANGE TO THIS .PY IN ONE OF THE PLUGINS SHOULD BE COPPY-PASTED TO ALL THE OTH
 
 import json
 
-from . import plugin_settings_suffixes
+from .plugin_settings_suffixes import get_suffixes
 
 def run(settings_file_path):
-    suffixes = plugin_settings_suffixes.get_suffixes()
-    # suffixes = ["_SELECT_LAYER", "_COMMENT", "_TOOLTIP"]
+    suffixes = get_suffixes()
     with open(settings_file_path) as data:
         settings_dict_dirty = json.loads(data.read())
 
@@ -22,8 +21,6 @@ def run(settings_file_path):
             if not any(k.endswith(suffix) for suffix in suffixes):
                 new_dict[k] = remove_suffix_keys(v)
         return new_dict
-
-    settings_dict_dirty = remove_suffix_keys(settings_dict_dirty)
 
     # Flatten the dictionary
     flattened = {}
@@ -38,4 +35,6 @@ def run(settings_file_path):
                 flattened[k] = v
 
     flatten(settings_dict_dirty)
-    return flattened
+
+    flattened_clean = remove_suffix_keys(flattened)
+    return flattened_clean

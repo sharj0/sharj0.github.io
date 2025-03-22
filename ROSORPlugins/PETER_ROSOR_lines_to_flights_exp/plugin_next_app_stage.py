@@ -12,10 +12,14 @@ from .loading_functions import (get_source_and_target_crs_from_layer,
                                 extract_tof_obj_from_tof_layer)
 
 from qgis.core import QgsVectorLayer
+
+from .qgis_canvas_plotting import LineDrawingTool
+from qgis.utils import iface
+
 from . import validate_inputs
 from .Global_Singleton import Global_Singleton
 from .Strip_Class import Strip_Class
-from .functions import sort_lines_and_tofs
+from .functions import sort_lines_and_tofs, get_name_of_non_existing_output_file, load_pickle
 import os
 import numpy as np
 from .plugin_tools import show_error
@@ -26,11 +30,9 @@ class Save_Pickle():
     def __init__(self):
         pass
 
-def main(settings_path):
-    settings_dict = plugin_load_settings.run(settings_path)
 
+def make_new_flights(settings_dict, pickle_path_out):
     plugin_global = Global_Singleton()
-
     flight_lines_input_path = settings_dict["Flight lines file_path"]
     tof_points_input_path = settings_dict["Take-off file path"]
     max_flt_size = settings_dict["max_flt_size"]
@@ -43,19 +45,8 @@ def main(settings_path):
     plugin_global.add_smooth_turns = settings_dict["add_smooth_turns"]
     plugin_global.turn_segment_length = settings_dict["turn_segment_length"]
     plugin_global.turn_diameter = settings_dict["turn_diameter"]
-
+    settings_dict_for_pickle = settings_dict.copy()
     settings_dict = None # don't use settings_dict from here on
-
-
-
-    ''' obj hirarcy
-    Global_Singleton
-    ↳ strip.fa_list       ⇌ tof #take-off not really part of it
-    ↳↳ flight_area.children_flights
-    ↳↳↳ flight.sorted_line_list
-    ↳↳↳↳ line.start line.end
-    ↳↳↳↳↳ line_end.xy
-    '''
 
     flight_lines_input_layer = QgsVectorLayer(flight_lines_input_path, "flight_lines_input_path", "ogr")
 
@@ -101,13 +92,6 @@ def main(settings_path):
     if not tof_points_layer.isValid():
         show_error('selected layer not valid')
 
-    # main varables
-    global_crs_target
-    flight_lines_layer
-    flight_lines_path
-    tof_points_layer
-    tof_points_path
-
     show_feedback_popup = False
     lines = extract_line_obj_from_line_layer(flight_lines_layer, flight_lines_path)
     tofs = extract_tof_obj_from_tof_layer(tof_points_layer, tof_points_path, show_feedback_popup=show_feedback_popup)
@@ -143,11 +127,52 @@ def main(settings_path):
     for strip in strips:
         strip.run_more_flight_calcs()
 
-    pickle_name = r"C:\Users\pyoty\AppData\Roaming\QGIS\QGIS3\profiles\default\python"
-    pickle_name += r"\plugins\PETER_ROSOR_lines_to_flights\test_data\my_object.pkl"
+
     save_pickle = Save_Pickle()
     save_pickle.strips = strips
-    with open(pickle_name, 'wb') as file:
+    save_pickle.settings_dict = settings_dict_for_pickle
+    with open(pickle_path_out, 'wb') as file:
         pickle.dump(save_pickle, file)
+    return save_pickle
 
-    plotting.plot_stuff([1, 2], [3, 4])
+def main(settings_path):
+    settings_dict = plugin_load_settings.run(settings_path)
+
+    do_load_pickle = settings_dict["Modify Existing Flights"]
+    pickle_path_in = settings_dict["Modify Existing Flights file"]
+
+
+    if not do_load_pickle:
+        flight_lines_input_path = settings_dict["Flight lines file_path"]
+        pickle_path_out = os.path.join(os.path.dirname(flight_lines_input_path), "_saved_flights.pkl")
+        pickle_path_out = get_name_of_non_existing_output_file(pickle_path_out)
+        pickle_in = make_new_flights(settings_dict, pickle_path_out)
+    else:
+        pickle_in = load_pickle(pickle_path_in)
+
+    ''' obj hirarcy
+    pickle_in.strips & pickle_in.settings_dict
+    ↳ strip.fa_list       ⇌ tof #take-off not really part of it
+    ↳↳ flight_area.children_flights
+    ↳↳↳ flight.sorted_line_list
+    ↳↳↳↳ line.start line.end
+    ↳↳↳↳↳ line_end.xy
+    '''
+
+    flt = pickle_in.strips[0].flight_area_list[1].children_flights[0]
+
+    print(np.array(flt.utm_fly_list))
+
+    plotszz = False
+    if plotszz:
+        ax = plotting.plot_start()
+        ax.plot(np.array(flt.utm_fly_list).T[0], np.array(flt.utm_fly_list).T[1])
+        ax.set_title(f'plot')
+        ax.axis('equal')
+        plotting.plot_show(ax)
+
+
+    canvas = iface.mapCanvas()
+    lineTool = LineDrawingTool(canvas)
+    lineTool.setLineFromCoordinates(np.array(flt.utm_fly_list))
+    canvas.setMapTool(lineTool)

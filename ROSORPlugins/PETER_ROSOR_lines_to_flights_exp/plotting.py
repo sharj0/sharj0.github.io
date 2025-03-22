@@ -36,28 +36,17 @@ class CustomNavigationToolbar(NavigationToolbar):
         else:
             self._actions_disabled = False
 
-def plot_stuff(x, y):
+def plot_start():
     matplotlib.use('Qt5Agg')
+    fig, ax = plt.subplots(figsize=(10, 7))
+    return ax
+
+def plot_show(ax):
+    fig = ax.get_figure()
+    canvas = FigureCanvas(fig)
     dialog = QDialog()
     dialog.setWindowTitle(get_plugin_name())
-
     dialog_layout = QVBoxLayout(dialog)
-    fig, ax = plt.subplots(figsize=(10, 7))
-
-
-
-
-    ax.plot(x, y)
-
-
-
-
-    ax.set_title(f'plot')
-    ax.axis('equal')
-
-    
-
-    canvas = FigureCanvas(fig)
     dialog_layout.addWidget(canvas)
     bottom_bar_layout = QHBoxLayout()
     toolbar = CustomNavigationToolbar(canvas, dialog)

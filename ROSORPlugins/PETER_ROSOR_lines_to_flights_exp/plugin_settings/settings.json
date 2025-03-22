@@ -1,5 +1,10 @@
-{
-    "Input files": {
+{"Select a starting point_RADIO": {
+    "Modify Existing Flights": true,
+    "Create New Flights from lines": false
+        },
+    "Modify Existing Flights file": "C:\\Users\\pyoty\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_lines_to_flights\\test_data\\LINES_split_ext_named_lines_v1.shp",
+    "Modify Existing Flights file_SELECT_FILE": "true",
+    "New Flights Input files": {
         "Flight lines file_path": "C:\\Users\\pyoty\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_lines_to_flights\\test_data\\LINES_split_ext_named_lines_v1.shp",
         "Flight lines file_path_SELECT_LAYER": "true",
         "Flight lines file_path_COMMENT": "Select the file that has the flight lines",
