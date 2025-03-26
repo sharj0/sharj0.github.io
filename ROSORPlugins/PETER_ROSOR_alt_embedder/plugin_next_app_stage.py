@@ -88,7 +88,7 @@ def main(settings_file_path):
     max_slope_percent = float(settings_dict['max_slope_percent'])
 
     geotiffs_vertical_datum_is_ASL = settings_dict['geotiffs_vertical_datum_is_ASL']
-
+    skip_flights_where_geotiff_data_missing = settings_dict['Skip flights where Geotiff data is missing']
 
     create_mag_flight = settings_dict['DJI Mag or Lidar Flight']
     create_ortho_photo_waypoint_flight = settings_dict['DJI Ortho Photo Flight']
@@ -102,13 +102,13 @@ def main(settings_file_path):
 
     plot_details = False
 
-    output_selections = [create_mag_flight,
-                         create_ortho_photo_waypoint_flight,
-                         create_ortho_photo_corridor_flight]
-    true_count = sum(map(int, output_selections))
-    if true_count > 1:
-        message = 'Select only one of the output options please.'
-        show_error(message)
+    #output_selections = [create_mag_flight,
+    #                     create_ortho_photo_waypoint_flight,
+    #                     create_ortho_photo_corridor_flight]
+    #true_count = sum(map(int, output_selections))
+    #if true_count > 1:
+    #    message = 'Select only one of the output options please.'
+    #    show_error(message)
 
     if no_elevation_data:
         elevation_geotiff = surface_geotiff
@@ -186,9 +186,13 @@ def main(settings_file_path):
 
         wpts_are_wthin_bounds = wpts_within_surf and wpts_within_grnd
         if not wpts_are_wthin_bounds:
-            err_message = f"The waypoints are not within the bounds of the provided geotiffs!"
-            QMessageBox.critical(None, "Error", err_message)
-            raise ValueError(err_message)
+            if not skip_flights_where_geotiff_data_missing:
+                err_message = f"The waypoints are not within the bounds of the provided geotiffs!"
+                QMessageBox.critical(None, "Error", err_message)
+                raise ValueError(err_message)
+            else:
+                print("Skipping a flight where Geotiff data is missing")
+                continue
 
         # sample the geotiffs
         sample_rect_width = horizontal_safety_buffer_per_side * 2
@@ -244,7 +248,12 @@ def main(settings_file_path):
                                         payload_distance_from_ground, grnd_nodata_value,
                                         surf_samples_merged.T[0], surf_samples_merged.T[3],
                                         payload_separation_from_surface, surf_nodata_value,
+                                        skip_flights_where_geotiff_data_missing,
                                         plot=plot_details)
+
+        if buffer_line is None:
+            print("Skipping a flight where Geotiff data is missing")
+            continue
 
         # TEMP plot buffer line buffer_line and new_waypoints.T[0]
         #import matplotlib.pyplot as plt

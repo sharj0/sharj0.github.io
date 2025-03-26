@@ -139,6 +139,7 @@ def split_linear_ring_to_linestrings(outer_buff):
 
 def run(grnd_x, grnd_y, grnd_buffer, grnd_nodata_value,
         surf_x, surf_y, surf_buffer, surf_nodata_value,
+        skip_flights_where_geotiff_data_missing=False,
         plot=False):
     # PROFILER CHUNK 2/3 START ////////////////////////////////////////////////////////////////////////////////////
     #pr = cProfile.Profile()
@@ -147,19 +148,39 @@ def run(grnd_x, grnd_y, grnd_buffer, grnd_nodata_value,
     bad_samples = False
     #see if we are trying to sample anywhere where there is no data:
     if np.any(grnd_y == grnd_nodata_value):
-        err_message = f"Flying over areas without ground data!"
-        QMessageBox.critical(None, "Error", err_message)
-        plot, bad_samples = True, True
+        if skip_flights_where_geotiff_data_missing:
+            return None
+        else:
+            err_message = f"Flying over areas without ground data!"
+            QMessageBox.critical(None, "Error", err_message)
+            plot, bad_samples = True, True
     if np.any(surf_y == surf_nodata_value):
-        err_message = f"Flying over areas without surface data!"
-        QMessageBox.critical(None, "Error", err_message)
-        plot, bad_samples = True, True
+        if skip_flights_where_geotiff_data_missing:
+            return None
+        else:
+            err_message = f"Flying over areas without surface data!"
+            QMessageBox.critical(None, "Error", err_message)
+            plot, bad_samples = True, True
 
     #dialog = show_wait_dialog("Calculating buffers ...")
     start_time = time.perf_counter()
 
-    grnd_polygons = buffer_points_new(grnd_x, grnd_y, grnd_buffer)
-    surf_polygons = buffer_points_new(surf_x, surf_y, surf_buffer)
+    try:
+        grnd_polygons = buffer_points_new(grnd_x, grnd_y, grnd_buffer)
+    except Exception as e:
+        if skip_flights_where_geotiff_data_missing:
+            return None
+        else:
+            raise
+
+    try:
+        surf_polygons = buffer_points_new(surf_x, surf_y, surf_buffer)
+    except Exception as e:
+        if skip_flights_where_geotiff_data_missing:
+            return None
+        else:
+            raise
+
 
     print(f"Elapsed time: {time.perf_counter() - start_time} seconds")
     #dialog.close()
@@ -259,3 +280,5 @@ if __name__ == '__main__':
                 surf_example_x, surf_example_y, surf_buffer, surf_nodata_value,
                 do_plot)
     print(outer)
+
+    
