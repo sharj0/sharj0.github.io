@@ -5,6 +5,8 @@ import shutil
 
 def lat_lon_UAValt_to_mp_wp(output_file_path,
                             lats, lons, UAValtAsls):
+    if len(lats) > 600:
+        raise "can't do more than 600 mission planner waypoints (650 with a safe buffer)"
     if output_file_path.endswith('.kmz') or output_file_path.endswith('.kml'):
         output_file_path = output_file_path[:-4]
     output_file_path = output_file_path + '.waypoints'

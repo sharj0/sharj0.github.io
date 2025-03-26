@@ -1,5 +1,5 @@
 <plugins>
-  <pyqgis_plugin name=".ROSOR Waypoint Altitude Embedder" version="1.2025.3.25.2">
+  <pyqgis_plugin name=".ROSOR Waypoint Altitude Embedder" version="1.2025.3.25.3">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_alt_embedder/plugin_icon.png</icon>
