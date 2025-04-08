@@ -1,0 +1,41 @@
+{
+    "Select a starting point_RADIO": {
+        "Modify Existing Flights": false,
+        "Create New Flights from lines": true
+    },
+    "Modify Existing Flights file": "C:\\Users\\pyoty\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_lines_to_flights_exp\\test_data\\saved_flights_v38._2D_flts",
+    "Modify Existing Flights file_SELECT_FILE": "true",
+    "New Flights Input files": {
+        "Flight lines file_path": "C:\\Users\\pyoty\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_lines_to_flights_exp\\test_data\\LINES_split_ext_named_lines_v1.shp",
+        "Flight lines file_path_SELECT_LAYER": "true",
+        "Flight lines file_path_COMMENT": "Select the file that has the flight lines",
+        "Take-off file path": "C:\\Users\\pyoty\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_lines_to_flights_exp\\test_data\\Takofs.shp",
+        "Take-off file path_SELECT_LAYER": "true",
+        "Take-off file path_COMMENT": "Select the file that has takeoff points"
+    },
+    "Settings": {
+        "max_flt_size": 6000.0,
+        "max_flt_size_COMMENT": "this is the max size of flight that will be auto-generated",
+        "max_number_of_lines_per_flight": 6.0,
+        "max_number_of_lines_per_flight_COMMENT": "this will speed up the computation",
+        "line_direction_reverse": false,
+        "line_direction_reverse_COMMENT": "normally first line is south to  north",
+        "line_flight_order_reverse": false,
+        "line_flight_order_reverse_COMMENT": "this will reverse the order in which lines are flown",
+        "lead_in": 50,
+        "lead_in_COMMENT": "added to the beginning of each line",
+        "lead_out": 50,
+        "lead_out_COMMENT": "added to the end of each line",
+        "prefer_even_number_of_lines": true,
+        "prefer_even_number_of_lines_COMMENT": "if selected, app will try to generate an even number of lines per flt and tof",
+        "smooth_turns": {
+            "add_smooth_turns": true,
+            "add_smooth_turns_COMMENT": "if selected, app will use  'turn_segment_length' and 'turn_diameter' to add smooth turns",
+            "turn_segment_length": 21.0,
+            "turn_segment_length_COMMENT": "minimum distance between waypoints during turns",
+            "turn_diameter": 50.0,
+            "turn_diameter_COMMENT": "meters, usually same as line spacing"
+        }
+    },
+    "Close this window on accept": true
+}
