@@ -3,27 +3,53 @@ import os
 import shutil
 
 
+import os
+
 def lat_lon_UAValt_to_mp_wp(output_file_path,
                             lats, lons, UAValtAsls):
     if len(lats) > 600:
-        raise "can't do more than 600 mission planner waypoints (650 with a safe buffer)"
+        raise ValueError("can't do more than 600 mission planner waypoints (650 with a safe buffer)")
+
+    # 1) strip off .kmz / .kml
     if output_file_path.endswith('.kmz') or output_file_path.endswith('.kml'):
         output_file_path = output_file_path[:-4]
-    output_file_path = output_file_path + '.waypoints'
-    os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
+
+    # 2) split into dir + base
+    dirpath, base = os.path.split(output_file_path)
+
+    # 3) remove 'RTH' and anything after it
+    if 'RTH' in base:
+        base = base.split('RTH', 1)[0]
+
+    # 4) append the waypoint count
+    base = f"{base}len_{len(lats)}"
+
+    # 5) rebuild full path with .waypoints
+    output_file_path = os.path.join(dirpath, base + '.waypoints')
+
+    # make sure directory exists
+    os.makedirs(dirpath, exist_ok=True)
+
     with open(output_file_path, 'w') as file:
         file.write('QGC WPL 110\n')
         # alt_mode_num 0-abs 3-rel 10-terrain
         alt_mode_num = 0
         for i, (lat, lon, alt) in enumerate(zip(lats, lons, UAValtAsls)):
             if i == 0:
-                str = f'{i}\t1\t0\t16\t0\t0\t0\t0\t{lat}\t{lon}\t410\t1\n'
-                str += f'{i + 1}\t0\t{alt_mode_num}\t16\t0\t0\t0\t0\t{lat}\t{lon}\t{alt}\t1\n'
+                line = (
+                    f'{i}\t1\t0\t16\t0\t0\t0\t0\t{lat}\t{lon}\t410\t1\n'
+                    f'{i+1}\t0\t{alt_mode_num}\t16\t0\t0\t0\t0\t{lat}\t{lon}\t{alt}\t1\n'
+                )
             else:
-                str = f'{i + 1}\t0\t{alt_mode_num}\t16\t0\t0\t0\t0\t{lat}\t{lon}\t{alt}\t1\n'
-            file.write(str)
+                line = (
+                    f'{i+1}\t0\t{alt_mode_num}\t16\t0\t0\t0\t0\t'
+                    f'{lat}\t{lon}\t{alt}\t1\n'
+                )
+            file.write(line)
+
     print('output_to')
     print(output_file_path)
+
 
 def lat_lon_UAValt_turnRad_to_DJI_wp_kmz(lat, lon,
                                          settings_description,
