@@ -193,7 +193,7 @@ class RasterInterpolationMapTool(QgsMapTool):
 
     # In the RasterInterpolationMapTool class:
     def __init__(self, canvas, raster_layer, geotransform, multiply_mode, addition_mode, assignment_mode,
-                 blocking_value, do_extend_perpendicularly):
+                 blocking_value, do_extend_perpendicularly, use_maximum_val):
         super().__init__(canvas)
         self.canvas = canvas
         self.rlayer = raster_layer
@@ -203,6 +203,7 @@ class RasterInterpolationMapTool(QgsMapTool):
         self.assignment_mode = assignment_mode
         self.blocking_value = blocking_value
         self.do_extend_perpendicularly = do_extend_perpendicularly
+        self.use_maximum_val = use_maximum_val
         self.provider = self.rlayer.dataProvider()
         self.first_click_info = None  # (row, col, old_val)
         self.last_line_pixel_values = []
@@ -390,6 +391,12 @@ class RasterInterpolationMapTool(QgsMapTool):
         elif self.assignment_mode:
             block_array[rel_rows, rel_cols] = updated_vals
 
+        # NEW: If "Always use maximum value" is enabled, ensure that the new pixel
+        # value is never lower than the original value.
+        if self.use_maximum_val:
+            block_array[rel_rows, rel_cols] = np.maximum(block_array[rel_rows, rel_cols],
+                                                         undo_block[rel_rows, rel_cols])
+
         band.WriteArray(block_array, min_col, min_row)
         dataset.FlushCache()
         self.rlayer.reload()
@@ -530,6 +537,8 @@ def main(settings_path):
     settings_dict = plugin_load_settings.run(settings_path)
     raster_path = settings_dict['GeoTiff Layer']
     do_extend_perpendicularly = settings_dict["Extend perpendicularly"]
+    stroke_width = settings_dict["Stroke Width"]
+    use_maximum_val = settings_dict["Always use maximum value"]
     blocking_value = float(settings_dict["Blocking Value"])  # NEW: get the blocking value from settings
     assignment_mode = settings_dict["Assignment"]
     addition_mode = settings_dict["Addition"]
@@ -561,6 +570,8 @@ def main(settings_path):
         assignment_mode,
         blocking_value,
         do_extend_perpendicularly,
+        stroke_width,
+        use_maximum_val,
     )
     iface.mapCanvas().setMapTool(interpolation_tool)
 

@@ -325,7 +325,7 @@
     },
     "PETER_ROSOR_geotiff_offset_editor": {
         "delete_me.py": "d5de9c5bd36ca3a1c053e975987c18da8f0075384cb2e058df99391cb9bee46d",
-        "metadata.txt": "a40d5b254c7ec634d60e020107600a91f0d9090a5cdf96d2e2880d372792f903",
+        "metadata.txt": "94052a62d97cd2762033009105e8fd91bbdd722bda7136a666715d6aeae3cfb9",
         "notes.txt": "1a42cd83fda56a27a56d0f813c6bff445ec04f15552040e19d16fe6374837414",
         "plotting.py": "565f353310831cd2a829ec6f181846b416fee93b3dc7dc4750d046de0214e533",
         "plugin_add_custom_buttons.py": "e9c7fb981a30846b6584412d8a0c4262e5de0ce80793b4f7b5d049ebc27317a6",
@@ -335,7 +335,7 @@
         "plugin_icon_exp.png": "ea87b1b79b0a7a172251d54a22fe4cae734d6dddd7d55d78d151775e900f3113",
         "plugin_icon_non_exp.png": "f5823258c63af73b835f85324e0c8bb5107bd8bad007cc56b35e738a046c5142",
         "plugin_load_settings.py": "b3c10e3dedcd8f3b2c867f1ab013ab6d545688da4c8071c77c683f7571073ebf",
-        "plugin_next_app_stage.py": "adc0945cc1e5b2e81239b17d17da6d4dc66930cd276c6bec56a5fd3f6ee62199",
+        "plugin_next_app_stage.py": "31b54f5217921beab586fe6283ef3158cfbcd90ab86558fca9ac070b80cc2c1c",
         "plugin_qgis_module.py": "7003467f9972921b2917bee0b284cf3f3d1835b8ae789c427e3e39e368a35d5b",
         "Plugin_run_location.txt": "4560364dfac699b43a80426f3bd66afe0cb2b2a512a8a006080808b961b918e6",
         "plugin_settings_suffixes.py": "0dedc3391a7848c20fad746cdecc61bfaa0c26eb617a6fd3ba3bb9a7c7aa0264",
@@ -343,11 +343,7 @@
         "vid_icon.png": "6016adcb9c7f108b9e8696f3917eba370aa43b76db1a94c7bfb4afa51b4d3497",
         "__debug__.txt": "657fa5d209e30f4480e6d15b09b0ad3dcfe84f3e74170b283c6bbc208790d043",
         "__init__.py": "ec3f8091e2bad64b399dd71140a3a8dd05ceb02174e64d0e7a5f4e911d2e1424",
-        "plugin_settings\\settings.json": "07572a3453276b6d35240ae0da3b7afd3505939106b7a447cfae712d486d06f9",
-        "plugin_settings\\settings_v2.json": "958e088820b4badd6bd61d6cfe0f5406ee2ed44c4fda111a7fa67d5c84b8b31d",
-        "plugin_settings\\settings_v3.json": "f89f56e8bf1b7ee2bb74393a649312ab6a393ca1a12e961b6be2dbc9f65b0893",
-        "plugin_settings\\settings_v4.json": "aaec8cc1067c2b534f539de2bf8b073c5bc668b1c5c39e297048c12d3566b2ee",
-        "plugin_settings\\settings_v5.json": "654d12d3bdd547623f9b2e175ae12962ae3a968fc94120c033124a25db18c26b",
+        "plugin_settings\\settings.json": "d6d2661e0551cbe217805caf1ab5b94445aa4d92b903e81f024f85394fbfb08c",
         "tutorial_vids\\intro.mp4": "f5dbd37aa787912e12e2fb27fc7d7c027796ab5497bd692dce343770850c9df3"
     },
     "PETER_ROSOR_import_csv": {

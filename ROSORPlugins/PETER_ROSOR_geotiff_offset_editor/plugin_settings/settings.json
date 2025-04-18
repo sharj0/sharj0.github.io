@@ -1,20 +1,24 @@
 {
-    "GeoTiff Layer": "R:\\BAN_LIDAR_FIXING_STUFF\\Fix_cliff_Tof2_Flt17_Ln2\\Tof2_Flt17_Ln2-2024-10-10-18-30-00_412419.120_412568.210_clif_corrector.tiff",
+    "GeoTiff Layer": "R:\\rapture\\DSM_fixed - Copy.tif",
     "GeoTiff Layer_SELECT_LAYER": "true",
     "GeoTiff Layer_COMMENT": "Select the Geotiff layer you want to edit",
-    "Extend perpendicularly": true,
+    "Extend perpendicularly": false,
     "Extend perpendicularly_COMMENT": "If not checked, a single straight line path of interpolation will be applied to the geotiff pixels.",
+    "Stroke Width": 4,
+    "Stroke Width_COMMENT": "Unit: Pixels. When this app is not extending perpendicularly, this will set the thickness of the interpolated path.",
+    "Always use maximum value": true,
+    "Always use maximum value_COMMENT": "If checked, every new pixel will be compared to the old pixel value and the greater of the two will be kept.",
     "Extension parameters": {
         "Blocking Value": "-9",
         "Blocking Value_COMMENT": "This is the value that you can assign to geotiff pixels to stop the perpendicular propagation assignment of values."
     },
     "Modes_RADIO": {
-            "Assignment": true,
-            "Assignment_COMMENT": "This is the normal mode. \nClick on two pixels and the pixels between them will be assigned values that gradually ramp between them. \nThe smooth ramping is called interpolation. All modes use interpolated values but do different things with them.",
-            "Addition": false,
-            "Addition_COMMENT": "Instead of assigning pixel values directly, the interpolated values will be ADDED to the existing pixel values. \nSo if you click on pixel with value 0 then 1, halfway way between them has an interpolated value of 0.5. \nSo the existing pix at the halfway location will be *0.5",
-            "Multiplication": false,
-            "Multiplication_COMMENT": "Instead of assigning pixel values directly, the interpolated values will MULTIPLIED by existing pixel values. \nSo if you click on pixel with value 0 then 1, halfway way between them has an interpolated value of 0.5. \nSo the existing pix at the halfway location will be +0.5"
+        "Assignment": true,
+        "Assignment_COMMENT": "This is the normal mode. \nClick on two pixels and the pixels between them will be assigned values that gradually ramp between them. \nThe smooth ramping is called interpolation. All modes use interpolated values but do different things with them.",
+        "Addition": false,
+        "Addition_COMMENT": "Instead of assigning pixel values directly, the interpolated values will be ADDED to the existing pixel values. \nSo if you click on pixel with value 0 then 1, halfway way between them has an interpolated value of 0.5. \nSo the existing pix at the halfway location will be *0.5",
+        "Multiplication": false,
+        "Multiplication_COMMENT": "Instead of assigning pixel values directly, the interpolated values will MULTIPLIED by existing pixel values. \nSo if you click on pixel with value 0 then 1, halfway way between them has an interpolated value of 0.5. \nSo the existing pix at the halfway location will be +0.5"
     },
-"Close this window on accept": true
+    "Close this window on accept": true
 }
