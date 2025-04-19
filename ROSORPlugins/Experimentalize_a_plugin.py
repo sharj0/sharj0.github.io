@@ -7,6 +7,7 @@ import shutil
 #target_plugin = plugin_dir + r"\PETER_ROSOR_flightline_creator"
 target_plugin = r"C:\Users\pyoty\Documents\GitHub\test_braaahnch\sharj0.github.io\ROSORPlugins\PETER_ROSOR_lines_to_flights"
 
+
 # ------------------------------------------------------------------------------
 # This function checks if a string ends in "exp" or "experimental" (any case).
 # Returns (True, <base_string>) if it does, otherwise (False, <original_string>).
