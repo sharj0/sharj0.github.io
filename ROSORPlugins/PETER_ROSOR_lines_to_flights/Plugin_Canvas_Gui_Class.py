@@ -26,6 +26,9 @@ from qgis.PyQt.QtGui import QColor, QFont
 from qgis.gui import QgsMapTool
 from .Node_Graphic_Class import NodeGraphic
 from .functions import (get_name_of_non_existing_output_file)
+from .import_kmls import process_folder
+
+
 
 class PluginCanvasGui(QgsMapTool):
     def __init__(self, canvas, root, dock_widget):
@@ -140,7 +143,9 @@ class PluginCanvasGui(QgsMapTool):
         symbol.appendSymbolLayer(marker_line_layer)
         renderer = QgsSingleSymbolRenderer(symbol)
         nodeLayer.setRenderer(renderer)
-        QgsProject.instance().addMapLayer(nodeLayer)
+        project = QgsProject.instance()  # grab the project
+        project.addMapLayer(nodeLayer, False)  # add layer (but NOT to the legend)
+        project.layerTreeRoot().insertLayer(0, nodeLayer)  # insert it at index 0 → top of list
         return nodeLayer
 
 
@@ -223,70 +228,72 @@ class PluginCanvasGui(QgsMapTool):
                 f.write(qml_content)
             print(f"QML style file saved to {qml_path}")
 
-    def save(self, save_as_shp=False):
+    def save(self, save_as_shp: bool = False):
         """
-        Creates a top-level folder and a subfolder for each TOF, then saves each flight
-        as a KML or SHP file (with the flight's color). Each flight is expected to have:
-          - long_output_name (a filename),
-          - color (in aabbggrr format), and
-          - utm_fly_list (a list of coordinate pairs).
+        Create a “flights_2D” top-level folder, then—**only if there is at least
+        one exportable flight in the TOF—**create the TOF sub-folder and write
+        the KML/SHP files inside it.
 
-        The target CRS is extracted from self.root.global_crs_target['target_crs_epsg_int'].
+        Each flight needs:
+          • long_output_name   (filename stem)
+          • color              (aabbggrr)
+          • utm_fly_list       ([(x, y), …])
         """
-        save_in_folder = os.path.dirname(self.root.current_pickle_path_out)
-        top_save_folder_basename = "flights_2D"
-        top_save_folder_path = os.path.join(save_in_folder, top_save_folder_basename)
+        import os
+        from qgis.core import QgsGeometry, QgsPointXY
 
-        # Ensure a unique folder name if needed.
-        top_save_folder_path = get_name_of_non_existing_output_file(top_save_folder_path)
-        print(f'top_save_folder_path')
-        print(top_save_folder_path)
-        os.makedirs(top_save_folder_path, exist_ok=True)
-        print(f"{self.root.global_crs_target = }")
+        save_root = os.path.dirname(self.root.current_pickle_path_out)
+        top_folder = get_name_of_non_existing_output_file(
+            os.path.join(save_root, "flights_2D")
+        )
+        os.makedirs(top_folder, exist_ok=True)
 
-        # Extract the EPSG code from self.root.global_crs_target.
-        target_epsg_int = self.root.global_crs_target.get('target_crs_epsg_int', 4326)
-        target_epsg_code = f"EPSG:{target_epsg_int}"
+        target_epsg = self.root.global_crs_target.get('target_crs_epsg_int', 4326)
+        target_crs = f"EPSG:{target_epsg}"
+        file_ext = ".shp" if save_as_shp else ".kml"
 
         for tof in self.root.TOF_list:
-            tof_folder_name = str(tof)
-            tof_folder_path = os.path.join(top_save_folder_path, tof_folder_name)
-            os.makedirs(tof_folder_path, exist_ok=True)
-            print(f'    {tof}:')
 
+            # ---------- 1) Collect exportable flights first -------------
+            flights_to_save = []
             for flight in tof.flight_list:
-                print(f'        {flight.long_output_name = }')
-                print(f'        {flight.color = }')
-                print(f'        {flight.utm_fly_list = }')
+                # build geometry from utm_fly_list
+                pts = [
+                    QgsPointXY(x, y)
+                    for x, y in getattr(flight, "utm_fly_list", [])
+                    if isinstance(x, (int, float)) and isinstance(y, (int, float))
+                ]
+                if pts:  # skip empty / bad flights
+                    flights_to_save.append(
+                        (flight, QgsGeometry.fromPolylineXY(pts))
+                    )
 
-                file_ext = ".shp" if save_as_shp else ".kml"
-                out_path = os.path.join(tof_folder_path, flight.long_output_name)
+            # ---------- 2) Skip empty TOFs (=> no folder is created) ----
+            if not flights_to_save:
+                continue
+
+            # ---------- 3) Now it is safe to create the TOF folder ------
+            tof_folder = os.path.join(top_folder, str(tof))
+            os.makedirs(tof_folder, exist_ok=True)
+
+            # ---------- 4) Write each flight ----------------------------
+            for flight, geom in flights_to_save:
+                out_path = os.path.join(tof_folder, flight.long_output_name)
                 if not out_path.lower().endswith(file_ext):
                     out_path += file_ext
 
-                # Create geometry from utm_fly_list since flight.geometry does not exist.
-                geoms = []
-                if hasattr(flight, 'utm_fly_list'):
-                    try:
-                        points = []
-                        for pt in flight.utm_fly_list:
-                            if isinstance(pt, (list, tuple)) and len(pt) == 2:
-                                points.append(QgsPointXY(pt[0], pt[1]))
-                        if points:
-                            geom = QgsGeometry.fromPolylineXY(points)
-                            geoms = [geom]
-                        else:
-                            print(f"No valid coordinates found for flight {flight.long_output_name}")
-                            continue
-                    except Exception as e:
-                        print(f"Error converting utm_fly_list for flight {flight.long_output_name}: {e}")
-                        continue
-                else:
-                    print(f"Flight {flight.long_output_name} has no geometry or utm_fly_list")
-                    continue
+                self.save_shp_or_kml(
+                    [geom],
+                    out_path,
+                    flight.long_output_name,
+                    target_crs,
+                    flight.color,
+                    save_shp=save_as_shp
+                )
 
-                self.save_shp_or_kml(geoms, out_path, flight.long_output_name, target_epsg_code, flight.color,
-                                save_shp=save_as_shp)
+        self.dock_widget.exitApplication()
+
+        process_folder(top_folder)
 
     def execute_action_on_selected_node(self, command):
         self.root.action_counter += 1
@@ -313,6 +320,10 @@ class PluginCanvasGui(QgsMapTool):
             self.current_selection.node.take_left()
         if command == "take_right":
             self.current_selection.node.take_right()
+        if command == "flip_lines":
+            self.current_selection.node.flip_lines()
+
+        self.current_selection.node.display_and_select()
 
     def remove_highlight(self):
         if self.current_highlight:

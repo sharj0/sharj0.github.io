@@ -9,6 +9,7 @@ class SurveyArea(Node):
         self.can_be_renamed = False
         self.dont_create_or_destory = True
         self.initial_creation_stage = True
+        self.everything_needs_renaming = False
 
     def rename_everything(self):
         """
@@ -34,6 +35,7 @@ class SurveyArea(Node):
                 rename_node(child)
 
         rename_node(self)
+        self.everything_needs_renaming = False
 
     def recolor_everything(self):
         """

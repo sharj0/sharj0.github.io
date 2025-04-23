@@ -24,65 +24,14 @@ class Quadrant(Node):
         tof = self.get_parent_at_level('TOFAssignment').tof
         return f'T{tof.clean_tof_name} Q{self.global_count}'
 
-    def take_right(self):
-        # First, perform the base class functionality.
-        super().take_right()
-        # Now, adding additional behavior specific to Flight class
+
+    def _take_right_node_specific(self):
         if self.root.initial_creation_stage:
             return
-
         flight_being_traded = self.get_right_most_child_at_level('Flight')
         flight_being_traded.generate_drone_path()
 
-        old_level = self.root.plugin_canvas_gui.level
-        self.root.plugin_canvas_gui.display_level(old_level)
-
-        if hasattr(self, 'graphic') and self.graphic:
-            self.graphic.select()
-
-        self.root.rename_everything()
-
-    def take_left(self):
-        # First, perform the base class functionality.
-        super().take_left()
-        # Now, adding additional behavior specific to Flight class.
-        if self.root.initial_creation_stage:
-            return
-
-        flight_being_traded = self.get_left_most_child_at_level('Flight')
-        flight_being_traded.generate_drone_path()
-
-        old_level = self.root.plugin_canvas_gui.level
-        self.root.plugin_canvas_gui.display_level(old_level)
-
-        if hasattr(self, 'graphic') and self.graphic:
-            self.graphic.select()
-
-        self.root.rename_everything()
-
-    def give_left(self):
-        # First, perform the base class functionality.
-        super().give_left()
-        # Now, adding additional behavior specific to Flight class.
-        if self.root.initial_creation_stage:
-            return
-
-        if self.left_neighbour and not self.left_neighbour.deleted:
-            flight_being_traded = self.left_neighbour.get_right_most_child_at_level('Flight')
-            flight_being_traded.generate_drone_path()
-
-        old_level = self.root.plugin_canvas_gui.level
-        self.root.plugin_canvas_gui.display_level(old_level)
-
-        if hasattr(self, 'graphic') and self.graphic:
-            self.graphic.select()
-
-        self.root.rename_everything()
-
-    def give_right(self):
-        # First, perform the base class functionality.
-        super().give_right()
-        # Now, adding additional behavior specific to Flight class.
+    def _give_right_node_specific(self):
         if self.root.initial_creation_stage:
             return
 
@@ -90,10 +39,16 @@ class Quadrant(Node):
             flight_being_traded = self.right_neighbour.get_left_most_child_at_level('Flight')
             flight_being_traded.generate_drone_path()
 
-        old_level = self.root.plugin_canvas_gui.level
-        self.root.plugin_canvas_gui.display_level(old_level)
+    def _take_left_node_specific(self):
+        if self.root.initial_creation_stage:
+            return
+        flight_being_traded = self.get_left_most_child_at_level('Flight')
+        flight_being_traded.generate_drone_path()
 
-        if hasattr(self, 'graphic') and self.graphic:
-            self.graphic.select()
+    def _give_left_node_specific(self):
+        if self.root.initial_creation_stage:
+            return
+        if self.left_neighbour and not self.left_neighbour.deleted:
+            flight_being_traded = self.left_neighbour.get_right_most_child_at_level('Flight')
+            flight_being_traded.generate_drone_path()
 
-        self.root.rename_everything()

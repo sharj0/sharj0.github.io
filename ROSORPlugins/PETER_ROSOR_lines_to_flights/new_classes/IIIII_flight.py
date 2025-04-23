@@ -31,13 +31,22 @@ class Flight(Node):
             return None
         tof = self.get_parent_at_level('TOFAssignment').tof
         rounded_length_km = round(self.total_length/1000,2)
-        return f'tof_{tof.clean_tof_name}_flt_{self.per_tof_count}_{rounded_length_km}km.kml'
+        if self.root.flight_settings['name_tie_not_flt']:
+            long_name = f'tof_{tof.clean_tof_name}_tie_{self.per_tof_count}_{rounded_length_km}km.kml'
+        else:
+            long_name = f'tof_{tof.clean_tof_name}_flt_{self.per_tof_count}_{rounded_length_km}km.kml'
+        return long_name
         #return f'T{tof.clean_tof_name} F{self.per_tof_count}'
 
     @property
     def short_name(self):
-        #return self.short_output_name
+        '''
+        return self.short_output_name
+        OR
         return f'F{self.global_count}'
+        '''
+        return self.short_output_name
+
 
     @property
     def utm_fly_list(self):
@@ -83,11 +92,7 @@ class Flight(Node):
             current = current.parent
         return None
 
-
-    def take_right(self):
-        # First, perform the base class functionality.
-        super().take_right()
-        # Additional behavior specific to Flight class
+    def re_gen_right(self):
         if self.root.initial_creation_stage:
             return
 
@@ -96,16 +101,7 @@ class Flight(Node):
         if self.right_neighbour and not self.right_neighbour.deleted:
             self.right_neighbour.generate_drone_path()
 
-        old_level = self.root.plugin_canvas_gui.level
-        self.root.plugin_canvas_gui.display_level(old_level)
-
-        if hasattr(self, 'graphic') and self.graphic:
-            self.graphic.select()
-
-    def take_left(self):
-        # First, perform the base class functionality.
-        super().take_left()
-        # Now, adding additional behavior specific to Flight class
+    def re_gen_left(self):
         if self.root.initial_creation_stage:
             return
 
@@ -114,51 +110,17 @@ class Flight(Node):
         if self.left_neighbour and not self.left_neighbour.deleted:
             self.left_neighbour.generate_drone_path()
 
-        old_level = self.root.plugin_canvas_gui.level
-        self.root.plugin_canvas_gui.display_level(old_level)
+    def _take_right_node_specific(self):
+        self.re_gen_right()
 
-        if hasattr(self,'graphic') and self.graphic:
-            self.graphic.select()
+    def _give_right_node_specific(self):
+        self.re_gen_right()
 
-    def give_left(self):
-        # First, perform the base class functionality.
-        super().give_left()
-        # Additional behavior specific to Flight class
-        if self.root.initial_creation_stage:
-            return
+    def _take_left_node_specific(self):
+        self.re_gen_left()
 
-        if not self.deleted:
-            self.generate_drone_path()
-
-        if self.left_neighbour and not self.left_neighbour.deleted:
-            self.left_neighbour.generate_drone_path()
-
-        old_level = self.root.plugin_canvas_gui.level
-        self.root.plugin_canvas_gui.display_level(old_level)
-
-        if not self.deleted:
-            if hasattr(self, 'graphic') and self.graphic:
-                self.graphic.select()
-        else:
-            self.left_neighbour.graphic.select()
-
-    def give_right(self):
-        # First, perform the base class functionality.
-        super().give_right()
-        # Additional behavior specific to Flight class
-        if self.root.initial_creation_stage:
-            return
-
-        self.generate_drone_path()
-
-        if self.right_neighbour and not self.right_neighbour.deleted:
-            self.right_neighbour.generate_drone_path()
-
-        old_level = self.root.plugin_canvas_gui.level
-        self.root.plugin_canvas_gui.display_level(old_level)
-
-        if hasattr(self, 'graphic') and self.graphic:
-            self.graphic.select()
+    def _give_left_node_specific(self):
+        self.re_gen_left()
 
     def flip_every_other_line_starting_with(self, flip_bool, line_list):
         for line in line_list:
@@ -214,7 +176,17 @@ class Flight(Node):
 
         self.flip_every_other_line_starting_with(line_direction_reverse_local, self.line_list)
 
-    def generate_drone_path(self, show_plot=False):
+    def _flip_lines_node_specific(self):
+        print("FLIPPING LINES", self)
+        self.flight_settings["line_direction_reverse"] = not self.flight_settings["line_direction_reverse"]
+        for line in self.line_list:
+            if line.flipped:
+                line.un_flip()
+            else:
+                line.flip()
+        self.generate_drone_path(suppress_flipping=True)
+
+    def generate_drone_path(self, suppress_flipping=False, show_plot=False):
         if self.deleted:
             return
         #self.color = next(self.root.color_cycle)
@@ -226,7 +198,9 @@ class Flight(Node):
         if len(self.line_list) == 0:
             print('was given no lines to generate flight with, please increase allowable flight size')
 
-        self.deal_with_line_flips()
+        if not suppress_flipping:
+            self.deal_with_line_flips()
+
 
         tof_xy = self.tof_assignment.tof.xy
         self.utm_fly_list = []

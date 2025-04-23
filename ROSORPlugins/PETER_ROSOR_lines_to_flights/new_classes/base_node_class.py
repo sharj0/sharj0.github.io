@@ -1,4 +1,5 @@
-
+from qgis.utils import plugins
+from ..plugin_tools import show_information
 
 class Node:
     # Class-level dictionary to hold counters for auto-created nodes (from previous feature).
@@ -15,6 +16,36 @@ class Node:
         self.color = None
         self.newest_baby = None
         self.highest_parent = None
+
+    def process_deletions(self):
+        """
+        Recursively remove children marked as deleted.
+        After removal, re-check self and parent nodes for deletion eligibility.
+        """
+        # First recursively process deletions on all children
+        for child in list(self.children):
+            child.process_deletions()
+
+        # Now remove any children that are marked deleted
+        deleted_any = False
+        for child in list(self.children):  # re-loop because process_deletions above might've marked some
+            if child.deleted:
+                print(f"Removing {child.name} from {self.name}")
+                self.children.remove(child)
+                child.parent = None
+                deleted_any = True
+
+        # If any deletions occurred, check if this node is now empty and deletable
+        if deleted_any:
+            current = self
+            while current is not None:
+                before = current.deleted
+                current.check_empty()
+                if current.deleted and not before:
+                    print(f"{current.name} now marked deleted from cleanup")
+                if not current.deleted:
+                    break
+                current = current.parent
 
     # --- Immediate neighbour helper methods ---
     def _immediate_left_neighbour(self):
@@ -37,7 +68,6 @@ class Node:
                 return self.parent.children[idx + 1]
         return None
 
-    # --- Effective neighbour lookup helper methods ---
     def _get_effective_left_neighbour(self):
         # First check the immediate left neighbour
         ln = self._immediate_left_neighbour()
@@ -50,7 +80,12 @@ class Node:
             if not parent.can_trade:
                 print(f"{parent.name} cannot trade {parent.children[0].__class__.__name__}s")
                 return None, None
+
+            # find the next immediate left sibling, but skip any that are empty and non-deletable
             parent_ln = parent._immediate_left_neighbour()
+            while parent_ln is not None and parent_ln.dont_create_or_destory and not parent_ln.children:
+                parent_ln = parent_ln._immediate_left_neighbour()
+
             if parent_ln is not None:
                 candidate = parent_ln
                 # Descend recursively (for left, always take the right-most child)
@@ -62,8 +97,10 @@ class Node:
                         break
                 if candidate is not None and candidate.__class__ == self.__class__:
                     return candidate, parent
+
             recursion_count += 1
             parent = parent.parent
+
         return None, None
 
     def _get_effective_right_neighbour(self):
@@ -78,7 +115,12 @@ class Node:
             if not parent.can_trade:
                 print(f"{parent.name} cannot trade {parent.children[0].__class__.__name__}s")
                 return None, None
+
+            # find the next immediate right sibling, but skip any that are empty and non-deletable
             parent_rn = parent._immediate_right_neighbour()
+            while parent_rn is not None and parent_rn.dont_create_or_destory and not parent_rn.children:
+                parent_rn = parent_rn._immediate_right_neighbour()
+
             if parent_rn is not None:
                 candidate = parent_rn
                 # Descend recursively (for right, always take the left-most child)
@@ -90,8 +132,10 @@ class Node:
                         break
                 if candidate is not None and candidate.__class__ == self.__class__:
                     return candidate, parent
+
             recursion_count += 1
             parent = parent.parent
+
         return None, None
 
     # --- New Neighbour Properties ---
@@ -103,6 +147,7 @@ class Node:
             return immediate
         # Otherwise, use effective lookup
         effective, highest = self._get_effective_left_neighbour()
+        print("effective LN",effective)
         self.highest_parent = highest if effective is not None else None
         return effective
 
@@ -117,44 +162,97 @@ class Node:
         self.highest_parent = highest if effective is not None else None
         return effective
 
-    # --- Example Trade Methods Updated to Use the Neighbour Properties ---
-    def take_right(self):
-        if not self.can_trade:
-            if self.children:
-                print(f"{self.__class__.__name__} cannot trade {self.children[0].__class__.__name__}s")
-            else:
-                print(f"{self.__class__.__name__} cannot trade children")
+    def _take_right_node_specific(self):
+        # default is “no‑op”
+        pass
+
+    def _take_left_node_specific(self):
+        # default is “no‑op”
+        pass
+
+    def _give_right_node_specific(self):
+        # default is “no‑op”
+        pass
+
+    def _give_left_node_specific(self):
+        # default is “no‑op”
+        pass
+
+    def display_and_select(self):
+        old_level = self.root.plugin_canvas_gui.level
+        self.root.plugin_canvas_gui.display_level(old_level)
+        if hasattr(self, 'graphic') and self.graphic:
+            self.graphic.select()
+
+    def take_right(self): # takes a child away from its own right neighbour
+        if not self.can_trade: # Block trades if dis-allowed
+            print(f"{self.__class__.__name__} cannot trade")
             return
-        rn = self.right_neighbour  # now uses our property (immediate or effective)
+        rn = self.right_neighbour
         if rn is None:
             print(f"{self.name} has no right neighbour")
             return
         if not rn.children:
             print(f"{rn.name} has no children to take")
             return
-        child = rn.remove_left_child()  # take left-most child from neighbour
+        child = rn.remove_left_child()  # take left-most child from right neighbour
         if child:
             self.add_child_to_right(child)
             if self.highest_parent:
                 print(f"{self.name} took {child.name} from {rn.name} through its parent {self.highest_parent.name}")
             else:
                 print(f"{self.name} took {child.name} from {rn.name}")
+        self._take_right_node_specific()
+
+        if self.root.everything_needs_renaming:
+            self.root.rename_everything()
+
+        self.root.process_deletions()
+
+    def give_right(self):
+        if not self.can_trade:
+            print(f"{self.__class__.__name__} cannot trade")
+            return
+        if len(self.children) == 1:
+            # Can't give away last child, must be taken. Prevents needing self-delete logic
+            msg = f"Cannot give away last child. It must be taken away."
+            print(msg)
+            show_information(msg)
+            return
+        rn = self.right_neighbour  # property will attempt effective lookup
+        if rn is None:
+            rn = self.create_a_new_right_neighbour()
+            if rn is None: #if could not create_a_new_right_neighbour
+                return
+
+        child = self.remove_right_child()
+        if child:
+            rn.add_child_to_left(child)
+            if self.highest_parent:
+                print(f"{self.name} gave {child.name} to {rn.name} through its parent {self.highest_parent.name}")
+            else:
+                print(f"{self.name} gave {child.name} to {rn.name}")
+        self._give_right_node_specific()
+
+        if self.root.everything_needs_renaming:
+            self.root.rename_everything()
+
+        self.root.process_deletions()
 
     def take_left(self):
-        if not self.can_trade:
-            if self.children:
-                print(f"{self.__class__.__name__} cannot trade {self.children[0].__class__.__name__}s")
-            else:
-                print(f"{self.__class__.__name__} cannot trade children")
+        if not self.can_trade:  # Block trades if dis‐allowed
+            print(f"{self.__class__.__name__} cannot trade")
             return
-        ln = self.left_neighbour  # now uses our property (immediate or effective)
+
+        ln = self.left_neighbour
         if ln is None:
             print(f"{self.name} has no left neighbour")
             return
         if not ln.children:
             print(f"{ln.name} has no children to take")
             return
-        child = ln.remove_right_child()  # take right-most child from left neighbour
+
+        child = ln.remove_right_child()  # take right‐most child from left neighbour
         if child:
             self.add_child_to_left(child)
             if self.highest_parent:
@@ -162,83 +260,88 @@ class Node:
             else:
                 print(f"{self.name} took {child.name} from {ln.name}")
 
-    def give_right(self):
-        if not self.can_trade:
-            if self.children:
-                print(f"{self.__class__.__name__} cannot trade {self.children[0].__class__.__name__}s")
-            else:
-                print(f"{self.__class__.__name__} cannot trade children")
-            return
-        rn = self.right_neighbour  # property will attempt effective lookup
-        if rn is None:
-            if self.parent is None:
-                print(f"{self.name} has no parent to create a right neighbour.")
-                return
-            if self.dont_create_or_destory:
-                print(f"{self.name} has dont_create_or_destory enabled, not creating a right neighbour.")
-                return
-            new_counter = Node.new_instance_counters.get(self.__class__.__name__, 1)
-            new_name = f"new_{self.__class__.__name__}_{new_counter}"
-            Node.new_instance_counters[self.__class__.__name__] = new_counter + 1
-            new_node = self.__class__(new_name)
-            idx = self.parent.children.index(self)
-            self.parent.children.insert(idx + 1, new_node)
-            new_node.parent = self.parent
-            self.newest_baby = new_node
-            print(f"Created new {self.__class__.__name__}: {new_node.name}")
-            rn = new_node
-        if not self.children:
-            print(f"{self.name} has no children to give")
-            return
-        child = self.remove_right_child()  # give right-most child
-        if child:
-            rn.add_child_to_left(child)
-            if self.highest_parent:
-                print(f"{self.name} gave {child.name} to {rn.name} through its parent {self.highest_parent.name}")
-            else:
-                print(f"{self.name} gave {child.name} to {rn.name}")
-            self.check_empty()
-        if self.newest_baby:
-            self.a_node_was_created()
+        self._take_left_node_specific()
+
+        if self.root.everything_needs_renaming:
+            self.root.rename_everything()
+
+        self.root.process_deletions()
+
 
     def give_left(self):
         if not self.can_trade:
-            if self.children:
-                print(f"{self.__class__.__name__} cannot trade {self.children[0].__class__.__name__}s")
-            else:
-                print(f"{self.__class__.__name__} cannot trade children")
+            print(f"{self.__class__.__name__} cannot trade")
             return
-        ln = self.left_neighbour  # property will attempt effective lookup
+        if len(self.children) == 1:
+            # Can't give away last child, must be taken. Prevents needing self-delete logic
+            msg = f"Cannot give away last child. It must be taken away."
+            print(msg)
+            show_information(msg)
+            return
+        ln = self.left_neighbour
         if ln is None:
-            if self.parent is None:
-                print(f"{self.name} has no parent to create a left neighbour.")
+            ln = self.create_a_new_left_neighbour()
+            if ln is None:  # failed to create
                 return
-            if self.dont_create_or_destory:
-                print(f"{self.name} has dont_create_or_destory enabled, not creating a left neighbour.")
-                return
-            new_counter = Node.new_instance_counters.get(self.__class__.__name__, 1)
-            new_name = f"new_{self.__class__.__name__}_{new_counter}"
-            Node.new_instance_counters[self.__class__.__name__] = new_counter + 1
-            new_node = self.__class__(new_name)
-            idx = self.parent.children.index(self)
-            self.parent.children.insert(idx, new_node)
-            new_node.parent = self.parent
-            self.newest_baby = new_node
-            print(f"Created new {self.__class__.__name__}: {new_node.name}")
-            ln = new_node
-        if not self.children:
-            print(f"{self.name} has no children to give")
-            return
-        child = self.remove_left_child()  # give left-most child
+
+        child = self.remove_left_child()
         if child:
             ln.add_child_to_right(child)
             if self.highest_parent:
                 print(f"{self.name} gave {child.name} to {ln.name} through its parent {self.highest_parent.name}")
             else:
                 print(f"{self.name} gave {child.name} to {ln.name}")
-            self.check_empty()
-        if self.newest_baby:
-            self.a_node_was_created()
+
+        self._give_left_node_specific()
+
+        if self.root.everything_needs_renaming:
+            self.root.rename_everything()
+
+        self.root.process_deletions()
+
+
+    def create_a_new_right_neighbour(self):
+        if self.parent is None:
+            print(f"{self.name} has no parent to create a right neighbour.")
+            return
+        if self.dont_create_or_destory:
+            print(f"{self.name} has dont_create_or_destory enabled, not creating a right neighbour.")
+            return
+        new_counter = Node.new_instance_counters.get(self.__class__.__name__, 1)
+        new_name = f"new_{self.__class__.__name__}_{new_counter}"
+        Node.new_instance_counters[self.__class__.__name__] = new_counter + 1
+        new_node = self.__class__(new_name)
+        idx = self.parent.children.index(self)
+        self.parent.children.insert(idx + 1, new_node)
+        new_node.parent = self.parent
+        self.newest_baby = new_node
+        print(f"Created new {self.__class__.__name__}: {new_node.name}")
+        self.root.everything_needs_renaming = True
+        return new_node
+
+    def create_a_new_left_neighbour(self):
+        if self.parent is None:
+            print(f"{self.name} has no parent to create a left neighbour.")
+            return
+        if self.dont_create_or_destory:
+            print(f"{self.name} has dont_create_or_destory enabled, not creating a left neighbour.")
+            return
+
+        # generate a unique name for the new instance
+        new_counter = Node.new_instance_counters.get(self.__class__.__name__, 1)
+        new_name = f"new_{self.__class__.__name__}_{new_counter}"
+        Node.new_instance_counters[self.__class__.__name__] = new_counter + 1
+
+        # instantiate and insert to the left of self
+        new_node = self.__class__(new_name)
+        idx = self.parent.children.index(self)
+        self.parent.children.insert(idx, new_node)
+        new_node.parent = self.parent
+        self.newest_baby = new_node
+        self.root.everything_needs_renaming = True
+
+        print(f"Created new {self.__class__.__name__}: {new_node.name}")
+        return new_node
 
     # Standard insertion methods.
     def add_child_to_left(self, child):
@@ -327,40 +430,23 @@ class Node:
         else:
             return None
 
-
-    # When a node loses all children, remove it.
+    # When a node loses all children, mark it for deletion.
     def check_empty(self):
         if not self.children:
             if self.dont_create_or_destory:
-                # Do not remove this node even if it has no children.
                 return
-            if self.parent and self in self.parent.children:
-                print(f"Removing {self.name} because it has no children")
-                #if self.graphic:
-                #    self.graphic.clear()
-                self.deleted = True
-                self.a_node_was_deleted()
-                #self.parent.children.remove(self)
-
-                self.parent.check_empty()
+            print(f"Marking {self.name} for deletion because it has no children")
+            self.deleted = True
+            self.root.everything_needs_renaming = True
 
 
-    def a_node_was_created(self):
-        if self.newest_baby and self.newest_baby.__class__.__name__ == 'Flight':
-            self.newest_baby.generate_drone_path()
-        self.the_total_number_of_nodes_has_changed()
+    def _flip_lines_node_specific(self):
+        # default is “no‑op”
+        pass
 
-    def a_node_was_deleted(self):
-        self.the_total_number_of_nodes_has_changed()
+    def flip_lines(self):
+        self._flip_lines_node_specific()
 
-    def the_total_number_of_nodes_has_changed(self):
-        self.root.rename_everything()
-        if not self.root.initial_creation_stage:
-            old_level = self.root.plugin_canvas_gui.level
-            self.root.plugin_canvas_gui.clear()
-            self.root.plugin_canvas_gui.display_level(old_level)
-
-        #self.root.recolor_everything()
 
     def filter_descendants(self, cls_or_name):
         """

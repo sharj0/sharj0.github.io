@@ -118,6 +118,10 @@ class MyDockableWidget(QDockWidget):
         row5_flights_layout.addWidget(self.btn_give_flight_right)
         flights_layout.addLayout(row5_flights_layout)
 
+        row6_layout = QHBoxLayout()
+        self.btn_flip_direction = QPushButton("Flip line direction\n🔄 ●─● 🔄")
+        row6_layout.addWidget(self.btn_flip_direction)
+        lines_layout.addLayout(row6_layout)
         # Removed row for Flip line direction in FLIGHTS mode
 
         self.radio_edit_within_flights.toggled.connect(self.updateVisibility)
@@ -133,6 +137,8 @@ class MyDockableWidget(QDockWidget):
             self.btn_give_right.clicked.connect(lambda: self.mapTool.execute_action_on_selected_node("give_right"))
             self.btn_take_left.clicked.connect(lambda: self.mapTool.execute_action_on_selected_node("take_left"))
             self.btn_take_right.clicked.connect(lambda: self.mapTool.execute_action_on_selected_node("take_right"))
+
+            self.btn_flip_direction.clicked.connect(lambda: self.mapTool.execute_action_on_selected_node("flip_lines"))
 
             self.btn_give_flight_left.clicked.connect(lambda: self.mapTool.execute_action_on_selected_node("give_left"))
             self.btn_give_flight_right.clicked.connect(lambda: self.mapTool.execute_action_on_selected_node("give_right"))
@@ -154,6 +160,7 @@ class MyDockableWidget(QDockWidget):
             self.flights_container.setVisible(True)
             if self.mapTool is not None:
                 self.mapTool.display_level("Quadrant")
+                #self.mapTool.display_level("TOFAssignment")
 
     def exitApplication(self):
         if self.mapTool:

@@ -28,5 +28,30 @@ class TOFAssignment(Node):
     def end_point_list(self):
         return self.filter_descendants("EndPoint")
 
+    def take_right(self): # TOFAssignment has only one child as of the current development of the script.
+        if self.root.initial_creation_stage:
+            super().take_right()
+        else:
+            self.children[0].take_right()
+
+    def give_right(self): # TOFAssignment has only one child as of the current development of the script.
+        if self.root.initial_creation_stage:
+            super().give_right()
+        else:
+            self.children[0].give_right()
+
+    def take_left(self): # TOFAssignment has only one child as of the current development of the script.
+        if self.root.initial_creation_stage:
+            super().take_left()
+        else:
+            self.children[0].take_left()
+
+    def give_left(self): # TOFAssignment has only one child as of the current development of the script.
+        if self.root.initial_creation_stage:
+            super().give_left()
+        else:
+            self.children[0].give_left()
+
+
 class InitialTOFAssignment(TOFAssignment):
     pass

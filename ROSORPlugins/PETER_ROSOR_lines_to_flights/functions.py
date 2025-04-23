@@ -4,6 +4,7 @@ import pickle
 import os
 import math
 import random
+import copy
 
 from .plugin_tools import show_error
 from .new_classes.I_survey_area import SurveyArea
@@ -333,7 +334,7 @@ def redistribute_lines_evenly(strip):
 
 def construct_the_upper_hierarchy(lines, tofs, unique_strip_letters, prefer_even_number_of_lines):
     survey = SurveyArea("SurveyArea")
-    if not unique_strip_letters:
+    if len(unique_strip_letters) == 0:
         txt = 'No strips have been assigned'
         show_error(txt)
         raise ValueError(txt)
@@ -474,7 +475,7 @@ def construct_the_lower_hierarchy(survey_area,
 
         # Create the prototype flight and add all initial lines.
         prototype_flight = Flight('prototype')
-        prototype_flight.flight_settings = survey_area.flight_settings
+        prototype_flight.flight_settings = copy.copy(survey_area.flight_settings)
         for line in quadrant.initial_lines:
             prototype_flight.add_child_to_right(line)
 

@@ -50,7 +50,8 @@ def make_new_flights(settings_dict):
         "add_smooth_turns": settings_dict["add_smooth_turns"],
         "turn_segment_length": settings_dict["turn_segment_length"],
         "turn_diameter": settings_dict["turn_diameter"],
-        "line_direction_reverse": settings_dict["line_direction_reverse"]
+        "line_direction_reverse": settings_dict["line_direction_reverse"],
+        "name_tie_not_flt": settings_dict["Tie"]
     }
     settings_dict_for_pickle = settings_dict.copy()
     settings_dict = None # don't use settings_dict from here on
@@ -128,7 +129,21 @@ def make_new_flights(settings_dict):
     survey_area.rename_everything()
     survey_area.recolor_everything()
     survey_area.past_states = []
+
+
+
+    # TESTING
+    # TESTING  ------------------------------------------------------------
+    flight_test =  survey_area.flight_list[2]
+    #flight_test.flip_lines()
+    # TESTING  ------------------------------------------------------------
+    # TESTING
+
+    print("FINISHED INITIAL CREATION")
     survey_area.initial_creation_stage = False
+
+
+
     return survey_area
 
 
