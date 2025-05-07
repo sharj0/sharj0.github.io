@@ -1,22 +1,16 @@
 {
-    "Select a starting point_RADIO": {
-        "\u2728Create New Flights from lines": true,
-        "\ud83d\udd27Modify Existing Flights": false
-    },
-    "\u2728New Flights Input files": {
-        "Flight lines file_path": "C:\\Users\\pyoty\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_lines_to_flights_exp\\test_data\\single_strip.shp",
+    "Mandatory Input files": {
+        "Flight lines file_path": "C:\\Users\\pyoty\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_lines_to_flights_exp\\test_data\\fake_split_ext_flt_lines_no_strip_names.shp",
         "Flight lines file_path_SELECT_LAYER": "true",
         "Flight lines file_path_COMMENT": "Select the file that has the flight lines",
-        "Take-off file path": "C:\\Users\\pyoty\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_lines_to_flights_exp\\test_data\\TOF.shp",
+        "Take-off file path": "C:\\Users\\pyoty\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_lines_to_flights_exp\\test_data\\TOF_v2.shp",
         "Take-off file path_SELECT_LAYER": "true",
         "Take-off file path_COMMENT": "Select the file that has takeoff points"
     },
-    "\ud83d\udd27Modify Existing Flights file": "Z:\\Rosor\\2024 - 2025\\Projects\\2501-45-dm-ventures-guyana\\3.Planning\\Making Flights\\making_lidar_flights\\org_by_strips_flts\\saved_flights_v13._2D_flts",
-    "\ud83d\udd27Modify Existing Flights file_SELECT_FILE": "true",
     "Flight direction name_RADIO": {
-        "Flt": false,
+        "Flt": true,
         "Flt_COMMENT": "Flights will be named tof_#_flt_#",
-        "Tie": true,
+        "Tie": false,
         "Tie_COMMENT": "Flights will be named tof_#_tie_#"
     },
     "Settings": {

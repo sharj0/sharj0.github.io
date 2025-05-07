@@ -30,6 +30,7 @@ import numpy as np
 from .plugin_tools import show_error
 
 import pickle
+from itertools import compress
 
 class Save_Pickle():
     def __init__(self):
@@ -99,10 +100,10 @@ def make_new_flights(settings_dict):
         show_error('selected layer not valid')
 
     show_feedback_popup = False
-    lines, user_assigned_unique_strip_letters = extract_line_obj_from_line_layer(flight_lines_layer, flight_lines_path)
+    lines_obs, user_assigned_unique_strip_letters = extract_line_obj_from_line_layer(flight_lines_layer, flight_lines_path)
     tofs = extract_tof_obj_from_tof_layer(tof_points_layer, tof_points_path, show_feedback_popup=show_feedback_popup)
 
-    unique_strip_letters = validate_inputs.validate_and_process_lines(lines, user_assigned_unique_strip_letters)
+    unique_strip_letters, line_groups = validate_inputs.validate_and_process_lines(lines_obs, user_assigned_unique_strip_letters)
 
     if not line_flight_order_reverse:
         sort_angle = (plugin_global.ave_line_ang_cwN + 90) % 360
@@ -110,7 +111,14 @@ def make_new_flights(settings_dict):
         sort_angle = (plugin_global.ave_line_ang_cwN - 90) % 360
 
     # sort
-    lines, tofs = sort_lines_and_tofs(lines, tofs, sort_angle)
+    lines_obs_sorted, tofs = sort_lines_and_tofs(lines_obs, tofs, sort_angle)
+
+    only_use_lines_list = [line.only_use for line in lines_obs_sorted]
+    if any(only_use_lines_list):
+        lines = list(compress(lines_obs_sorted, only_use_lines_list))
+    else:
+        use_lines_list = [not line.dont_use for line in lines_obs_sorted]
+        lines = list(compress(lines_obs_sorted, use_lines_list))
 
     '''
     parent_line_groups = [line.parent_line_group for line in lines]
@@ -118,6 +126,7 @@ def make_new_flights(settings_dict):
     '''
 
     survey_area = construct_the_upper_hierarchy(lines, tofs, unique_strip_letters, prefer_even_number_of_lines)
+    survey_area.line_groups = line_groups
     survey_area.global_crs_target = global_crs_target
     survey_area.flight_settings = flight_settings
     survey_area.color_cycle = ColorCycler()
@@ -134,15 +143,14 @@ def make_new_flights(settings_dict):
 
     # TESTING
     # TESTING  ------------------------------------------------------------
-    flight_test =  survey_area.flight_list[2]
+    # flight_test =  survey_area.flight_list[2]
     #flight_test.flip_lines()
+    line_groups[0]
     # TESTING  ------------------------------------------------------------
     # TESTING
 
     print("FINISHED INITIAL CREATION")
     survey_area.initial_creation_stage = False
-
-
 
     return survey_area
 
@@ -150,25 +158,32 @@ def make_new_flights(settings_dict):
 def main(settings_path):
     settings_dict = plugin_load_settings.run(settings_path)
 
-    do_load_pickle = settings_dict["🔧Modify Existing Flights"]
+    #not implemented
+    #do_load_pickle = settings_dict["🔧Modify Existing Flights"]
+    # not implemented ^^^
+    do_load_pickle = False
+    pickle_ext = "._2D_flts"
 
     base_name = "saved_flights._2D_flts"
 
     if not do_load_pickle:
         flight_lines_input_path = settings_dict["Flight lines file_path"]
         pickle_obj = make_new_flights(settings_dict)
-        pickle_path_out = os.path.join(os.path.dirname(flight_lines_input_path), base_name)
+        pickle_obj.main_input_name = os.path.splitext(os.path.basename(flight_lines_input_path))[0]
+        pickle_obj.save_folder_dir_path = os.path.dirname(flight_lines_input_path)
 
     else:
         pickle_path_in = settings_dict["🔧Modify Existing Flights file"]
+        if not pickle_path_in.endswith(pickle_ext):
+            err_msg = f'The previously made flights are saved as a "{pickle_ext}" file'
+            plugin_tools.show_error(err_msg)
+            raise ValueError(err_msg)
         pickle_obj = load_pickle(pickle_path_in)
-        pickle_path_out = os.path.join(os.path.dirname(pickle_path_in), base_name)
+        pickle_obj.main_input_name = os.path.splitext(os.path.basename(pickle_path_in))[0]
+        pickle_obj.save_folder_dir_path = os.path.dirname(pickle_path_in)
 
-    pickle_path_out = get_name_of_non_existing_output_file(pickle_path_out)
-    pickle_obj.current_pickle_path_out = pickle_path_out
-    with open(pickle_path_out, 'wb') as file:
-        pickle.dump(pickle_obj, file)
 
+    pickle_obj.pickle_ext = pickle_ext
     ''' obj hierarchy
     pickle_obj.strips
     ↳ strip.fa_list
@@ -179,9 +194,3 @@ def main(settings_path):
     '''
 
     run_qgis_gui(iface, pickle_obj)
-
-
-
-
-
-

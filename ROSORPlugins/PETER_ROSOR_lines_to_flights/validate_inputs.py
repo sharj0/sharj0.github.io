@@ -276,12 +276,22 @@ def assign_strips_to_lines(groups_sorted, group_lines, show_plot=False, debug=Fa
 
 
 
-def validate_and_process_lines(lines, user_assigned_unique_strip_letters, max_allowable_ang_spread_degs=5, lateral_line_thresh=5):
+def validate_and_process_lines(lines, user_assigned_unique_strip_letters, max_allowable_ang_spread_degs=5, lateral_line_thresh=5, show_plot=False):
+    plot_line_group_order = show_plot
 
     # Calculate angles from each line.
     angs = np.array([line.angle_degrees_cwN for line in lines])
     angs_spread = angs.max() - angs.min()
     ave1 = angs.mean()
+
+    # Flip lines if angle is greater than the average angle.
+    # This ensures that all lines are facing the same approximate direction.
+    for line in lines:
+        if line.angle_degrees_cwN > ave1 + max_allowable_ang_spread_degs:
+            line.start, line.end = line.end, line.start
+            angs = np.array([line.angle_degrees_cwN for line in lines])
+    # DEBUG: check if all angles are same direction
+    print(f"Flipped angles: {angs}")
 
     # Compute alternate angles (rotated by 180°) to account for potential directional ambiguity.
     angs_plus_180 = (angs + 180) % 360
@@ -290,27 +300,44 @@ def validate_and_process_lines(lines, user_assigned_unique_strip_letters, max_al
     ave2 = (ave_plus_180 - 180) % 360
     ave2 = ave2 + 360 if ave2 < 0 else ave2
 
-    # Compare original and shifted spreads.
-    arr = np.array([angs_spread, angs_plus_180_spread])
-    indx = np.argmin(arr)
-    spread = arr[indx]
+    # — 2) NEW: compute “undirected” spread on a 180° circle and enforce threshold —
+    #    (so that 0° vs 180° → spread = 0, not 180)
+    ori = angs % 180  # fold into [0,180)
+    sorted_ori = np.sort(ori)
+    # include wrap‐around gap between last and first+180°
+    gaps = np.diff(np.concatenate([sorted_ori, [sorted_ori[0] + 180]]))
+    spread = 180 - np.max(gaps)
 
     if spread > max_allowable_ang_spread_degs:
-        txt = (f"Spread of line angles is {spread} which is greater than the allowable threshold "
-               f"of {max_allowable_ang_spread_degs}")
+        txt = (f"Spread of line angles is {spread:.4f}° which is greater than "
+               f"the allowable threshold of {max_allowable_ang_spread_degs}°")
         show_error(txt)
         raise ValueError(txt)
 
-    # Choose the average angle corresponding to the smaller spread.
-    ave_ang = np.array([ave1, ave2])[indx]
-    global_sing = Global_Singleton()
-    global_sing.ave_line_ang_cwN = ave_ang
+    # — 3) pick the CW-from-North average exactly as you did before —
+    arr = np.array([
+        angs.max() - angs.min(),  # raw spread
+        angs_plus_180.max() - angs_plus_180.min()  # +180° spread
+    ])
+    indx = np.argmin(arr)
+    ave_ang_cwN = 90 - np.array([ave1, ave2])[indx]
 
-    # Get centroids from the lines.
+    global_sing = Global_Singleton()
+    global_sing.ave_line_ang_cwN = ave_ang_cwN
+
+    # --- NEW: align all lines to face the average direction ---
+    for line in lines:
+        # compute signed difference in (–180, +180]
+        diff = ((line.angle_degrees_cwN - ave_ang_cwN + 180) % 360) - 180
+        if abs(diff) > 90:
+            line.start, line.end = line.end, line.start
+    # --------------------------------------------------------
+
+    # now get centroids for grouping:
     line_centroids = np.array([line.centroid_xy for line in lines])
 
     # Get the group mask along with the rotated centroids.
-    mask, rotated_centroids = find_in_line_groups(line_centroids, ave_ang, lateral_thresh=lateral_line_thresh,
+    mask, rotated_centroids = find_in_line_groups(line_centroids, ave_ang_cwN, lateral_thresh=lateral_line_thresh,
                                                   plot=False, return_rotated=True)
 
     # --- GROUPING AND ASSIGNING THE NEW ATTRIBUTES ---
@@ -344,12 +371,14 @@ def validate_and_process_lines(lines, user_assigned_unique_strip_letters, max_al
 
     # --- SORTING GROUPS & ASSIGNING NEIGHBOURING GROUPS ---
 
-    # Create a sorted list of ParentLineGroup instances.
-    # Here we sort by the minimum rotated x value from each group's lines.
-    groups_sorted = sorted(
-        groups.values(),
-        key=lambda grp: min(x for (_, x) in group_lines[grp.group_id])
-    )
+    # Sort by the *rotated* centroid-y (same criterion used in assign_strips_to_lines)
+    grp_centroid_y = {
+        grp.group_id: np.mean([rotated_centroids[i, 1]
+                               for i in range(len(lines)) if mask[i] == grp.group_id])
+        for grp in groups.values()
+    }
+    groups_sorted = sorted(groups.values(),
+                           key=lambda g: grp_centroid_y[g.group_id])
 
     # Now assign left_neighbour and right_neighbour for each group.
     for i, group in enumerate(groups_sorted):
@@ -358,6 +387,27 @@ def validate_and_process_lines(lines, user_assigned_unique_strip_letters, max_al
         if i < len(groups_sorted) - 1:
             group.right_neighbour = groups_sorted[i + 1]
 
+    # visual sanity-check for group ordering
+    if plot_line_group_order:
+        cmap = plt.get_cmap('viridis', len(groups_sorted))
+        rotation_angle = Global_Singleton().ave_line_ang_cwN
+
+        plt.figure(figsize=(8, 6))
+        for order, grp in enumerate(groups_sorted):
+            col = cmap(order)
+            for ln in grp.children:
+                pts = np.array([rotate_point((0, 0), p, rotation_angle)
+                                for p in (ln.start.xy, ln.end.xy)])
+                plt.plot(pts[:, 0], pts[:, 1], color=col, linewidth=2)
+
+        sm = plt.cm.ScalarMappable(cmap=cmap,
+                                   norm=plt.Normalize(0, len(groups_sorted)-1))
+        cbar = plt.colorbar(sm, ax=plt.gca(), orientation='vertical',
+                            label='group order (0 = first in list)')
+        plt.title('Line-group order sanity check')
+        plt.xlabel('Rotated X');  plt.ylabel('Rotated Y');  plt.grid(True)
+        plt.show()
+
     # Determine maximum group size and assign grouping info to the global singleton.
     max_group_size = max(len(g.children) for g in groups.values())
     global_sing.line_groups_max_size = max_group_size
@@ -365,7 +415,7 @@ def validate_and_process_lines(lines, user_assigned_unique_strip_letters, max_al
 
     if not user_assigned_unique_strip_letters:
         # --- ASSIGN STRIPS AUTOMATICALLY IF NOT ALREADY NAMED ---
-        assign_strips_to_lines(groups_sorted, group_lines, show_plot=False, debug=False)
+        assign_strips_to_lines(groups_sorted, group_lines, show_plot=show_plot, debug=False)
         all_strip_letters = [line.strip_letter for line in lines]
         unique_strip_letters = np.unique(all_strip_letters)
     else:
@@ -375,7 +425,7 @@ def validate_and_process_lines(lines, user_assigned_unique_strip_letters, max_al
         txt = "Strip assignment failed: not enough unique strips detected."
         show_error(txt)
         raise ValueError(txt)
-    return unique_strip_letters
+    return unique_strip_letters, groups_sorted
 
 
 

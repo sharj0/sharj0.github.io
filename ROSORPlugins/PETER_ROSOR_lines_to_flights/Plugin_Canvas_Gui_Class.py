@@ -42,7 +42,6 @@ class PluginCanvasGui(QgsMapTool):
         self._level = None  # Backing variable for level; not set until display_level() is called
         self.overallExtent = None
         self.past_states = []
-        self.root.action_counter = 0
         root.plugin_canvas_gui = self
 
     def __deepcopy__(self, memo):
@@ -179,7 +178,6 @@ class PluginCanvasGui(QgsMapTool):
         layer.commitChanges()
 
         QgsVectorFileWriter.writeAsVectorFormatV3(layer, out_path, QgsCoordinateTransformContext(), options)
-        print(f"File saved to {out_path}")
 
         if not save_shp:
             # For KML: Update the color in the KML file to match flight_color.
@@ -229,31 +227,39 @@ class PluginCanvasGui(QgsMapTool):
             print(f"QML style file saved to {qml_path}")
 
     def save(self, save_as_shp: bool = False):
-        """
-        Create a “flights_2D” top-level folder, then—**only if there is at least
-        one exportable flight in the TOF—**create the TOF sub-folder and write
-        the KML/SHP files inside it.
+        '''---- CREATING THE OUTPUT PACKAGE FOLDER ----'''
+        name = self.root.main_input_name+'_OUTPUT_PACKAGE'
+        save_folder = os.path.join(self.root.save_folder_dir_path,name)
+        output_package_folder = get_name_of_non_existing_output_file(save_folder)
+        os.makedirs(output_package_folder, exist_ok=True)
+        print(f"save_folder:{output_package_folder}")
 
-        Each flight needs:
-          • long_output_name   (filename stem)
-          • color              (aabbggrr)
-          • utm_fly_list       ([(x, y), …])
-        """
-        import os
-        from qgis.core import QgsGeometry, QgsPointXY
+        '''---- SAVING THE PICKLE ----'''
+        # NOT IMPLEMENTED
+        pickle_file_path = os.path.join(output_package_folder,
+                                        self.root.main_input_name+self.root.pickle_ext)
 
-        save_root = os.path.dirname(self.root.current_pickle_path_out)
-        top_folder = get_name_of_non_existing_output_file(
-            os.path.join(save_root, "flights_2D")
-        )
-        os.makedirs(top_folder, exist_ok=True)
+        pickle_file_path = get_name_of_non_existing_output_file(pickle_file_path)
+        # NOT IMPLEMENTED ^^^
 
+        '''---- SAVING THE LINES ----'''
+        lines_file_path = os.path.join(output_package_folder,
+                                        self.root.main_input_name+'.shp')
+        lines_file_path = get_name_of_non_existing_output_file(lines_file_path)
+        self.save_lines_to_file(lines_file_path)
+
+        '''---- SAVING THE 2D KML FLIGHTS ----'''
+        if self.root.flight_settings['name_tie_not_flt']:
+            tie_or_flt_string = 'tie'
+        else:
+            tie_or_flt_string = 'flt'
+        flights_2D_folder = os.path.join(output_package_folder,
+                                        f'2D_kml_{tie_or_flt_string}s_for_'+self.root.main_input_name)
+        os.makedirs(flights_2D_folder, exist_ok=True)
         target_epsg = self.root.global_crs_target.get('target_crs_epsg_int', 4326)
         target_crs = f"EPSG:{target_epsg}"
         file_ext = ".shp" if save_as_shp else ".kml"
-
         for tof in self.root.TOF_list:
-
             # ---------- 1) Collect exportable flights first -------------
             flights_to_save = []
             for flight in tof.flight_list:
@@ -273,7 +279,7 @@ class PluginCanvasGui(QgsMapTool):
                 continue
 
             # ---------- 3) Now it is safe to create the TOF folder ------
-            tof_folder = os.path.join(top_folder, str(tof))
+            tof_folder = os.path.join(flights_2D_folder, str(tof))
             os.makedirs(tof_folder, exist_ok=True)
 
             # ---------- 4) Write each flight ----------------------------
@@ -292,17 +298,103 @@ class PluginCanvasGui(QgsMapTool):
                 )
 
         self.dock_widget.exitApplication()
+        # NOT IMPLEMENTED
+        #self.save_state_to_file(pickle_file_path)
+        # NOT IMPLEMENTED ^^^
+        '''---- IMPORTING THE 2D KML INTO QGIS ----'''
+        process_folder(flights_2D_folder)
 
-        process_folder(top_folder)
+    def save_state_to_file(self, file_path):
+        # NOT IMPLEMENTED
+        self.root.plugin_canvas_gui.clear()
+        self.root.past_states = []  # remove the list
+        root_copy = copy.deepcopy(self.root) # this coppy omits the PluginCanvasGui obj that cant be piclkled
+        with open(file_path, 'wb') as file:
+            pickle.dump(root_copy, file)
+        # NOT IMPLEMENTED ^^^
+
+    def save_lines_to_file(self, lines_file_path: str) -> None:
+        """
+        Export every Line in self.root.line_groups to a shapefile that contains
+            • Grid_Fltln – text (6-char) unique ID for each line
+            • Only_use   – boolean, default False
+            • Dont_use   – boolean, default False
+            • Strip      – text, name of the parent Strip
+        The ID is built like:
+            4/7  +  line-group index (001-999)  +  line index in group (01-99)
+            ► ‘4’ = flight lines   ► ‘7’ = tie lines
+        """
+        # ------------------------------------------------------------------ #
+        # 1)  Basic set-up
+        # ------------------------------------------------------------------ #
+        os.makedirs(os.path.dirname(lines_file_path), exist_ok=True)
+        target_epsg = self.root.global_crs_target.get('target_crs_epsg_int', 4326)
+        mem_layer = QgsVectorLayer(
+            f"LineString?crs=EPSG:{target_epsg}", "export_lines", "memory"
+        )
+        dp = mem_layer.dataProvider()
+
+        dp.addAttributes(
+            [
+                QgsField("Grid_Fltln", QVariant.String, len=6),
+                QgsField("Only_use", QVariant.Bool),
+                QgsField("Dont_use", QVariant.Bool),
+                #QgsField("Strip", QVariant.String, len=80),
+            ]
+        )
+        mem_layer.updateFields()
+
+        # Decide prefix once
+        prefix = "7" if self.root.flight_settings.get("name_tie_not_flt") else "4"
+
+        # ------------------------------------------------------------------ #
+        # 2)  Build one feature per line
+        # ------------------------------------------------------------------ #
+        features = []
+        for g_idx, group in enumerate(self.root.line_groups, start=1):
+            for l_idx, line in enumerate(group.children, start=1):
+                # ---- 2a) Geometry ------------------------------------------------
+                start_pt = line.start
+                end_pt = line.end
+                # Accept either (x, y) tuples or objects with .x / .y
+                p1 = QgsPointXY(start_pt[0], start_pt[1]) if hasattr(start_pt, "__getitem__") else QgsPointXY(
+                    start_pt.x, start_pt.y)
+                p2 = QgsPointXY(end_pt[0], end_pt[1]) if hasattr(end_pt, "__getitem__") else QgsPointXY(end_pt.x,
+                                                                                                        end_pt.y)
+                geom = QgsGeometry.fromPolylineXY([p1, p2])
+
+                # ---- 2b) Attribute values ---------------------------------------
+                grid_id = f"{prefix}{g_idx:03d}{l_idx:02d}"  # e.g. 400101
+                line.grid_name = grid_id  # keep for later use
+                #strip_name = line.get_parent_at_level("STRIP").strip_letter
+
+                feat = QgsFeature(mem_layer.fields())
+                feat.setGeometry(geom)
+                #feat.setAttributes([grid_id, False, False, strip_name])
+                feat.setAttributes([grid_id, False, False])
+                features.append(feat)
+
+        dp.addFeatures(features)
+        mem_layer.updateExtents()
+
+        # ------------------------------------------------------------------ #
+        # --- 3) Write the shapefile to disk ------------------------------- #
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = "ESRI Shapefile"
+        options.fileEncoding = "UTF-8"
+
+        QgsVectorFileWriter.writeAsVectorFormatV3(
+            mem_layer,
+            lines_file_path,
+            QgsCoordinateTransformContext(),
+            options,
+        )
+
 
     def execute_action_on_selected_node(self, command):
-        self.root.action_counter += 1
-
-        if not self.current_selection:
-            return
+        self.root.plugin_canvas_gui.clear()
         if len(self.root.past_states) >= 100:
             self.root.past_states.pop(0)
-        self.root.plugin_canvas_gui.clear()
         # Separate the past_states list from self.root
         past_states = self.root.past_states
         self.root.past_states = []  # Temporarily remove the list
@@ -312,6 +404,8 @@ class PluginCanvasGui(QgsMapTool):
         self.root.past_states = past_states
         self.root.past_states.append(root_copy)
 
+        if not self.current_selection:
+            return
         if command == "give_left":
             self.current_selection.node.give_left()
         if command == "give_right":

@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Folder><name>tof_7_tie_4_2</name>
+  <Placemark>
+	<Style><LineStyle><color>ff999999</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+      <LineString><coordinates>-94.0349280387334,49.2370633725342 -94.0321957886035,49.2356401493609 -94.0317450935256,49.2356589205162 -94.0206580598223,49.2431181414042 -94.020648075639,49.2433308674239 -94.0208600780785,49.2434922021705 -94.0211828380293,49.2435174988237 -94.0349280387334,49.2370633725342</coordinates></LineString>
+  </Placemark>
+</Folder>
+</Document></kml>

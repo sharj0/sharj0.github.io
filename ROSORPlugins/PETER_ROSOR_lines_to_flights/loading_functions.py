@@ -21,6 +21,8 @@ from .Take_off_Class import Take_off_Class
 from .Global_Singleton import Global_Singleton
 from .plugin_tools import show_information
 
+
+
 #suppress warnings
 gdal.DontUseExceptions()
 os.environ['CPL_LOG'] = 'NUL'      # For Windows systems
@@ -33,6 +35,8 @@ def extract_line_obj_from_line_layer(flight_lines_layer, flight_lines_path):
     grid_fltlns = []
     strip_letters = []
     ids = []
+    dont_use_line_list = []
+    only_use_line_list = []
     for layer_ind, feature in enumerate(flight_lines_layer.getFeatures()):
 
         # Get the attributes, with checks for existence
@@ -41,6 +45,12 @@ def extract_line_obj_from_line_layer(flight_lines_layer, flight_lines_path):
 
         strip = feature['STRIP'] if 'STRIP' in feature.fields().names() else None
         strip_letters.append(strip)
+
+        dont_use_line = feature['Dont_use'] if 'Dont_use' in feature.fields().names() else None
+        dont_use_line_list.append(dont_use_line)
+
+        only_use_line = feature['Only_use'] if 'Only_use' in feature.fields().names() else None
+        only_use_line_list.append(only_use_line)
 
         id = feature['id'] if 'id' in feature.fields().names() else None
         id = id if isinstance(id, int) else None
@@ -99,7 +109,12 @@ def extract_line_obj_from_line_layer(flight_lines_layer, flight_lines_path):
                             ids[layer_ind],
                             layer_ind,
                             flight_lines_path)
+
+            line_obj.dont_use = bool(dont_use_line_list[layer_ind])
+            line_obj.only_use = bool(only_use_line_list[layer_ind])
+
             lisst.append(line_obj)
+
 
     unique_strip_letters = np.unique([s for s in strip_letters if s is not None])
 
@@ -140,6 +155,8 @@ def extract_tof_obj_from_tof_layer(tof_points_layer, tof_points_path, show_feedb
     lisst = []
     for layer_ind, feature in enumerate(tof_points_layer.getFeatures()):
         geometry = feature.geometry()
+        if geometry is None or geometry.isNull():
+            continue
         if geometry.type() == QgsWkbTypes.PointGeometry:
             if QgsWkbTypes.isSingleType(geometry.wkbType()):
                 point = geometry.asPoint()

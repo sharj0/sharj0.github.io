@@ -1,0 +1,47 @@
+{
+    "Select a starting point_RADIO": {
+        "\u2728Create New Flights from lines": false,
+        "\ud83d\udd27Modify Existing Flights": true
+    },
+    "\u2728New Flights Input files": {
+        "Flight lines file_path": "C:\\Users\\pyoty\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_lines_to_flights_exp\\test_data\\fake_split_ext_flt_lines_no_strip_names.shp",
+        "Flight lines file_path_SELECT_LAYER": "true",
+        "Flight lines file_path_COMMENT": "Select the file that has the flight lines",
+        "Take-off file path": "C:\\Users\\pyoty\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_lines_to_flights_exp\\test_data\\TOF_v2.shp",
+        "Take-off file path_SELECT_LAYER": "true",
+        "Take-off file path_COMMENT": "Select the file that has takeoff points"
+    },
+    "\ud83d\udd27Modify Existing Flights file": "C:\\Users\\pyoty\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_lines_to_flights_exp\\test_data\\fake_split_ext_flt_lines_no_strip_names_OUTPUT_PACKAGE_v5\\fake_split_ext_flt_lines_no_strip_names._2D_flts",
+    "\ud83d\udd27Modify Existing Flights file_SELECT_FILE": "true",
+    "Flight direction name_RADIO": {
+        "Flt": false,
+        "Flt_COMMENT": "Flights will be named tof_#_flt_#",
+        "Tie": true,
+        "Tie_COMMENT": "Flights will be named tof_#_tie_#"
+    },
+    "Settings": {
+        "max_flt_size": 8000,
+        "max_flt_size_COMMENT": "this is the max size of flight that will be auto-generated",
+        "max_number_of_lines_per_flight": 15,
+        "max_number_of_lines_per_flight_COMMENT": "this will speed up the computation",
+        "line_direction_reverse": false,
+        "line_direction_reverse_COMMENT": "normally first line is south to  north",
+        "line_flight_order_reverse": false,
+        "line_flight_order_reverse_COMMENT": "this will reverse the order in which lines are flown",
+        "lead_in": 40,
+        "lead_in_COMMENT": "added to the beginning of each line",
+        "lead_out": 40,
+        "lead_out_COMMENT": "added to the end of each line",
+        "prefer_even_number_of_lines": true,
+        "prefer_even_number_of_lines_COMMENT": "if selected, app will try to generate an even number of lines per flt and tof",
+        "smooth_turns": {
+            "add_smooth_turns": true,
+            "add_smooth_turns_COMMENT": "if selected, app will use  'turn_segment_length' and 'turn_diameter' to add smooth turns",
+            "turn_segment_length": 21,
+            "turn_segment_length_COMMENT": "minimum distance between waypoints during turns",
+            "turn_diameter": 49,
+            "turn_diameter_COMMENT": "meters, usually same as line spacing"
+        }
+    },
+    "Close this window on accept": true
+}

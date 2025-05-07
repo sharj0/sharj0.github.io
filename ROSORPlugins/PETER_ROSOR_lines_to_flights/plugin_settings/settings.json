@@ -1,26 +1,20 @@
 {
-    "Select a starting point_RADIO": {
-        "\u2728Create New Flights from lines": true,
-        "\ud83d\udd27Modify Existing Flights": false
-    },
-    "\u2728New Flights Input files": {
-        "Flight lines file_path": "C:\\Users\\pyoty\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_lines_to_flights_exp\\test_data\\single_strip.shp",
+    "Mandatory Input files": {
+        "Flight lines file_path": "C:\\Users\\pyoty\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_lines_to_flights_exp\\test_data\\fake_split_ext_flt_lines_no_strip_names.shp",
         "Flight lines file_path_SELECT_LAYER": "true",
         "Flight lines file_path_COMMENT": "Select the file that has the flight lines",
-        "Take-off file path": "C:\\Users\\pyoty\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_lines_to_flights_exp\\test_data\\TOF.shp",
+        "Take-off file path": "C:\\Users\\pyoty\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_lines_to_flights_exp\\test_data\\TOF_v2.shp",
         "Take-off file path_SELECT_LAYER": "true",
         "Take-off file path_COMMENT": "Select the file that has takeoff points"
     },
-    "\ud83d\udd27Modify Existing Flights file": "Z:\\Rosor\\2024 - 2025\\Projects\\2501-45-dm-ventures-guyana\\3.Planning\\Making Flights\\making_lidar_flights\\org_by_strips_flts\\saved_flights_v13._2D_flts",
-    "\ud83d\udd27Modify Existing Flights file_SELECT_FILE": "true",
     "Flight direction name_RADIO": {
-        "Flt": true,
+        "Flt": false,
         "Flt_COMMENT": "Flights will be named tof_#_flt_#",
-        "Tie": false,
+        "Tie": true,
         "Tie_COMMENT": "Flights will be named tof_#_tie_#"
     },
     "Settings": {
-        "max_flt_size": 16000,
+        "max_flt_size": 8000,
         "max_flt_size_COMMENT": "this is the max size of flight that will be auto-generated",
         "max_number_of_lines_per_flight": 15,
         "max_number_of_lines_per_flight_COMMENT": "this will speed up the computation",

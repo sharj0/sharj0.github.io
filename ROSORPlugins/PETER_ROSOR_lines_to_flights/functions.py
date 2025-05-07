@@ -343,7 +343,7 @@ def construct_the_upper_hierarchy(lines, tofs, unique_strip_letters, prefer_even
 
         strip = Strip(f"Strip-{strip_letter}")
         survey.add_child_to_right(strip)
-
+        
         strip_lines = [line for line in lines if line.strip_letter == strip_letter]
         strip_tof_assignment_lines = assign_lines_to_TOFs(strip_lines, tofs)
 
