@@ -95,12 +95,16 @@ def main(settings_file_path):
     create_as_mission_planner_waypoints = settings_dict['Ardupilot 3D Waypoints']
 
     auto_accept = settings_dict['No manual checking']
+    manually_remove_noise = settings_dict["Manually remove noise"]
+    detect_noise_distance = settings_dict["Detect noise distance"]
 
     create_ortho_photo_corridor_flight = False
     settings_description = settings_dict.copy()
     settings_dict = None # don't use settings_dict from here on
 
     plot_details = False
+
+    #raise ('yo chillll bruh')
 
     #output_selections = [create_mag_flight,
     #                     create_ortho_photo_waypoint_flight,
@@ -247,8 +251,8 @@ def main(settings_file_path):
         buffer_line = buffer_points.run(grnd_samples_merged.T[0], grnd_samples_merged.T[3],
                                         payload_distance_from_ground, grnd_nodata_value,
                                         surf_samples_merged.T[0], surf_samples_merged.T[3],
-                                        payload_separation_from_surface, surf_nodata_value,
-                                        skip_flights_where_geotiff_data_missing,
+                                        payload_separation_from_surface, surf_nodata_value, detect_noise_distance,
+                                        skip_flights_where_geotiff_data_missing, manually_remove_noise,
                                         plot=plot_details)
 
         if buffer_line is None:
