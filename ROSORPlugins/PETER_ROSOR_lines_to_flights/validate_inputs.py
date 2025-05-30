@@ -280,25 +280,20 @@ def validate_and_process_lines(lines, user_assigned_unique_strip_letters, max_al
     plot_line_group_order = show_plot
 
     # Calculate angles from each line.
-    angs = np.array([line.angle_degrees_cwN for line in lines])
+    angs = np.array([abs(line.angle_degrees_cwN) for line in lines])
     angs_spread = angs.max() - angs.min()
     ave1 = angs.mean()
 
     # Flip lines if angle is greater than the average angle.
     # This ensures that all lines are facing the same approximate direction.
     for line in lines:
-        if line.angle_degrees_cwN > ave1 + max_allowable_ang_spread_degs:
+        diff = ((line.angle_degrees_cwN - ave1 + 180) % 360) - 180
+        if abs(diff) > 90:
             line.start, line.end = line.end, line.start
-            angs = np.array([line.angle_degrees_cwN for line in lines])
-    # DEBUG: check if all angles are same direction
-    print(f"Flipped angles: {angs}")
+    angs = np.array([line.angle_degrees_cwN for line in lines])
 
-    # Compute alternate angles (rotated by 180°) to account for potential directional ambiguity.
-    angs_plus_180 = (angs + 180) % 360
-    angs_plus_180_spread = angs_plus_180.max() - angs_plus_180.min()
-    ave_plus_180 = angs_plus_180.mean()
-    ave2 = (ave_plus_180 - 180) % 360
-    ave2 = ave2 + 360 if ave2 < 0 else ave2
+    # DEBUG: check if all angles are same direction
+    # print(f"Flipped angles: {angs}")
 
     # — 2) NEW: compute “undirected” spread on a 180° circle and enforce threshold —
     #    (so that 0° vs 180° → spread = 0, not 180)
@@ -314,30 +309,16 @@ def validate_and_process_lines(lines, user_assigned_unique_strip_letters, max_al
         show_error(txt)
         raise ValueError(txt)
 
-    # — 3) pick the CW-from-North average exactly as you did before —
-    arr = np.array([
-        angs.max() - angs.min(),  # raw spread
-        angs_plus_180.max() - angs_plus_180.min()  # +180° spread
-    ])
-    indx = np.argmin(arr)
-    ave_ang_cwN = 90 - np.array([ave1, ave2])[indx]
+    avg_ang = np.mean(angs)
 
     global_sing = Global_Singleton()
-    global_sing.ave_line_ang_cwN = ave_ang_cwN
-
-    # --- NEW: align all lines to face the average direction ---
-    for line in lines:
-        # compute signed difference in (–180, +180]
-        diff = ((line.angle_degrees_cwN - ave_ang_cwN + 180) % 360) - 180
-        if abs(diff) > 90:
-            line.start, line.end = line.end, line.start
-    # --------------------------------------------------------
+    global_sing.ave_line_ang_cwN = avg_ang
 
     # now get centroids for grouping:
     line_centroids = np.array([line.centroid_xy for line in lines])
 
     # Get the group mask along with the rotated centroids.
-    mask, rotated_centroids = find_in_line_groups(line_centroids, ave_ang_cwN, lateral_thresh=lateral_line_thresh,
+    mask, rotated_centroids = find_in_line_groups(line_centroids, avg_ang, lateral_thresh=lateral_line_thresh,
                                                   plot=False, return_rotated=True)
 
     # --- GROUPING AND ASSIGNING THE NEW ATTRIBUTES ---

@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+    <Style id="redLine">
+        <LineStyle>
+            <color>ff0000ff</color>
+            <width>2</width>
+        </LineStyle>
+    </Style>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21741096271678,45.42562042733408 -114.26432522329397,45.42675453300365</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21771181892345,45.4248716441205 -114.263992494438,45.42599044050913</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21801266673063,45.42412285983796 -114.26365977413057,45.425226347162685</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21831350613883,45.42337407448655 -114.26332706237113,45.42446225296442</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.2186143371485,45.42262528806633 -114.2629943591592,45.423698157914394</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21891515976009,45.42187650057733 -114.26266166449423,45.42293406201269</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.2192159739741,45.42112771201967 -114.26239318359858,45.4221715052517</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21956824017981,45.420380176031856 -114.26217871084567,45.421410243284754</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.2200058648091,45.419634718008524 -114.26196424340124,45.42064898095893</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.2204434775189,45.41888925794741 -114.26174978126487,45.419887718274275</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.22088107830989,45.41814379584862 -114.2615353244363,45.4191264552308</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.22131866718271,45.41739833171229 -114.26132087291516,45.418365191828556</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.221756244138,45.41665286553856 -114.26110642670113,45.417603928067564</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.22219380917642,45.41590739732755 -114.26089198579389,45.41684266394787</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.22263136229857,45.415161927079396 -114.26067755019312,45.41608139946948</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.22343822174626,45.41442543984805 -114.26046311989846,45.415320134632466</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.22427546305002,45.41368968572968 -114.2602486949096,45.414558869436824</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.2251126824223,45.41295392486865 -114.2600342752262,45.4137976038826</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.22594987986412,45.41221815726542 -114.25981986084795,45.41303633796983</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.22678705537638,45.41148238292043 -114.25864257815788,45.41225194923111</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.22762420896011,45.4107466018342 -114.25733881377798,45.41146450897926</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.22897852525121,45.41002337169181 -114.25602949119383,45.41067692007849</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.23038551098992,45.40930140350893 -114.2540556561964,45.4098733307719</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.23179246122503,45.40857941704721 -114.25208187831504,45.4090697085297</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.23319937595727,45.40785741230792 -114.25010815754962,45.40826605335479</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.23482950063264,45.40714079814175 -114.24484168189886,45.407382926248715</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21711009811021,45.42636920947868 -114.26408267709276,45.42750483638926</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21680922510323,45.4271179905542 -114.26382784998249,45.4282548447831</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.2165083436954,45.4278667705606 -114.26357301567458,45.42900485236274</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21620745388624,45.42861554949781 -114.26331817416866,45.429754859128174</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21602285809486,45.42936716427139 -114.2630633254643,45.430504865079335</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21589506127718,45.43012016419001 -114.2628084695611,45.4312548702162</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21576726058458,45.43087316379692 -114.26255360645867,45.43200487453871</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21563945601686,45.43162616309209 -114.26229873615658,45.432754878046815</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.2155116475738,45.43237916207555 -114.26204385865447,45.43350488074051</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21538383525518,45.433132160747256 -114.2617889739519,45.434254882619705</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21529815757832,45.43388618722185 -114.2611678377297,45.434996095969005</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21531206484714,45.4346426432876 -114.26047231643459,45.43573552051593</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21532597200449,45.43539909927174 -114.25977677669658,45.43647494031387</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21533987905039,45.43615555517423 -114.25908121851482,45.43721435536247</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21549187502997,45.43691537997101 -114.25838564188841,45.43795376566145</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21576866886043,45.43767824888155 -114.25769004681642,45.43869317121044</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21604546969962,45.43844111720716 -114.25670400689616,45.43942559202682</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21632227754795,45.4392039849478 -114.2554753748638,45.44015217123995</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21740486882574,45.4399864995272 -114.25424671143992,45.440878736403135</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.2186405087405,45.440772733437214 -114.25218869443192,45.441585325075714</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.21987618313639,45.44155895468156 -114.24843979042438,45.442251126354684</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.22111189201468,45.44234516325911 -114.24490462811046,45.44292196388263</coordinates>
+        </LineString>
+    </Placemark>
+    <Placemark>
+        <styleUrl>#redLine</styleUrl>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>-114.22234763537666,45.4431313591688 -114.2394777122029,45.44354695362326</coordinates>
+        </LineString>
+    </Placemark>
+</Document>
+</kml>

@@ -1,0 +1,991 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<kml:kml xmlns:kml="http://www.opengis.net/kml/2.2" nsmap="{'': 'http://www.opengis.net/kml/2.2', 'gx': 'http://www.google.com/kml/ext/2.2', 'kml': 'http://www.opengis.net/kml/2.2', 'atom': 'http://www.w3.org/2005/Atom'}"><kml:Document><kml:name>Combined_kmls__LIDAR_v5</kml:name><kml:Folder><kml:name>SWATHS__LIDAR_v5</kml:name><kml:name> SWATHS__LIDAR_v5 </kml:name>
+	<kml:StyleMap id="msn_ylw-pushpin">
+		<kml:Pair>
+			<kml:key>normal</kml:key>
+			<kml:styleUrl>#sn_ylw-pushpin</kml:styleUrl>
+		</kml:Pair>
+		<kml:Pair>
+			<kml:key>highlight</kml:key>
+			<kml:styleUrl>#sh_ylw-pushpin</kml:styleUrl>
+		</kml:Pair>
+	</kml:StyleMap>
+	<kml:Style id="sh_ylw-pushpin">
+		<kml:IconStyle>
+			<kml:scale>1.3</kml:scale>
+			<kml:Icon>
+				<kml:href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</kml:href>
+			</kml:Icon>
+			<kml:hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+		</kml:IconStyle>
+		<kml:BalloonStyle>
+		</kml:BalloonStyle>
+		<kml:LineStyle>
+			<kml:color>8000ffff</kml:color>
+		</kml:LineStyle>
+		<kml:PolyStyle>
+			<kml:color>3300ffff</kml:color>
+		</kml:PolyStyle>
+	</kml:Style>
+	<kml:Style id="sn_ylw-pushpin">
+		<kml:IconStyle>
+			<kml:scale>1.1</kml:scale>
+			<kml:Icon>
+				<kml:href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</kml:href>
+			</kml:Icon>
+			<kml:hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+		</kml:IconStyle>
+		<kml:BalloonStyle>
+		</kml:BalloonStyle>
+		<kml:LineStyle>
+			<kml:color>ff00ff00</kml:color>
+		</kml:LineStyle>
+		<kml:PolyStyle>
+			<kml:color>4500ffff</kml:color>
+		</kml:PolyStyle>
+	</kml:Style>
+    <kml:Placemark> <kml:name> swath_0 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.2568052110652,45.43938428478553 
+    -114.22190066402838,45.41567693115057 
+    -114.22339961703618,45.41458290608411 
+    -114.25830416053343,45.43828980407393 
+    -114.2568052110652,45.43938428478553 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_1 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.25604603459652,45.43991869819623 
+    -114.22146003960789,45.41642760709089 
+    -114.22295902143298,45.41533358861281 
+    -114.25754501294239,45.43882422822264 
+    -114.25604603459652,45.43991869819623 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_2 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.2552195669585,45.440407439315294 
+    -114.2210194031034,45.41717828096532 
+    -114.22251841374711,45.41608426907599 
+    -114.25671857419113,45.43931298095852 
+    -114.2552195669585,45.440407439315294 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_3 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.2543930851163,45.440896174076954 
+    -114.22057875451428,45.4179289527737 
+    -114.2220777939779,45.41683494747349 
+    -114.25589212123636,45.43980172733757 
+    -114.2543930851163,45.440896174076954 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_4 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.25356658906966,45.44138490248089 
+    -114.22013809383984,45.41867962251594 
+    -114.22163716212472,45.417585623805195 
+    -114.25506565407778,45.44029046735949 
+    -114.25356658906966,45.44138490248089 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_5 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.25274007881828,45.44187362452683 
+    -114.21969742107945,45.419430290191876 
+    -114.2211965181869,45.418336298070976 
+    -114.25423917271515,45.44077920102401 
+    -114.25274007881828,45.44187362452683 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_6 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.25154781346801,45.44211406448814 
+    -114.21925673623242,45.4201809558014 
+    -114.22075586216378,45.419086970270705 
+    -114.25304693629775,45.44101965737932 
+    -114.25154781346801,45.44211406448814 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_7 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.25031085006094,45.44232415489473 
+    -114.21881603929813,45.42093161934437 
+    -114.22031519405472,45.41983764040424 
+    -114.25181000182843,45.44122976476408 
+    -114.25031085006094,45.44232415489473 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_8 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.24907557495004,45.44253538364027 
+    -114.21844445506201,45.42172925979768 
+    -114.21994363864012,45.42063528654595 
+    -114.2505747556546,45.44144101046635 
+    -114.24907557495004,45.44253538364027 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_9 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.24786701567842,45.44276474174829 
+    -114.21811303139951,45.42255420013198 
+    -114.21961224379767,45.42146023204448 
+    -114.2493662253165,45.44167038518293 
+    -114.24786701567842,45.44276474174829 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_10 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.24665844716235,45.442994086816896 
+    -114.21778159754363,45.423379139169 
+    -114.21928083876324,45.42228517624602 
+    -114.24815768573355,45.44189974686079 
+    -114.24665844716235,45.442994086816896 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_11 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.24544986940246,45.44322341884575 
+    -114.21745015349371,45.42420407690867 
+    -114.21894942353623,45.42311011915046 
+    -114.24694913690637,45.44212909549963 
+    -114.24544986940246,45.44322341884575 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_12 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.2442412823994,45.44345273783458 
+    -114.21711869924913,45.42502901335088 
+    -114.21861799811599,45.423935060757756 
+    -114.24574057883561,45.442358431099166 
+    -114.2442412823994,45.44345273783458 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_13 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.24303268615382,45.44368204378311 
+    -114.21678723480929,45.42585394849556 
+    -114.21828656250192,45.4247600010678 
+    -114.24453201152195,45.44258775365912 
+    -114.24303268615382,45.44368204378311 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_14 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.24181978266273,45.443908418439975 
+    -114.21645576017353,45.42667888234262 
+    -114.21795511669337,45.42558494008052 
+    -114.24331913696281,45.44281414498427 
+    -114.24181978266273,45.443908418439975 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_15 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.24039914113968,45.443993732296526 
+    -114.21612427534126,45.42750381489201 
+    -114.21762366068974,45.4264098777958 
+    -114.24189852439278,45.44289947822226 
+    -114.24039914113968,45.443993732296526 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_16 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.23897849616102,45.4440790283623 
+    -114.21579278031184,45.4283287461436 
+    -114.2172921944904,45.42723481421363 
+    -114.24047790836596,45.442984793670256 
+    -114.23897849616102,45.4440790283623 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_17 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.23755784772807,45.44416430663719 
+    -114.21546127508465,45.42915367609734 
+    -114.21696071809471,45.428059749333855 
+    -114.23905728888367,45.443070091328096 
+    -114.23755784772807,45.44416430663719 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_18 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.23613719584209,45.44424956712102 
+    -114.21524847886471,45.4300592846805 
+    -114.21674795069961,45.42896536153347 
+    -114.23763666594719,45.443155371195665 
+    -114.23613719584209,45.44424956712102 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_19 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.23471654050442,45.444334809813704 
+    -114.21508865517895,45.43100089660358 
+    -114.21658815583662,45.42990697638131 
+    -114.23621603955785,45.443240633272815 
+    -114.23471654050442,45.444334809813704 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_20 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.23329588171633,45.444420034715066 
+    -114.21492882543302,45.431942508039135 
+    -114.21642835491501,45.43084859074177 
+    -114.23479540971691,45.44332587755943 
+    -114.23329588171633,45.444420034715066 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_21 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.23187521947912,45.44450524182499 
+    -114.21476898962653,45.43288411898716 
+    -114.21626854793438,45.43179020461486 
+    -114.23337477642569,45.44341110405536 
+    -114.23187521947912,45.44450524182499 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_22 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.2304545537941,45.44459043114335 
+    -114.21460914775908,45.43382572944763 
+    -114.21610873489432,45.43273181800054 
+    -114.23195413968547,45.44349631276046 
+    -114.2304545537941,45.44459043114335 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_23 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.22886753140689,45.444562617528945 
+    -114.21455581729015,45.43483972268394 
+    -114.21605543324713,45.433745812771086 
+    -114.23036714625643,45.44346852070611 
+    -114.22886753140689,45.444562617528945 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_24 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.22712105032653,45.444426472693436 
+    -114.21457535517733,45.435903233877674 
+    -114.21607499995275,45.43480932454736 
+    -114.22862069414597,45.44333239951402 
+    -114.22712105032653,45.444426472693436 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_25 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.22537457891485,45.444290301319356 
+    -114.21459489284344,45.43696674491006 
+    -114.21609456643885,45.43587283616229 
+    -114.22687425170156,45.44319625178409 
+    -114.22537457891485,45.444290301319356 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_26 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.22362811717416,45.44415410340707 
+    -114.21505725339709,45.4383311539961 
+    -114.21655695578404,45.43723724004724 
+    -114.22512781892556,45.44306007751675 
+    -114.22362811717416,45.44415410340707 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_27 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.2181964317112,45.4415142793823 
+    -114.21556300154676,45.43972502788927 
+    -114.21706273272348,45.43863110817239 
+    -114.21969616270164,45.440420325270225 
+    -114.2181964317112,45.4415142793823 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_28 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.25740790321208,45.43874365864282 
+    -114.22256686139623,45.41507956817059 
+    -114.2240657855705,45.41398553357131 
+    -114.2589068238233,45.437649169236245 
+    -114.25740790321208,45.43874365864282 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_29 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.25801058151158,45.4381030289341 
+    -114.22324071832084,45.41448741617975 
+    -114.224739613662,45.413393371947976 
+    -114.25950947326689,45.43700853083302 
+    -114.25801058151158,45.4381030289341 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_30 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.25861324596431,45.437462395659615 
+    -114.22391456103855,45.41389525982098 
+    -114.22541342754754,45.412801205957216 
+    -114.26011210886479,45.43636788886447 
+    -114.25861324596431,45.437462395659615 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_31 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.25921589657084,45.436821758819555 
+    -114.22458838954991,45.413303099094485 
+    -114.22608722722767,45.41220903559924 
+    -114.2607147306176,45.435727243330845 
+    -114.25921589657084,45.436821758819555 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_32 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.25981853333174,45.43618111841413 
+    -114.22526220385537,45.41271093400054 
+    -114.2267610127029,45.411616860874325 
+    -114.26131733852588,45.4350865942323 
+    -114.25981853333174,45.43618111841413 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_33 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.26042115624762,45.43554047444357 
+    -114.22593600395545,45.412118764539386 
+    -114.22743478397373,45.41102468178272 
+    -114.26191993259022,45.434445941569095 
+    -114.26042115624762,45.43554047444357 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_34 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.26100965295475,45.434890248062146 
+    -114.22660978985068,45.41152659071124 
+    -114.22810854104067,45.41043249832462 
+    -114.26250840044878,45.4337957066797 
+    -114.26100965295475,45.434890248062146 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_35 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.26129952700906,45.43403733542813 
+    -114.22738518164657,45.411003473131785 
+    -114.22888390400065,45.40990936978934 
+    -114.26279824569504,45.43294278943552 
+    -114.26129952700906,45.43403733542813 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_36 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.26158939175058,45.433184421740656 
+    -114.22826560031255,45.41055173444282 
+    -114.22976429382251,45.40945761877413 
+    -114.26308808162997,45.432089871138125 
+    -114.26158939175058,45.433184421740656 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_37 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.26187924717989,45.432331506999766 
+    -114.2291460050772,45.41009998859631 
+    -114.23064466974355,45.40900586060196 
+    -114.2633779082542,45.43123695178757 
+    -114.26187924717989,45.432331506999766 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_38 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.2621690932976,45.431478591205526 
+    -114.23002639594068,45.409648235592556 
+    -114.231525031764,45.40855409527317 
+    -114.26366772556827,45.43038403138394 
+    -114.2621690932976,45.431478591205526 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_39 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.2624589301043,45.43062567435804 
+    -114.23090677290318,45.40919647543186 
+    -114.23240537988394,45.408102322788054 
+    -114.26395753357279,45.42953110992729 
+    -114.2624589301043,45.43062567435804 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_40 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.26274875760058,45.429772756457346 
+    -114.23178713596485,45.40874470811457 
+    -114.23328571410363,45.40765054314696 
+    -114.26424733226837,45.42867818741769 
+    -114.26274875760058,45.429772756457346 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_41 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.26303857578701,45.42891983750351 
+    -114.23266748512589,45.40829293364098 
+    -114.23416603442321,45.407198756350155 
+    -114.26453712165556,45.427825263855205 
+    -114.26303857578701,45.42891983750351 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_42 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.2633283846642,45.428066917496594 
+    -114.23354782038646,45.40784115201139 
+    -114.23504634084284,45.40674696239799 
+    -114.26482690173499,45.42697233923988 
+    -114.2633283846642,45.428066917496594 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_43 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.26350396580766,45.42713646498469 
+    -114.23474980417038,45.40760793684755 
+    -114.23624829575603,45.40651373071439 
+    -114.26500245409753,45.426041883610345 
+    -114.26350396580766,45.42713646498469 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_44 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.26285512975277,45.42564638630578 
+    -114.23606403219449,45.407450983903146 
+    -114.2375624948982,45.40635675978605 
+    -114.26435358937398,45.424551812572105 
+    -114.26285512975277,45.42564638630578 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_45 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.26220632620493,45.42415630438779 
+    -114.23737825362879,45.4072940156446 
+    -114.23887668744979,45.4061997735443 
+    -114.26370475715846,45.42306173829403 
+    -114.26220632620493,45.42415630438779 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_46 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.26164610233377,45.42272633246012 
+    -114.23912325767026,45.40742972826222 
+    -114.24062166256456,45.40633546255792 
+    -114.26314450460885,45.421631772850084 
+    -114.26164610233377,45.42272633246012 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_47 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.26128046215007,45.42142844396279 
+    -114.24093747305601,45.40761243035622 
+    -114.24243584901392,45.406518140145636 
+    -114.26277883572224,45.420333888297115 
+    -114.26128046215007,45.42142844396279 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_48 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.26091483739522,45.42013055442256 
+    -114.24275170149097,45.407795103871734 
+    -114.24425004850956,45.40670078915566 
+    -114.26241318226583,45.419036002700864 
+    -114.26091483739522,45.42013055442256 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_49 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.26054922806757,45.41883266383961 
+    -114.24456594297264,45.40797774880822 
+    -114.24606426104896,45.406883409587394 
+    -114.262047544238,45.41773811606151 
+    -114.26054922806757,45.41883266383961 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_50 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.26018363416551,45.4175347722141 
+    -114.24638019749841,45.40816036516507 
+    -114.24787848662955,45.407066001440235 
+    -114.26168192163712,45.41644022837918 
+    -114.26018363416551,45.4175347722141 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_51 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.25981805568742,45.41623687954617 
+    -114.2481944650658,45.408342952941666 
+    -114.24969272524879,45.40724856471359 
+    -114.26131631446154,45.41514233965406 
+    -114.25981805568742,45.41623687954617 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_52 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.25945249263162,45.41493898583599 
+    -114.25203895416202,45.409904460192145 
+    -114.25353718515638,45.40881002097193 
+    -114.26095072270961,45.413844449886305 
+    -114.25945249263162,45.41493898583599 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+    <kml:Placemark> <kml:name> swath_53 </kml:name> 
+    <kml:open> 1 </kml:open> 
+    <kml:styleUrl> #msn_ylw-pushpin</kml:styleUrl>
+    <kml:Polygon> <kml:tessellate>1</kml:tessellate> <kml:outerBoundaryIs> <kml:LinearRing> <kml:coordinates> 
+    -114.25908694499651,45.413641091083726 
+    -114.25747444576581,45.41254612604827 
+    -114.258972647354,45.41145161507953 
+    -114.26058514637974,45.412546559076084 
+    -114.25908694499651,45.413641091083726 
+    </kml:coordinates> </kml:LinearRing> </kml:outerBoundaryIs> </kml:Polygon> </kml:Placemark>
+</kml:Folder><kml:Folder><kml:name>LINES__LIDAR_v5</kml:name><kml:Style id="redLine">
+        <kml:LineStyle>
+            <kml:color>ff0000ff</kml:color>
+            <kml:width>2</kml:width>
+        </kml:LineStyle>
+    </kml:Style>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.25755469306115,45.4388370470838 -114.22265014778523,45.41512992127367</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.2567955310315,45.43937146586365 -114.22220953777365,45.4158806005083</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.25596907783705,45.43986021279125 -114.22176891567877,45.4166312776772</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.25514261043875,45.440348953361756 -114.2213282814999,45.417381952780275</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.25431612883632,45.440837687574835 -114.22088763523637,45.418132625817364</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.25348963302952,45.4413264154302 -114.22044697688756,45.41888329678836</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.25229738214578,45.441566863588676 -114.22000630645277,45.419633965693095</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.25106043320767,45.44177696248453 -114.21956562393137,45.42038463253146</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.24982517256538,45.44198819970861 -114.21919405410631,45.421182275829075</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.24861662776063,45.44221756612107 -114.21886264485417,45.422007218745605</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.2474080737112,45.442446919494465 -114.21853122540932,45.42283216036499</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.24619951041775,45.44267625982849 -114.21819979577117,45.423657100687166</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.24499093788094,45.442905587122844 -114.21786835593907,45.42448203971203</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.2437823561014,45.443134901377235 -114.21753690591243,45.42530697743949</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.2425694670764,45.44336128436841 -114.2172054456906,45.426131913869504</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.24114884002988,45.443446607915874 -114.21687397527296,45.42695684900194</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.23972820952719,45.44353191367293 -114.2165424946589,45.42778178283677</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.23830757556959,45.44361720163948 -114.21621100384777,45.42860671537385</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.23688693815842,45.44370247181537 -114.2159982220406,45.42951232576536</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.23546629729493,45.44378772420046 -114.21583841276657,45.430453939150915</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.23404565298047,45.44387295879463 -114.21567859743317,45.43139555204902</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.23262500521628,45.443958175597736 -114.21551877603999,45.43233716445968</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.23120435400371,45.44404337460965 -114.21535894858658,45.43327877638286</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.22961734609558,45.44401557177547 -114.2153056325289,45.43429277038638</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.22787087950013,45.44387943876186 -114.2153251848257,45.435356281871464</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.22612442257203,45.44374327921006 -114.21534473690221,45.43641979319522</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.22437797531363,45.443607093120455 -114.21580711185216,45.43778419968078</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.2189463044692,45.44096730498525 -114.21631287439723,45.439178070689984</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.25815737077927,45.438196416593485 -114.22331633073607,45.41453255352713</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.25876003465058,45.437555782537366 -114.22399017324389,45.41394039671992</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.25936268467565,45.43691514491574 -114.2246640015453,45.41334823554502</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.25996532085506,45.43627450372875 -114.22533781564081,45.41275607000266</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.26056794318941,45.43563385897666 -114.22601161553092,45.4121639000931</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.26117055167927,45.434993210659634 -114.22668540121616,45.41157172581658</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.26175903396188,45.43434298002411 -114.22735917269702,45.410979547173326</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.26204889361183,45.4334900650849 -114.22813455007476,45.41045642411582</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.26233874394973,45.43263714909234 -114.2290149543185,45.410004679263594</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.26262858497617,45.43178423204651 -114.22989534466117,45.4095529272541</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.26291841669173,45.43093131394748 -114.23077572110294,45.40910116808769</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.26320823909703,45.4300783947953 -114.23165608364401,45.408649401764634</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.26349805219262,45.429225474590034 -114.23253643228452,45.40819762828529</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.26378785597912,45.42837255333177 -114.23341676702465,45.40774584764994</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.2640776504571,45.427519631020544 -114.23429708786456,45.40729405985893</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.26425321720974,45.42658917694974 -114.23549905721303,45.40706083643503</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.26360436681995,45.42509910209111 -114.2368132707961,45.40690387449849</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.26295554893771,45.423609023993045 -114.23812747778898,45.40674689724817</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.26239531072677,45.422179055307154 -114.23987246736716,45.406882598063575</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.26202965619113,45.420881168781946 -114.24168666828476,45.40706528790423</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.26166401708502,45.41958328121364 -114.24350088225013,45.4072479491668</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.26129839340679,45.41828539260242 -114.24531510926072,45.407430581850704</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.26093278515482,45.41698750294844 -114.24712934931398,45.407613185955334</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.26056719232749,45.415689612251846 -114.24894360240735,45.407795761480116</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.26020161492313,45.41439172051282 -114.25278807690984,45.409357243234176</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+    <kml:Placemark>
+        <kml:styleUrl>#redLine</kml:styleUrl>
+        <kml:LineString>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:coordinates>-114.25983605294014,45.4130938277315 -114.25822355381153,45.41199887321561</kml:coordinates>
+        </kml:LineString>
+    </kml:Placemark>
+</kml:Folder><kml:Folder><kml:name>POLY__LIDAR_v5</kml:name><kml:Style id="orangeOutline">
+        <kml:LineStyle>
+            <kml:color>ff00a5ff</kml:color> 
+            <kml:width>4</kml:width>
+        </kml:LineStyle>
+        <kml:PolyStyle>
+            <kml:fill>0</kml:fill> 
+        </kml:PolyStyle>
+    </kml:Style>
+    <kml:Placemark>
+        <kml:styleUrl>#orangeOutline</kml:styleUrl>
+        <kml:Polygon>
+            <kml:tessellate>1</kml:tessellate>
+            <kml:outerBoundaryIs>
+                <kml:LinearRing>
+                    <kml:coordinates>-114.26250967836546,45.422584990453196 -114.26433217397793,45.42677049462732 -114.2617459531633,45.43438146973465 -114.25737347553955,45.43902967294552 -114.25339964022596,45.44137962955808 -114.24989732744658,45.441974505163095 -114.24259826422764,45.443359554611476 -114.23050904408612,45.44408506703768 -114.22291621567908,45.44349308568616 -114.21636645471489,45.439325733033925 -114.21534648082613,45.43651465238116 -114.21529402256218,45.43366127303936 -114.21610871705691,45.42886125611498 -114.21940365042619,45.42066053553186 -114.22266464273515,45.41510522544924 -114.22770162927469,45.41067855517659 -114.23452482089351,45.40717718309605 -114.23830936665884,45.40672517001512 -114.2489563735712,45.40779704658732 -114.25604596965809,45.41068362856773 -114.25979496017004,45.41294792830172 -114.26250967836546,45.422584990453196</kml:coordinates>
+                </kml:LinearRing>
+            </kml:outerBoundaryIs>
+        </kml:Polygon>
+    </kml:Placemark>
+</kml:Folder></kml:Document></kml:kml>

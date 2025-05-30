@@ -25,6 +25,8 @@ from .functions import (sort_lines_and_tofs,
                         ColorCycler,
                         construct_the_upper_hierarchy,
                         construct_the_lower_hierarchy)
+from .cutting_and_extending_lines import cut_and_extend_lines
+
 import os
 import numpy as np
 from .plugin_tools import show_error
@@ -39,13 +41,14 @@ class Save_Pickle():
 
 def make_new_flights(settings_dict):
     plugin_global = Global_Singleton()
-    flight_lines_input_path = settings_dict["Flight lines file_path"]
-    tof_points_input_path = settings_dict["Take-off file path"]
+    tof_points_input_path = settings_dict["Take-off file"]
     max_flt_size = settings_dict["max_flt_size"]
     max_number_of_lines_per_flight = settings_dict["max_number_of_lines_per_flight"]
     line_flight_order_reverse = settings_dict["line_flight_order_reverse"]
     prefer_even_number_of_lines = settings_dict["prefer_even_number_of_lines"]
+    hussein_drone_swarm = settings_dict["Hussein Drone Swarm Generation"]
     flight_settings = {
+        "max_flight_size": settings_dict["max_flt_size"],
         "lead_in": settings_dict["lead_in"],
         "lead_out": settings_dict["lead_out"],
         "add_smooth_turns": settings_dict["add_smooth_turns"],
@@ -54,10 +57,18 @@ def make_new_flights(settings_dict):
         "line_direction_reverse": settings_dict["line_direction_reverse"],
         "name_tie_not_flt": settings_dict["Tie"]
     }
+    apply_cutting = not settings_dict["⏒—⏒ A single line file that has already been cut and extended manually"]
+    if apply_cutting:
+        cutter_lines_file_path = settings_dict["Cutter file"]
+        extend_distance_meters = settings_dict["Extend by"]
+        initial_flight_lines_input_path = settings_dict["Lines file"]
+    else:
+        initial_flight_lines_input_path = settings_dict["Cut extended lines file path"]
+
     settings_dict_for_pickle = settings_dict.copy()
     settings_dict = None # don't use settings_dict from here on
 
-    flight_lines_input_layer = QgsVectorLayer(flight_lines_input_path, "flight_lines_input_path", "ogr")
+    flight_lines_input_layer = QgsVectorLayer(initial_flight_lines_input_path, "initial_flight_lines_input_path", "ogr")
 
     if flight_lines_input_layer.isValid():
         lines_source_and_target_crs = get_source_and_target_crs_from_layer(flight_lines_input_layer)
@@ -67,7 +78,7 @@ def make_new_flights(settings_dict):
     if not str(lines_source_and_target_crs['source_crs_epsg_int'])[:-2] in ['326', '327']:
         print(f"Will now convert lines to UTM zone {lines_source_and_target_crs['target_utm_num_int']} "
               f"'{lines_source_and_target_crs['target_utm_letter']}'")
-        reprojected_lines_path = os.path.splitext(flight_lines_input_path)[0] + '_UTM.shp'
+        reprojected_lines_path = os.path.splitext(initial_flight_lines_input_path)[0] + '_UTM.shp'
 
         reproject_vector_layer(flight_lines_input_layer,
                                reprojected_lines_path,
@@ -75,7 +86,7 @@ def make_new_flights(settings_dict):
         flight_lines_path = reprojected_lines_path
         flight_lines_layer = QgsVectorLayer(flight_lines_path, "flight_lines_path", "ogr")
     else:
-        flight_lines_path = flight_lines_input_path
+        flight_lines_path = initial_flight_lines_input_path
         flight_lines_layer = flight_lines_input_layer
     if not flight_lines_layer.isValid():
         show_error('selected layer not valid')
@@ -99,9 +110,20 @@ def make_new_flights(settings_dict):
     if not tof_points_layer.isValid():
         show_error('selected layer not valid')
 
-    show_feedback_popup = False
+    if apply_cutting:
+            # split & extend lines before continuing
+            flight_lines_path, flight_lines_layer = cut_and_extend_lines(
+                cutter_lines_file_path,
+                flight_lines_path,
+                extend_distance_meters,
+                global_crs_target
+            )
+
     lines_obs, user_assigned_unique_strip_letters = extract_line_obj_from_line_layer(flight_lines_layer, flight_lines_path)
+    show_feedback_popup = False
     tofs = extract_tof_obj_from_tof_layer(tof_points_layer, tof_points_path, show_feedback_popup=show_feedback_popup)
+
+    #raise ValueError("yo ima stopp here")
 
     unique_strip_letters, line_groups = validate_inputs.validate_and_process_lines(lines_obs, user_assigned_unique_strip_letters)
 
@@ -125,18 +147,21 @@ def make_new_flights(settings_dict):
     num_chil = [len(line_group.children) for line_group in parent_line_groups]
     '''
 
-    survey_area = construct_the_upper_hierarchy(lines, tofs, unique_strip_letters, prefer_even_number_of_lines)
+    survey_area = construct_the_upper_hierarchy(lines, tofs, unique_strip_letters, prefer_even_number_of_lines, sort_angle)
     survey_area.line_groups = line_groups
     survey_area.global_crs_target = global_crs_target
     survey_area.flight_settings = flight_settings
     survey_area.color_cycle = ColorCycler()
-    construct_the_lower_hierarchy(survey_area,
-                                  max_flt_size,
-                                  max_number_of_lines_per_flight,
-                                  prefer_even_number_of_lines)
+
+    if hussein_drone_swarm:
+        pass
+        # Add hussein's functions here
+    else:
+        construct_the_lower_hierarchy(survey_area, max_flt_size, max_number_of_lines_per_flight, prefer_even_number_of_lines)
 
     survey_area.rename_everything()
     survey_area.recolor_everything()
+    survey_area.backup_colors()
     survey_area.past_states = []
 
 
@@ -145,7 +170,7 @@ def make_new_flights(settings_dict):
     # TESTING  ------------------------------------------------------------
     # flight_test =  survey_area.flight_list[2]
     #flight_test.flip_lines()
-    line_groups[0]
+    #line_groups[0]
     # TESTING  ------------------------------------------------------------
     # TESTING
 
@@ -167,7 +192,11 @@ def main(settings_path):
     base_name = "saved_flights._2D_flts"
 
     if not do_load_pickle:
-        flight_lines_input_path = settings_dict["Flight lines file_path"]
+        apply_cutting = not settings_dict["⏒—⏒ A single line file that has already been cut and extended manually"]
+        if apply_cutting:
+            flight_lines_input_path = settings_dict["Lines file"]
+        else:
+            flight_lines_input_path = settings_dict["Cut extended lines file path"]
         pickle_obj = make_new_flights(settings_dict)
         pickle_obj.main_input_name = os.path.splitext(os.path.basename(flight_lines_input_path))[0]
         pickle_obj.save_folder_dir_path = os.path.dirname(flight_lines_input_path)

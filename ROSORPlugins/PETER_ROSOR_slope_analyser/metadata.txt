@@ -2,7 +2,7 @@
 name= Slope Analyser
 qgisMinimumVersion=3.0
 description=ROSOR's slope analyser plugin
-version=1.2025.3.22.2
+version=1.2025.5.30.1
 author=Pyotyr Young and Sharjeel AWon
 email=pyotyr@msn.com, pyotyr@rosor.ca
 icon=plugin_icon.png

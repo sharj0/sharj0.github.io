@@ -28,11 +28,16 @@ class Node:
 
         # Now remove any children that are marked deleted
         deleted_any = False
-        for child in list(self.children):  # re-loop because process_deletions above might've marked some
+        for child in list(self.children):
             if child.deleted:
                 print(f"Removing {child.name} from {self.name}")
                 self.children.remove(child)
                 child.parent = None
+                # Clear the graphic if it exists
+                if hasattr(child, 'graphic') and child.graphic:
+                    print(f"Clearing graphic for {child.name}")
+                    child.graphic.clear()
+                    child.graphic = None
                 deleted_any = True
 
         # If any deletions occurred, check if this node is now empty and deletable
@@ -43,6 +48,11 @@ class Node:
                 current.check_empty()
                 if current.deleted and not before:
                     print(f"{current.name} now marked deleted from cleanup")
+                    # Clear the graphic for this node too
+                    if hasattr(current, 'graphic') and current.graphic:
+                        print(f"Clearing graphic for {current.name}")
+                        current.graphic.clear()
+                        current.graphic = None
                 if not current.deleted:
                     break
                 current = current.parent
@@ -395,6 +405,8 @@ class Node:
 
     @property
     def efficiency_percent(self):
+        if self.total_length == 0:
+            return 0.0
         return (self.production_length/self.total_length)*100
 
     @property
@@ -476,26 +488,24 @@ class Node:
     @property
     def short_name(self):
         letter = self.__class__.__name__[0].upper()
-        return f'{letter}{self.global_count}'
+        count = getattr(self, 'global_count', 1)
+        return f'{letter}{count}'
 
     def get_list_of_all_children_at_level(self, class_string):
         """
-        Traverses the entire subtree below the current node and collects all nodes
-        whose class name matches the provided class_string.
-        Returns a list of matching child nodes. If no matching node is found, returns an empty list.
+        Returns all children (descendants) matching the specified class name.
+        If the current node itself matches the class_string, return [self].
+        Otherwise, recursively search children.
         """
+        # Match the current node
+        if self.__class__.__name__ == class_string:
+            return [self]
+
         matching_children = []
-
-        # Helper function: traverse recursively
-        def traverse(node):
-            for child in node.children:
-                if child.__class__.__name__ == class_string:
-                    matching_children.append(child)
-                # Continue traversing down from the child node
-                traverse(child)
-
-        traverse(self)
+        for child in self.children:
+            matching_children.extend(child.get_list_of_all_children_at_level(class_string))
         return matching_children
+
 
     def get_parent_at_level(self, class_string):
         """

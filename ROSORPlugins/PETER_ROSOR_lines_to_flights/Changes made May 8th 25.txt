@@ -1,0 +1,9 @@
+Changes made:
+
+settings.json
+plugin_next_app_stage.py
+validate lines --- to not roate by 90
+
+added new .py file:
+cutting_and_extending_lines.py
+

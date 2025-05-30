@@ -69,6 +69,7 @@ def assign_lines_to_TOFs(strip_lines, tofs):
     return tof_assignments
 
 
+
 def redistribute_lines_evenly_old(strip):
     """
     Redistributes lines among the initial TOF assignment nodes (strip.children)
@@ -138,6 +139,36 @@ import math # Import math for isinf and isnan if needed later, though unlikely h
 
 # Set up basic logging if you want warnings instead of prints
 # logging.basicConfig(level=logging.WARNING)
+
+def fix_interleaved_assignments(strip, sort_angle):
+    """
+    Completely rebuilds TOF assignments by taking all lines, sorting them spatially,
+    and reassigning them in contiguous blocks that match original assignment sizes.
+    """
+    assignments = strip.children
+    # Collect all lines
+    all_lines = [line for node in assignments for line in node.children]
+    # Sort lines spatially
+    sorted_lines = sorted(all_lines, key=lambda l: calculate_projection(l.centroid_xy, sort_angle))
+
+    # Calculate how many lines each assignment should get (based on current assignment sizes)
+    assignment_sizes = [len(node.children) for node in assignments]
+    total_assigned = sum(assignment_sizes)
+    if total_assigned != len(sorted_lines):
+        raise ValueError("Mismatch in total lines during reassignment.")
+
+    # Clear old assignments
+    for node in assignments:
+        node.children = []
+
+    # Assign sorted lines back in contiguous blocks
+    cursor = 0
+    for i, count in enumerate(assignment_sizes):
+        for j in range(count):
+            line = sorted_lines[cursor]
+            assignments[i].add_child_to_right(line)
+            cursor += 1
+
 
 def redistribute_lines_evenly(strip):
     """
@@ -332,7 +363,8 @@ def redistribute_lines_evenly(strip):
 
 
 
-def construct_the_upper_hierarchy(lines, tofs, unique_strip_letters, prefer_even_number_of_lines):
+def construct_the_upper_hierarchy(lines, tofs, unique_strip_letters, prefer_even_number_of_lines, sort_angle):
+
     survey = SurveyArea("SurveyArea")
     if len(unique_strip_letters) == 0:
         txt = 'No strips have been assigned'
@@ -363,6 +395,7 @@ def construct_the_upper_hierarchy(lines, tofs, unique_strip_letters, prefer_even
 
         if prefer_even_number_of_lines:
             redistribute_lines_evenly(strip)
+            fix_interleaved_assignments(strip, sort_angle)
 
         for initial_tof_assignment in strip.children:
             initial_tof_assignment = strip.remove_left_child()
@@ -460,7 +493,6 @@ def construct_the_lower_hierarchy(survey_area,
                                   max_flt_size,
                                   max_number_of_lines_per_flight,
                                   prefer_even_number_of_lines):
-
     """
     For each quadrant in the survey_area:
       1. Create a prototype flight by adding all its initial lines.

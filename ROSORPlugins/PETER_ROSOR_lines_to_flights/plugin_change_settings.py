@@ -6,10 +6,9 @@ A CHANGE TO THIS .PY IN ONE OF THE PLUGINS SHOULD BE COPPY-PASTED TO ALL THE OTH
 import os
 import sys
 import json
-from PyQt5.QtWidgets import QWidget, QScrollArea, \
-    QVBoxLayout, QHBoxLayout, QGridLayout, \
-    QLabel, QLineEdit, QCheckBox, QFileDialog, \
-    QGroupBox, QPushButton, QComboBox, QRadioButton, QSizePolicy, QButtonGroup, QMenu
+from PyQt5.QtWidgets import (QWidget, QScrollArea, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QLineEdit, QCheckBox, QFileDialog,
+                            QGroupBox, QPushButton, QComboBox, QRadioButton, QSizePolicy, QButtonGroup, QMenu, QDockWidget)
+
 from PyQt5.QtGui import QFont, QIcon, QColor, QPixmap
 from qgis.core import QgsProject, QgsLayerTreeLayer
 from PyQt5.QtCore import Qt, pyqtSignal, QSize, QUrl
@@ -373,6 +372,9 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
             return next((key for key, value in original_group.items() if isinstance(value, bool) and value), None)
 
         def on_accept(self):
+            console = iface.mainWindow().findChild(QDockWidget, 'PythonConsole')
+            if console is None or not console.isVisible():
+                iface.actionShowPythonDialog().trigger()
             newest_file = plugin_tools.get_newest_file_in(plugin_dir=plugin_dir, folder=settings_folder)
             if os.path.normpath(set_curr_file) == os.path.normpath(newest_file):
                 using_newest = True

@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom"> 
+<Document>
+   <name> SWATHS__LIDAR_v4 </name>
+	<StyleMap id="msn_ylw-pushpin">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_ylw-pushpin</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_ylw-pushpin</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_ylw-pushpin">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<BalloonStyle>
+		</BalloonStyle>
+		<LineStyle>
+			<color>8000ffff</color>
+		</LineStyle>
+		<PolyStyle>
+			<color>3300ffff</color>
+		</PolyStyle>
+	</Style>
+	<Style id="sn_ylw-pushpin">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<BalloonStyle>
+		</BalloonStyle>
+		<LineStyle>
+			<color>ff00ff00</color>
+		</LineStyle>
+		<PolyStyle>
+			<color>4500ffff</color>
+		</PolyStyle>
+	</Style>
+    <Placemark> <name> swath_0 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26428849706434,45.42751427046208 
+    -114.21737360863186,45.42638013491507 
+    -114.21744831531167,45.42486071962759 
+    -114.26436194805852,45.42599479542053 
+    -114.26428849706434,45.42751427046208 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_1 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26404594664895,45.4282645735936 
+    -114.21707273901465,45.4271289167655 
+    -114.2171474557155,45.425609502066344 
+    -114.2641194060713,45.42674509906022 
+    -114.26404594664895,45.4282645735936 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_2 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26379111515995,45.429014581725546 
+    -114.21677186099669,45.42787769754681 
+    -114.21684658771932,45.42635828343606 
+    -114.26386458333958,45.427495107715906 
+    -114.26379111515995,45.429014581725546 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_3 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.263536276473,45.42976458904332 
+    -114.21647097457752,45.428626477258994 
+    -114.21654571132261,45.427107063736685 
+    -114.26360975341055,45.42824511555743 
+    -114.263536276473,45.42976458904332 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_4 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26328143058772,45.43051459554685 
+    -114.21617007975668,45.42937525590197 
+    -114.21624482652491,45.427855842968135 
+    -114.26335491628377,45.42899512258475 
+    -114.26328143058772,45.43051459554685 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_5 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26302657750372,45.431264601236094 
+    -114.21598548050983,45.43012687045599 
+    -114.21606023418886,45.42860745796126 
+    -114.26310007195885,45.42974512879784 
+    -114.26302657750372,45.431264601236094 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_6 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26277171722059,45.432014606111004 
+    -114.21585768099672,45.43087987019156 
+    -114.21593244006648,45.42936045806291 
+    -114.26284522043541,45.43049513419665 
+    -114.26277171722059,45.432014606111004 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_7 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26251684973789,45.43276461017157 
+    -114.21572987760851,45.43163286961542 
+    -114.21580464206937,45.430113457852876 
+    -114.26259036171302,45.431245138781115 
+    -114.26251684973789,45.43276461017157 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_8 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26226197505528,45.43351461341771 
+    -114.21560207034503,45.432385868727536 
+    -114.21567684019728,45.43086645733112 
+    -114.2623354957913,45.43199514255121 
+    -114.26226197505528,45.43351461341771 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_9 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26200709317233,45.43426461584938 
+    -114.21547425920603,45.43313886752792 
+    -114.21554903445004,45.43161945649763 
+    -114.26208062266983,45.432745145506885 
+    -114.26200709317233,45.43426461584938 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_10 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26175220408864,45.435014617466564 
+    -114.21534644419133,45.43389186601656 
+    -114.2154212248274,45.43237245535241 
+    -114.26182574234822,45.43349514764809 
+    -114.26175220408864,45.435014617466564 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_11 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26113105858178,45.435755830322314 
+    -114.21526076438224,45.434645892335155 
+    -114.21533554928266,45.433126481982995 
+    -114.2612046154103,45.434236361490925 
+    -114.26113105858178,45.435755830322314 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_12 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26043552700567,45.43649525432857 
+    -114.21527467085181,45.435402348308926 
+    -114.21534945735065,45.43388293814075 
+    -114.26050910439574,45.43497578657852 
+    -114.26043552700567,45.43649525432857 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_13 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.25973997698594,45.437234673585685 
+    -114.21528857720992,45.436158804201064 
+    -114.21536336530724,45.43463939421685 
+    -114.25981357493905,45.43571520691722 
+    -114.25973997698594,45.437234673585685 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_14 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.25904440852172,45.43797408809338 
+    -114.21530248345653,45.43691526001158 
+    -114.21537727315237,45.43539585021135 
+    -114.25911802703932,45.436454622506744 
+    -114.25904440852172,45.43797408809338 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_15 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.25834882161209,45.4387134978513 
+    -114.21545448048542,45.43767508480513 
+    -114.21552926808265,45.43615567501136 
+    -114.25842246069568,45.43719403334674 
+    -114.25834882161209,45.4387134978513 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_16 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.25765321625616,45.43945290285913 
+    -114.21573127703604,45.43843795379263 
+    -114.21580605919307,45.436918543844946 
+    -114.25772687590724,45.437933439436904 
+    -114.25765321625616,45.43945290285913 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_17 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.25666716216247,45.44018532295035 
+    -114.21600808059564,45.4392008221952 
+    -114.21608285731195,45.43768141209361 
+    -114.25674085015983,45.43866586097845 
+    -114.25666716216247,45.44018532295035 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_18 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.25543851270768,45.44091190128441 
+    -114.21628489116463,45.43996369001275 
+    -114.21635966243969,45.43844427975731 
+    -114.2555122355492,45.43939244107062 
+    -114.25543851270768,45.44091190128441 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_19 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.25420983186011,45.44163846556815 
+    -114.21736749595165,45.44074620518667 
+    -114.2174422402088,45.43922679374221 
+    -114.25428358954827,45.44011900711323 
+    -114.25420983186011,45.44163846556815 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_20 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.25215178632203,45.442345052835 
+    -114.2186031514256,45.44153243978917 
+    -114.218677864565,45.44001302695974 
+    -114.25222560106916,45.44082559719147 
+    -114.25215178632203,45.442345052835 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_21 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.2484028311408,45.44301085163374 
+    -114.21983884138203,45.44231866172569 
+    -114.21991352340092,45.44079924751194 
+    -114.24847674823333,45.44149140095065 
+    -114.2484028311408,45.44301085163374 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_22 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.2448676205133,45.44368168681412 
+    -114.22107456582225,45.44310487099511 
+    -114.22114921671788,45.441585455397686 
+    -114.244941634231,45.442162240826086 
+    -114.2448676205133,45.44368168681412 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_23 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.23944063095746,45.444306672999346 
+    -114.22231032474755,45.443891067596304 
+    -114.22238494451717,45.4423716506159 
+    -114.23951479196869,45.44278723412202 
+    -114.23944063095746,45.444306672999346 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_24 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26395576472304,45.42675017785838 
+    -114.21767446984882,45.425631351995634 
+    -114.21774916650823,45.42411193611986 
+    -114.26402922268778,45.42523070303517 
+    -114.26395576472304,45.42675017785838 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_25 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26362304093057,45.42598608440274 
+    -114.21797532266595,45.42488256800722 
+    -114.21805000930568,45.423363151543214 
+    -114.26369650586524,45.42446660979792 
+    -114.26362304093057,45.42598608440274 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_26 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26329032568643,45.425221990095245 
+    -114.21827616708374,45.424133782949895 
+    -114.2183508437045,45.42261436589772 
+    -114.26336379759037,45.42370251570886 
+    -114.26329032568643,45.425221990095245 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_27 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26295761899013,45.42445789493599 
+    -114.21857700310267,45.423384996823735 
+    -114.21865166970512,45.42186557918343 
+    -114.26303109786268,45.42293842076807 
+    -114.26295761899013,45.42445789493599 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_28 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26262492084113,45.42369379892502 
+    -114.21887783072317,45.4226362096288 
+    -114.21895248730803,45.4211167914004 
+    -114.26269840668164,45.422174324975636 
+    -114.26262492084113,45.42369379892502 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_29 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26235643732095,45.42293124209531 
+    -114.21917864994575,45.42188742136513 
+    -114.21925329651368,45.420368002548734 
+    -114.2624299284104,45.421411768283335 
+    -114.26235643732095,45.42293124209531 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_30 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.2621419626664,45.422169980093784 
+    -114.21953092184819,45.42113988570433 
+    -114.2196055570229,45.419620466233894 
+    -114.2622154575591,45.420650506350974 
+    -114.2621419626664,45.422169980093784 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_31 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26192749332051,45.42140871773336 
+    -114.21996855331595,45.42039442806277 
+    -114.22004317481397,45.41887500782884 
+    -114.26200099201603,45.41988924405976 
+    -114.26192749332051,45.42140871773336 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_32 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.2617130292829,45.42064745501409 
+    -114.22040617286378,45.419648968383356 
+    -114.22048078068605,45.41812954738601 
+    -114.26178653178086,45.4191279814097 
+    -114.2617130292829,45.42064745501409 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_33 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26149857055327,45.41988619193601 
+    -114.2208437804923,45.418903506666226 
+    -114.22091837463981,45.41738408490557 
+    -114.26157207685327,45.41836671840084 
+    -114.26149857055327,45.41988619193601 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_34 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.2612841171313,45.41912492849914 
+    -114.22128137620217,45.4181580429115 
+    -114.22135595667586,45.41663862038765 
+    -114.26135762723291,45.417605455033225 
+    -114.2612841171313,45.41912492849914 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_35 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26106966901662,45.41836366470351 
+    -114.221718959994,45.41741257711933 
+    -114.22179352679488,45.41589315383238 
+    -114.26114318291948,45.41684419130686 
+    -114.26106966901662,45.41836366470351 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_36 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26085522620893,45.417602400549164 
+    -114.22215653186849,45.41666710928981 
+    -114.22223108499752,45.41514768523988 
+    -114.26092874391264,45.41608292722179 
+    -114.26085522620893,45.417602400549164 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_37 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.2606407887079,45.41684113603615 
+    -114.22259409182624,45.415921639423104 
+    -114.22266863128438,45.414402214610284 
+    -114.26071431021205,45.415321662778055 
+    -114.2606407887079,45.41684113603615 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_38 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26042635651318,45.41607987116446 
+    -114.22340096304939,45.41518515280985 
+    -114.22347547895708,45.41366572676085 
+    -114.2604998818174,45.41456039797567 
+    -114.26042635651318,45.41607987116446 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_39 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.26021192962446,45.41531860593416 
+    -114.22423821653443,45.4144493993289 
+    -114.22431270808005,45.412929972005074 
+    -114.26028545872833,45.413799132814695 
+    -114.26021192962446,45.41531860593416 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_40 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.25999750804141,45.414557340345276 
+    -114.22507544808714,45.4137136391051 
+    -114.22514991527243,45.41219421050683 
+    -114.26007104094454,45.41303786729513 
+    -114.25999750804141,45.414557340345276 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_41 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.25978309176368,45.41379607439783 
+    -114.22591265770846,45.41297787213893 
+    -114.22598710053518,45.411458442266536 
+    -114.25985662846568,45.41227660141703 
+    -114.25978309176368,45.41379607439783 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_42 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.25860579429384,45.41301168501529 
+    -114.2267498453994,45.412242098430845 
+    -114.22682426386929,45.41072266728468 
+    -114.25867936055481,45.41149221332215 
+    -114.25860579429384,45.41301168501529 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_43 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.25730201344312,45.4122242440392 
+    -114.22758701116094,45.41150631798132 
+    -114.22766140527574,45.40998688556175 
+    -114.2573756126451,45.41070477379448 
+    -114.25730201344312,45.4122242440392 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_44 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.25599267431477,45.4114366544103 
+    -114.2289413465463,45.41078308880629 
+    -114.2290157024733,45.40926365445203 
+    -114.2560663066045,45.40991718562184 
+    -114.25599267431477,45.4114366544103 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_45 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.25401881388566,45.41063306395405 
+    -114.23034835208286,45.41006112162402 
+    -114.23042266841497,45.40854168526859 
+    -114.25409249703776,45.40911359746489 
+    -114.25401881388566,45.41063306395405 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_46 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.25204501057493,45.409829440561325 
+    -114.2317553221144,45.409339136162416 
+    -114.23182959885445,45.407819697806744 
+    -114.25211874458476,45.40830997637316 
+    -114.25204501057493,45.409829440561325 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_47 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.25007126438246,45.40902578423503 
+    -114.23316225664168,45.40861713242277 
+    -114.23323649379245,45.40709769206782 
+    -114.25014504924542,45.4075063223496 
+    -114.25007126438246,45.40902578423503 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+    <Placemark> <name> swath_48 </name> 
+    <open> 1 </open> 
+    <styleUrl> #msn_ylw-pushpin</styleUrl>
+    <Polygon> <tessellate>1</tessellate> <outerBoundaryIs> <LinearRing> <coordinates> 
+    -114.24480471926735,45.40814265388393 
+    -114.23479240409632,45.40790051939827 
+    -114.23486659568941,45.406381076760034 
+    -114.24487864305637,45.406623198488475 
+    -114.24480471926735,45.40814265388393 
+    </coordinates> </LinearRing> </outerBoundaryIs> </Polygon> </Placemark>
+</Document> 
+</kml>

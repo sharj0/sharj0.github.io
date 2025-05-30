@@ -73,9 +73,32 @@ class NodeGraphic:
         Create and add the annotation for this node.
         The label displays a letter (from the node's class name) plus metrics from the node.
         """
-        line1 = f'{self.node.short_name}'
-        line2 = f'{round(self.node.total_length / 1000, 1)}km'
-        line3 = f'{round(self.node.efficiency_percent)}%'
+        centroid = self.node.end_point_centroid
+        if centroid is None:
+            return None
+
+        classname = self.node.__class__.__name__
+        if classname == "TOFAssignment":
+            # Label with TOF name
+            line1 = str(self.node.tof)
+
+            # Sum total length and compute average efficiency from flights
+            total_len = sum(f.total_length for f in self.node.flight_list if not f.deleted)
+            avg_eff = np.mean([f.efficiency_percent for f in self.node.flight_list if not f.deleted]) if self.node.flight_list else 0
+
+            line2 = f'{round(total_len / 1000, 1)}km'
+            line3 = f'{round(avg_eff)}%'
+
+        elif classname == "SurveyArea":
+            line1 = self.node.short_name
+            line2 = f'{round(self.node.total_length / 1000, 1)}km'
+            line3 = f'{self.node.efficiency_percent:.3f} %'
+
+        else:
+            line1 = self.node.short_name
+            line2 = f'{round(self.node.total_length / 1000, 1)}km'
+            line3 = f'{round(self.node.efficiency_percent)}%'
+
         label_text = f'{line1}<br>{line2}<br>{line3}'
         doc = QTextDocument()
         doc.setHtml(
@@ -151,7 +174,6 @@ class NodeGraphic:
         Apply selection styling to this node.
         If a selected version already exists, clear it before re-creating.
         """
-        print(f'Selected {self.node}')
         if self.selection_graphic is not None:
             self.selection_graphic.clear()
         self.selection_graphic = NodeGraphic(self.node, self.plugin_canvas_gui, highlighted=False, selected=True)

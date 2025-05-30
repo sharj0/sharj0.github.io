@@ -21,7 +21,7 @@ from qgis.core import (
 )
 
 from qgis.PyQt.QtCore import Qt, QEvent, QVariant
-from qgis.PyQt.QtWidgets import QDockWidget
+from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.PyQt.QtGui import QColor, QFont
 from qgis.gui import QgsMapTool
 from .Node_Graphic_Class import NodeGraphic
@@ -38,6 +38,7 @@ class PluginCanvasGui(QgsMapTool):
         self.dock_widget = dock_widget
         self.current_selection = None  # A NodeGraphic currently selected
         self.current_highlight = None  # A NodeGraphic currently highlighted
+        self.current_highlights = []
         self.nodeLayer = self.create_nodeLayer()  # Create the shared node layer once
         self._level = None  # Backing variable for level; not set until display_level() is called
         self.overallExtent = None
@@ -73,6 +74,54 @@ class PluginCanvasGui(QgsMapTool):
             for node in self.displayed_nodes:
                 if not node.deleted:
                     node.graphic = NodeGraphic(node, self)
+
+    def preview_target_node(self, action_type):
+        self.remove_highlight()
+        if not self.current_selection:
+            return
+        src = self.current_selection.node
+        tgt = None
+
+        if action_type == "take_left":
+            if hasattr(src, "_take_left_node_specific"):
+                tgt = src._immediate_left_neighbour()
+            if tgt and hasattr(tgt, "graphic") and tgt.graphic:
+                self.set_highlight(tgt.graphic)
+            return
+        elif action_type == "take_right":
+            if hasattr(src, "_take_right_node_specific"):
+                tgt = src._immediate_right_neighbour()
+            if tgt and hasattr(tgt, "graphic") and tgt.graphic:
+                self.set_highlight(tgt.graphic)
+            return
+        elif action_type == "give_left":
+            if hasattr(src, "_give_left_node_specific"):
+                tgt = src._immediate_left_neighbour()
+            if tgt and hasattr(tgt, "graphic") and tgt.graphic:
+                self.set_highlight(tgt.graphic)
+            return
+        elif action_type == "give_right":
+            if hasattr(src, "_give_right_node_specific"):
+                tgt = src._immediate_right_neighbour()
+            if tgt and hasattr(tgt, "graphic") and tgt.graphic:
+                self.set_highlight(tgt.graphic)
+            return
+        elif action_type == "take_left_cascade":
+            # Highlight all nodes to the left in the strip
+            node = src
+            while node is not None:
+                if hasattr(node, "graphic") and node.graphic:
+                    self.set_highlight(node.graphic)
+                node = getattr(node, "left_neighbour", None)
+            return
+        elif action_type == "take_right_cascade":
+            # Highlight all nodes to the right in the strip
+            node = src
+            while node is not None:
+                if hasattr(node, "graphic") and node.graphic:
+                    self.set_highlight(node.graphic)
+                node = getattr(node, "right_neighbour", None)
+            return
 
     def create_nodeLayer(self):
         """
@@ -227,6 +276,35 @@ class PluginCanvasGui(QgsMapTool):
             print(f"QML style file saved to {qml_path}")
 
     def save(self, save_as_shp: bool = False):
+
+        '''---- FLIGHT LENGTH CHECK ----'''
+        max_flt_size = self.root.flight_settings.get("max_flight_size", None)
+        if max_flt_size is not None:
+            over_limit = []
+            for tof in self.root.TOF_list:
+                for flight in tof.flight_list:
+                    total_length = getattr(flight, "total_length", None)
+                    if total_length is None and hasattr(flight, "utm_fly_list"):
+                        pts = getattr(flight, "utm_fly_list", [])
+                        if len(pts) > 1:
+                            total_length = sum(
+                                (( (pts[i][0] - pts[i-1][0])**2 + (pts[i][1] - pts[i-1][1])**2 )**0.5)
+                                for i in range(1, len(pts))
+                            )
+                        else:
+                            total_length = 0
+                    if total_length is not None and total_length > max_flt_size:
+                        over_limit.append(f"{getattr(flight, 'short_output_name', str(flight))} (length: {total_length:.1f} m)")
+
+            if over_limit:
+                msg = (
+                    "The following flights exceed the max_flt_size setting ({} m):\n\n".format(max_flt_size) +
+                    "\n".join(over_limit) +
+                    "\n\nPlease adjust your settings or split these flights before saving."
+                )
+                QMessageBox.critical(None, "Flight Length Limit Exceeded", msg)
+                return
+
         '''---- CREATING THE OUTPUT PACKAGE FOLDER ----'''
         name = self.root.main_input_name+'_OUTPUT_PACKAGE'
         save_folder = os.path.join(self.root.save_folder_dir_path,name)
@@ -244,7 +322,7 @@ class PluginCanvasGui(QgsMapTool):
 
         '''---- SAVING THE LINES ----'''
         lines_file_path = os.path.join(output_package_folder,
-                                        self.root.main_input_name+'.shp')
+                                        self.root.main_input_name+'_named.shp')
         lines_file_path = get_name_of_non_existing_output_file(lines_file_path)
         self.save_lines_to_file(lines_file_path)
 
@@ -296,6 +374,29 @@ class PluginCanvasGui(QgsMapTool):
                     flight.color,
                     save_shp=save_as_shp
                 )
+
+            '''---- COPY OUTPUT_STYLE.QML ----'''
+            lines_basename = os.path.splitext(os.path.basename(lines_file_path))[0]
+            try:
+                # Path to the template QML style file (in your plugin folder)
+                plugin_dir = os.path.dirname(__file__)
+                template_qml_path = os.path.join(plugin_dir, "output_style.qml")
+
+                # Destination QML name: match the lines file base name
+                if not lines_basename.endswith("_named"):
+                    lines_basename += "_named"
+                qml_copy_path = os.path.join(output_package_folder, lines_basename + ".qml")
+
+                # Copy the file
+                import shutil
+                shutil.copyfile(template_qml_path, qml_copy_path)
+                print(f"Copied output_style.qml to: {qml_copy_path}")
+            except Exception as e:
+                print(f"Failed to copy output_style.qml: {e}")
+
+        '''---- CLEANUP INTERMEDIATE _split_extended FILES FROM PARENT FOLDER ----'''
+        parent_dir = os.path.dirname(output_package_folder)
+        delete_intermediate_files(parent_dir)
 
         self.dock_widget.exitApplication()
         # NOT IMPLEMENTED
@@ -392,17 +493,17 @@ class PluginCanvasGui(QgsMapTool):
 
 
     def execute_action_on_selected_node(self, command):
-        self.root.plugin_canvas_gui.clear()
-        if len(self.root.past_states) >= 100:
-            self.root.past_states.pop(0)
-        # Separate the past_states list from self.root
-        past_states = self.root.past_states
-        self.root.past_states = []  # Temporarily remove the list
-        root_copy = copy.deepcopy(self.root)
-        # Reattach the past_states list to both self.root and the copy
-        root_copy.past_states = past_states
-        self.root.past_states = past_states
-        self.root.past_states.append(root_copy)
+        #self.root.plugin_canvas_gui.clear()
+        #if len(self.root.past_states) >= 100:
+        #    self.root.past_states.pop(0)
+        ## Separate the past_states list from self.root
+        #past_states = self.root.past_states
+        #self.root.past_states = []  # Temporarily remove the list
+        #root_copy = copy.deepcopy(self.root)
+        ## Reattach the past_states list to both self.root and the copy
+        #root_copy.past_states = past_states
+        #self.root.past_states = past_states
+        #self.root.past_states.append(root_copy)
 
         if not self.current_selection:
             return
@@ -417,12 +518,24 @@ class PluginCanvasGui(QgsMapTool):
         if command == "flip_lines":
             self.current_selection.node.flip_lines()
 
+        # Cascade logic
+        if command == "take_left_cascade":
+            node = self.current_selection.node
+            while node is not None:
+                node.take_left()
+                node = getattr(node, "left_neighbour", None)
+        if command == "take_right_cascade":
+            node = self.current_selection.node
+            while node is not None:
+                node.take_right()
+                node = getattr(node, "right_neighbour", None)
+
         self.current_selection.node.display_and_select()
 
     def remove_highlight(self):
-        if self.current_highlight:
-            self.current_highlight.un_highlight()
-            self.current_highlight = None
+        for node_graphic in self.current_highlights:
+            node_graphic.un_highlight()
+        self.current_highlights = []
 
     def remove_selection(self):
         if self.current_selection:
@@ -430,9 +543,9 @@ class PluginCanvasGui(QgsMapTool):
            self.current_selection = None
 
     def set_highlight(self, node_graphic):
-        if self.current_selection == node_graphic:
-            return
-        node_graphic.highlight()
+        if node_graphic not in self.current_highlights:
+            self.current_highlights.append(node_graphic)
+            node_graphic.highlight()
 
     def set_selection(self, node_graphic):
         node_graphic.select()
@@ -567,3 +680,29 @@ class PluginCanvasGui(QgsMapTool):
                 node.graphic.clear()
                 node.graphic = None
         self.canvas.refresh()
+
+def delete_intermediate_files(folder_path: str, patterns=('split', 'split_extended',)):
+
+    extensions = ['.shp', '.shx', '.dbf', '.prj', '.cpg', '.qml']
+
+    try:
+        for filename in os.listdir(folder_path):
+            for pattern in patterns:
+                if filename.endswith(f"_{pattern}.shp"):
+                    base_name = os.path.splitext(filename)[0]
+                    shp_path = os.path.join(folder_path, filename)
+
+                    try:
+                        os.remove(shp_path)
+                        print(f"Deleted .shp: {shp_path}")
+
+                        for ext in extensions:
+                            other_path = os.path.join(folder_path, base_name + ext)
+                            if os.path.exists(other_path):
+                                os.remove(other_path)
+                                print(f"Deleted: {other_path}")
+                    except Exception as e:
+                        print(f"Could not delete {shp_path}; skipped associated files. Error: {e}")
+    except Exception as outer_e:
+        print(f"Failed scanning for split file cleanup in {folder_path}: {outer_e}")
+
