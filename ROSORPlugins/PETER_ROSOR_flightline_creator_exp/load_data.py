@@ -1,4 +1,4 @@
-from . import settings_suffixes
+from .plugin_settings_suffixes import get_suffixes
 from osgeo import gdal
 import os
 import json
@@ -9,7 +9,7 @@ gdal.DontUseExceptions()
 os.environ['CPL_LOG'] = 'NUL'      # For Windows systems
 
 def settings(settings_file_path):
-    suffixes = settings_suffixes.get()
+    suffixes = get_suffixes()
     # suffixes = ["_SELECT_LAYER", "_COMMENT", "_TOOLTIP"]
     with open(settings_file_path) as data:
         settings_dict_dirty = json.loads(data.read())
