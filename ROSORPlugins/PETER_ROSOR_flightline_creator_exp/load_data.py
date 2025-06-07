@@ -1,15 +1,17 @@
-from .plugin_settings_suffixes import get_suffixes
 from osgeo import gdal
 import os
 import json
 from qgis.core import QgsVectorLayer, QgsProject
+
+def get():
+    return ["_SELECT_FOLDER","_SELECT_LAYER", "_COMMENT", "_TOOLTIP"]
 
 #suppress warnings
 gdal.DontUseExceptions()
 os.environ['CPL_LOG'] = 'NUL'      # For Windows systems
 
 def settings(settings_file_path):
-    suffixes = get_suffixes()
+    suffixes = get()
     # suffixes = ["_SELECT_LAYER", "_COMMENT", "_TOOLTIP"]
     with open(settings_file_path) as data:
         settings_dict_dirty = json.loads(data.read())

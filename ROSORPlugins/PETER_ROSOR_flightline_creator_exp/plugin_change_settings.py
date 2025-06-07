@@ -24,8 +24,6 @@ from .plugin_settings_suffixes import get_suffixes
 
 import re
 
-def get_suffixes():
-    return ["_SELECT_FOLDER", "_SELECT_FILE", "_SELECT_LAYER", "_COMMENT", "_TOOLTIP", "_RADIO", "_VIDEO", "_CHILDREN"]
 
 # disable the mouse wheel scrolling through dropdown values. can lead to unintentional value changing
 class NoScrollQComboBox(QComboBox):
@@ -245,7 +243,6 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
             self.settings = get_settings(self.data)
             self._create_widgets_recursive(self.settings, self.mainLayout)
 
-            self._setup_accept_button()
             self._setup_main_window_layout()
             self._apply_initial_visibilities(self.settings)  # Important for initial state
 
@@ -290,30 +287,13 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
 
             self.mainLayout.addLayout(top_grid_layout)
 
-        def _setup_accept_button(self):
-            """Creates and connects the Accept button."""
-            accept_button = QPushButton("Accept")
-            accept_button.clicked.connect(self.on_accept)
-            self.mainLayout.addWidget(accept_button)  # Add directly to mainLayout if you want it below scroll area
 
         def _setup_main_window_layout(self):
             """Sets up the main window layout including scroll area and accept button."""
-            # main_window_layout is already 'self.layout()' if you call setLayout()
-            # It's better to create a new QVBoxLayout for the entire window if it doesn't already exist
-            # Or directly add to self.mainLayout if that's the top-level layout of the self.mainWidget.
-            # Your current code places the scrollArea and accept_button into a new layout for `self`.
-            # Let's keep your original structure for clarity and ensure it works as intended.
             main_window_layout = QVBoxLayout(self)
             main_window_layout.addWidget(self.scrollArea)
-            # The accept button was added to self.mainLayout above, which is inside self.scrollArea.
-            # If you want it *below* the scroll area, it needs to be added to main_window_layout here.
-            # Assuming you want it below the scroll area, I'll move _setup_accept_button call
-            # And add the button here.
 
-            # Re-evaluating: Your original code puts the accept button *below* the scroll area.
-            # So, the _setup_accept_button should not add to self.mainLayout.
-            # It should create the button, and then this _setup_main_window_layout adds it.
-            accept_button = QPushButton("Accept")  # Re-create or make it a class member
+            accept_button = QPushButton("Accept")
             accept_button.clicked.connect(self.on_accept)
             main_window_layout.addWidget(accept_button)
 
@@ -392,22 +372,14 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
             if selected_path:
                 setting.line_edit.setText(selected_path)
 
-        # Then, your original methods would become one-liners calling this new one:
         def update_textfield_from_file_dialog(self, setting):
             self._open_file_dialog(setting, 'file')
 
         def update_textfield_from_layer_file_dialog(self, setting):
-            # This specific dialog function seems redundant if the only difference is the name
-            # If it's truly meant to behave like a file dialog, the above is fine.
-            # If there are QGIS-specific layer file dialogs, this needs to be maintained.
-            # For now, it behaves like a standard file dialog.
             self._open_file_dialog(setting, 'layer_file')
 
         def update_textfield_from_folder_dialog(self, setting):
             self._open_file_dialog(setting, 'folder')
-
-        def get_key_of_true(self, original_group):
-            return next((key for key, value in original_group.items() if isinstance(value, bool) and value), None)
 
         def on_accept(self):
             newest_file = plugin_tools.get_newest_file_in(plugin_dir=plugin_dir, folder=settings_folder)
@@ -448,56 +420,6 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
             for path in controlled_settings:
                 self._set_widget_visibility_by_path(path, controlling_parent_identifier, should_show)
 
-        def update_controlled_visibility(self, controlled_settings, should_show):
-            """Update visibility of all controlled settings and their children"""
-            print(f"Updating visibility for: {controlled_settings} -> {should_show}")
-            for setting_path in controlled_settings:
-                self._set_widget_visibility_by_path(setting_path, should_show)
-
-        def update_initial_visibility(self, groupbox, group_key):
-            """Set initial visibility for groups controlled by settings or other groups"""
-
-            def find_controller(settings, target_key):
-                """Recursively search through settings to find what controls the target group"""
-                for item in settings:
-                    # Check Settings (checkboxes or radio buttons)
-                    if isinstance(item, Setting):
-                        # Check checkbox controls
-                        if '_CHILDREN' in item.attributes and target_key in item.attributes['_CHILDREN']:
-                            if isinstance(item.attributes.get('value'), bool):
-                                return ('checkbox', item.attributes['value'])
-
-                        # Check radio button controls
-                        if '_RADIO' in item.attributes:
-                            radio_group = item.attributes['_RADIO']
-                            for option_name, option_value in radio_group.items():
-                                if option_name.endswith('_CHILDREN') and target_key in option_value:
-                                    base_option = option_name.replace('_CHILDREN', '')
-                                    is_visible = radio_group.get(base_option, False)
-                                    return ('radio', is_visible)
-
-                    # Check Groups (recursively)
-                    elif isinstance(item, Group):
-                        # Look for _CHILDREN in group's children
-                        for child in item.children:
-                            if isinstance(child, Setting) and '_CHILDREN' in child.attributes:
-                                if target_key in child.attributes['_CHILDREN']:
-                                    if isinstance(child.attributes.get('value'), bool):
-                                        return ('checkbox', child.attributes['value'])
-
-                        # Recurse into nested groups
-                        result = find_controller(item.children, target_key)
-                        if result:
-                            return result
-                return None
-
-            controller = find_controller(self.settings, group_key)
-
-            if controller:
-                control_type, is_visible = controller
-                groupbox.setVisible(bool(is_visible))
-            else:
-                groupbox.setVisible(True)  # Default to visible if no controller found
 
         def _apply_initial_visibilities(self, settings_list,  current_group_key=""):
             """Recursively apply initial visibility states based on _CHILDREN and _RADIO controls."""
@@ -583,9 +505,6 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
                     groupbox.setLayout(group_layout)
                     parent_layout.addWidget(groupbox)
                     self._create_widgets_recursive(item.children, group_layout, item.key)
-
-                    # Update visibility based on controlling settings
-                    self.update_initial_visibility(groupbox, item.key)
 
                 elif isinstance(item, Setting):
                     self._create_setting_widget_area(item, parent_layout, current_group_key)
