@@ -2,10 +2,10 @@ import os
 import shutil
 
 #plugin_dir = os.path.dirname(__file__)
-# plugin_dir = r"C:\Users\Sharj\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins"
+plugin_dir = r"C:\Users\Sharj\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins"
 # plugin_dir = r"C:\Users\pyoty\Documents\GitHub\test_braaahnch\sharj0.github.io\ROSORPlugins\"
-#target_plugin = plugin_dir + r"\PETER_ROSOR_flightline_creator"
-target_plugin = r"C:\Users\pyoty\Documents\GitHub\test_braaahnch\sharj0.github.io\ROSORPlugins\PETER_ROSOR_lines_to_flights"
+target_plugin = plugin_dir + r"\PETER_ROSOR_alt_embedder"
+# target_plugin = r"C:\Users\pyoty\Documents\GitHub\test_braaahnch\sharj0.github.io\ROSORPlugins\PETER_ROSOR_lines_to_flights"
 
 
 # ------------------------------------------------------------------------------

@@ -3,6 +3,8 @@ THIS .PY FILE SHOULD BE THE SAME FOR ALL PLUGINS.
 A CHANGE TO THIS .PY IN ONE OF THE PLUGINS SHOULD BE COPPY-PASTED TO ALL THE OTHER ONES
 '''
 
+'''UPDATED: 2025-06-14 By: Sharj'''
+
 import os
 import sys
 import json
@@ -496,15 +498,16 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
             """Recursively creates QWidgets for settings and groups."""
             for item in settings:
                 if isinstance(item, Group):
+                    full_key = f"{current_group_key}/{item.key}" if current_group_key else item.key
                     groupbox = QGroupBox(item.key)
-                    groupbox.setObjectName(item.key.replace(" ", "_").replace("/", "_"))  # Ensure valid object name
+                    groupbox.setObjectName(full_key.replace(" ", "_").replace("/", "_"))  # Ensure valid object name
                     font = groupbox.font()
                     font.setPointSize(DynamicGui.HEADER_FONT_SIZE)  # Use class constant
                     groupbox.setFont(font)
                     group_layout = QVBoxLayout()
                     groupbox.setLayout(group_layout)
                     parent_layout.addWidget(groupbox)
-                    self._create_widgets_recursive(item.children, group_layout, item.key)
+                    self._create_widgets_recursive(item.children, group_layout, full_key)
 
                 elif isinstance(item, Setting):
                     self._create_setting_widget_area(item, parent_layout, current_group_key)
@@ -659,21 +662,8 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
                 self._add_radio_buttons(setting, top_layout, current_group_key)
                 return
 
-            # --- Handle text-based settings (QLineEdit, possibly with file/folder/layer dialogs) ---
             text_entry_layout = QVBoxLayout()
-            line_edit = plugin_tools.CustomLineEdit(str(setting.attributes['value']))
-            line_edit.setFont(self.field_font)
-            line_edit.setAcceptDrops(True)
-            line_edit.textChanged.connect(lambda text, s=setting: self.update_text_setting(s, text))
-            line_edit_label = QLabel(setting.key)
-            line_edit_label.setFont(self.field_font)
-            setting.line_edit = line_edit  # Store reference for later access
 
-            h_layout = QHBoxLayout()
-            h_layout.addWidget(line_edit_label)
-            h_layout.addWidget(line_edit)
-            text_entry_layout.addLayout(h_layout)
-            top_layout.addLayout(text_entry_layout)
 
             # Dictionary to map suffixes to their respective dialog functions
             dialog_handlers = {
@@ -709,6 +699,23 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
                     btn_layout.addWidget(ellipsis_button)
                     text_entry_layout.addLayout(btn_layout)
                     break  # Assuming only one SELECT type per setting
+
+            # --- Handle text-based settings (QLineEdit, possibly with file/folder/layer dialogs) ---
+            value = setting.attributes.get('value', "")
+            line_edit = plugin_tools.CustomLineEdit(str(value))
+            line_edit.setFont(self.field_font)
+            line_edit.setAcceptDrops(True)
+            line_edit.textChanged.connect(lambda text, s=setting: self.update_text_setting(s, text))
+            line_edit_label = QLabel(setting.key)
+            line_edit_label.setFont(self.field_font)
+            setting.line_edit = line_edit  # Store reference for later access
+
+            h_layout = QHBoxLayout()
+            h_layout.addWidget(line_edit_label)
+            h_layout.addWidget(line_edit)
+            text_entry_layout.addLayout(h_layout)
+            top_layout.addLayout(text_entry_layout)
+
 
         def _add_video_to_setting_area(self, top_layout, vid_name):
             """Adds a video icon button to the provided layout."""
