@@ -5,7 +5,7 @@ import shutil
 #plugin_dir = os.path.dirname(__file__)
 # plugin_dir = r"C:\Users\Sharj\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins"
 #target_plugin = plugin_dir + r"\PETER_ROSOR_flightline_creator"
-target_plugin = r"C:\Users\pyoty\Documents\GitHub\test_braaahnch\sharj0.github.io\ROSORPlugins\PETER_ROSOR_lines_to_flights_exp"
+target_plugin = r"C:\Users\pyoty\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\PETER_ROSOR_sensor_footprint_exp"
 
 
 
