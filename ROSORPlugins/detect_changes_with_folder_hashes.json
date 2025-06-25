@@ -3028,7 +3028,7 @@
     },
     "PETER_ROSOR_sensor_footprint": {
         "delete_me.py": "d5de9c5bd36ca3a1c053e975987c18da8f0075384cb2e058df99391cb9bee46d",
-        "metadata.txt": "4452905ddeaae1673e40166efa1923a893b19a88a4f4c847bed285cf4eeeb1a2",
+        "metadata.txt": "2dbb82d5cef2a9c6d68df16c93357b0624cdd75d6158d18c5ae14d5dabb0434e",
         "plotting.py": "565f353310831cd2a829ec6f181846b416fee93b3dc7dc4750d046de0214e533",
         "plugin_add_custom_buttons.py": "e9c7fb981a30846b6584412d8a0c4262e5de0ce80793b4f7b5d049ebc27317a6",
         "plugin_change_settings.py": "f1f92cd8d621e8697835419fd92357276205d0b79540c1c78ea9abad630f0efa",
