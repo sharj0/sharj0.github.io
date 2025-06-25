@@ -3,7 +3,6 @@ THIS .PY FILE IS NOT THE SAME FOR ALL PLUGINS.
 This is where the substance of the plugin begins. In main()
 '''
 
-import os
 from . import plugin_load_settings
 from . import plugin_tools
 
@@ -14,7 +13,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from osgeo import osr, gdal
 from shapely.geometry import Polygon, Point
-import trimesh
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from matplotlib.tri import Triangulation
@@ -29,6 +27,17 @@ from qgis.core import (
     QgsGeometry,
     QgsPointXY,
 )
+
+import sys
+import os
+# IMPORT 3rd PARTY libraries
+plugin_dir = os.path.dirname(os.path.realpath(__file__))
+# Path to the subdirectory containing the external libraries
+lib_dir = os.path.join(plugin_dir, 'plugin_3rd_party_libs')
+# Add this directory to sys.path so Python knows where to find the external libraries
+if lib_dir not in sys.path:
+    sys.path.insert(0, lib_dir)
+import trimesh
 
 def main(settings_file_path):
     # load settings and allow for the re-naming of settings with a conversion step between the .json name and the internal code
@@ -48,7 +57,6 @@ def main(settings_file_path):
     plot_arrow_len = settings_dict['Plotted arrow length']
 
     save_to_file = True
-
 
     settings_dict = None # don't use settings_dict from here on
     plot_3d_with_dsm(
