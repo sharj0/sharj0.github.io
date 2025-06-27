@@ -141,7 +141,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Sensor Footprint" version="1.2025.6.25.2">
+  <pyqgis_plugin name=".ROSOR Sensor Footprint" version="1.2025.6.27.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_sensor_footprint/plugin_icon.png</icon>
