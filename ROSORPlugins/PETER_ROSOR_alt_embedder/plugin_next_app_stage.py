@@ -68,7 +68,7 @@ def main(settings_file_path):
     # load settings and allow for the re-naming of settings with a conversion step between the .json name and the internal code
     settings_dict = plugin_load_settings.run(settings_file_path)
 
-    run_file_not_folder = settings_dict['🗏  A singe 2D flight file']
+    run_file_not_folder = settings_dict['🗏  A single 2D flight file']
     waypoint_folder = settings_dict['📂 2D flights folder']
     input_waypoint_file = settings_dict['🗏 2D flight file']
 

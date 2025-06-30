@@ -1,5 +1,5 @@
 {
-    "Merge order tree file": "R:\\ORTHO_STUFF\\BAN_TIMMINS\\needs_splitting_and_patching\\TOF_2_needs_splitting_and_patching\\TOF_2_26_to_51_Merge.md",
+    "Merge order tree file": "D:\\Ban_ortho\\Aligned_chunks\\group.md",
     "Merge order tree file_SELECT_FILE": "R:\\ORTHO_STUFF\\BAN_TIMMINS\\TEST_ALLIGNED\\Merge order tree.md",
     "Merge order tree file_COMMENT": "R:\\ORTHO_STUFF\\BAN_TIMMINS\\TEST_ALLIGNED\\Merge order tree.md",
     "Parameters": {
@@ -8,11 +8,12 @@
         "Prefer centre factor": 0.05,
         "Prefer centre factor_COMMENT": "When prefer_centre_factor is positive (e.g., greater than 1), the preference will lean more towards following centerline.\nWhen prefer_centre_factor is negative (e.g., less than 1), the preference will lean more towards color similarity."
     },
-    "Output .tiff when finished instead": true,
-    "Output .tiff when finished instead_COMMENT": "Only ✅ this if you know what you are doing. Use .vrt files as much as possible.",
-    "Beep when finished": true,
+    "Output .tiff when finished instead": false,
+    "Output .tiff when finished instead_COMMENT": "Only \u2705 this if you know what you are doing. Use .vrt files as much as possible.",
+    "Beep when finished": false,
     "Beep when finished_COMMENT": "This will alert you, to come back to the computer to continue processing.",
     "Beep if error": false,
     "Beep if error_COMMENT": "This will alert you, to come back to the computer to fix/work-around/report the error.",
+    "Open Python console at plugin launch": true,
     "Close this window on accept": true
 }

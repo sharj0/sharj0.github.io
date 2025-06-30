@@ -21,5 +21,6 @@
         "output_analysis_result_data_to_excel": true,
         "output_analysis_result_data_to_excel_COMMENT": "If checked, am excel spreadsheet file will be made (next to the input lines) with data."
     },
+    "Open Python console at plugin launch": true,
     "Close this window on accept": true
 }

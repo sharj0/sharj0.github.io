@@ -3,9 +3,9 @@ import os
 import shutil
 
 #plugin_dir = os.path.dirname(__file__)
-# plugin_dir = r"C:\Users\Sharj\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins"
-#target_plugin = plugin_dir + r"\PETER_ROSOR_flightline_creator"
-target_plugin = r"C:\Users\pyoty\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\PETER_ROSOR_sensor_footprint_exp"
+plugin_dir = r"C:\Users\Sharj\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins"
+target_plugin = plugin_dir + r"\PETER_ROSOR_alt_embedder_exp"
+# target_plugin = r"C:\Users\pyoty\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\PETER_ROSOR_sensor_footprint_exp"
 
 
 

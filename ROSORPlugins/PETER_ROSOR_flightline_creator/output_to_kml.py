@@ -172,8 +172,7 @@ def save_kml_polygon(new_poly_shapley, output_kml_path, crs):
             <width>4</width>
         </LineStyle>
         <PolyStyle>
-            <color>6600a5ff</color> <!-- Orange with 40% transparency (66) -->
-            <fill>1</fill> <!-- Fill enabled -->
+            <fill>0</fill> <!-- No fill -->
         </PolyStyle>
     </Style>
     <Placemark>

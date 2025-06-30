@@ -2,12 +2,13 @@
 import numpy as np
 from scipy import spatial
 import matplotlib.pyplot as plt
-import rdp
+
 
 from .base_node_class import Node
 from .III_tof_assignment import TOFAssignment
 from .IIIIIII_end_point import EndPoint
 from .. import smooth_turn_functions
+from .. import rdp
 from ..Node_Graphic_Class import NodeGraphic
 
 class Flight(Node):

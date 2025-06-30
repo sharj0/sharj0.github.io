@@ -20,5 +20,6 @@
         "Multiplication": false,
         "Multiplication_COMMENT": "Instead of assigning pixel values directly, the interpolated values will MULTIPLIED by existing pixel values. \nSo if you click on pixel with value 0 then 1, halfway way between them has an interpolated value of 0.5. \nSo the existing pix at the halfway location will be +0.5"
     },
+    "Open Python console at plugin launch": true,
     "Close this window on accept": true
 }

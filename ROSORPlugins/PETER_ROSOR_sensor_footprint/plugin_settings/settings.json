@@ -1,25 +1,26 @@
 {
-    "Input files":{
-        "Headwall Hyperspectral imu_gps.txt file": "C:\\Users\\Sharj\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_flightline_creator_exp\\test_data\\Priority 1 extra.kml",
+    "Input files": {
+        "Headwall Hyperspectral imu_gps.txt file": "R:\\HYPER_SPEC_FOOTPRINT\\Files\\Classified_Data\\imu_gps.txt",
         "Headwall Hyperspectral imu_gps.txt file_SELECT_FILE": "true",
         "Headwall Hyperspectral imu_gps.txt file_COMMENT": "Select the imu_gps.txt file created by the sensor.",
-        "DEM or DSM file": "C:\\Users\\Sharj\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_flightline_creator_exp\\test_data\\Priority 1 extra.kml",
+        "DEM or DSM file": "R:\\HYPER_SPEC_FOOTPRINT\\srtm_utm_local - spoofed.tif",
         "DEM or DSM file_SELECT_FILE": "true",
         "DEM or DSM file_COMMENT": "Select a file that represents the surface that the sensor is 'seeing'. Pixel values should represent meters above sea level",
-        "Data collection area polygon file": "C:\\Users\\Sharj\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_flightline_creator_exp\\test_data\\Priority 1 extra.kml",
+        "Data collection area polygon file": "R:\\HYPER_SPEC_FOOTPRINT\\data_collection_poly_smaller_2.kml",
         "Data collection area polygon file_COMMENT": "MUST BE KML. This is the file that is loaded onto the sensor pre-flight."
     },
     "Sensor Field of View": 21.7,
     "Sensor Field of View_COMMENT": "Common values: For Swir use 21.7 degrees, For Vnir use 28 degrees.",
-    "Imu Data sub-sample rate":10,
-    "Imu Data sub-sample rate_COMMENT":"Increase this number to speed up calculation, but also reduces the resolution of the footprint edges \nSet to '1' for highest resolution.",
+    "Imu Data sub-sample rate": 10,
+    "Imu Data sub-sample rate_COMMENT": "Increase this number to speed up calculation, but also reduces the resolution of the footprint edges \nSet to '1' for highest resolution.",
     "DSM clip buffer": 50,
     "DSM clip buffer_COMMENT": "The input DEM/DSM is clipped to the data. This buffer (meters) makes the kept area larger",
     "Plotting settings": {
-        "Show plot" : false,
-        "Show plot_COMMENT" : "Shows a 3D plot of the drones path and the footprint",
-        "Show the sensor's fov" : false,
-        "Plotted arrow length" : 10
+        "Show plot": false,
+        "Show plot_COMMENT": "Shows a 3D plot of the drones path and the footprint",
+        "Show the sensor's fov": false,
+        "Plotted arrow length": 10
     },
+    "Open Python console at plugin launch": true,
     "Close this window on accept": true
 }

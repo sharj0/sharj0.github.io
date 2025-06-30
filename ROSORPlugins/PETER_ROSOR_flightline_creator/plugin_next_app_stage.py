@@ -4,7 +4,8 @@ This is where the substance of the plugin begins. In main()
 '''
 
 import os
-from . import load_data, display_w_ties, display_no_ties
+from . import plugin_load_settings, plugin_tools
+from . import display_w_ties, display_no_ties
 from .functions import \
     get_name, \
     get_crs,\
@@ -34,7 +35,7 @@ import numpy as np
 
 def main(settings_file_path):
     # load settings and allow for the re-naming of settings with a conversion step between the .json name and the internal code
-    settings_dict = load_data.settings(settings_file_path)
+    settings_dict = plugin_load_settings.run(settings_file_path)
     poly_file = settings_dict['Polygon_file']
     poly_buffer_distance = settings_dict['Polygon_buffer_distance']
     place_output_folder_into = settings_dict['Output_folder']

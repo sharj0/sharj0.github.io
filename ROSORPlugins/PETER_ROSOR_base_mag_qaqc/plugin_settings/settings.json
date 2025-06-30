@@ -13,5 +13,6 @@
         "base_mag_ignore_start_end_mins": 5,
         "base_mag_ignore_start_end_mins_VIDEO": "base_mag_ignore_start_end_mins_VIDEO.mp4"
     },
+    "Open Python console at plugin launch": true,
     "Close this window on accept": true
 }

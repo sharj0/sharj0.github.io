@@ -13,5 +13,6 @@
         "Completely": true,
         "Only bottom level": false
     },
+    "Open Python console at plugin launch": true,
     "Close this window on accept": true
 }

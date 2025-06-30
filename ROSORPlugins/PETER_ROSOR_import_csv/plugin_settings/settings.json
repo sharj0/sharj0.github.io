@@ -30,5 +30,6 @@
             "Split_up_files_with_no_match": true
         }
     },
+    "Open Python console at plugin launch": true,
     "Close this window on accept": true
 }

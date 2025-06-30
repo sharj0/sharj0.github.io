@@ -49,5 +49,6 @@
         "Survey_Manager_exe_path_COMMENT": "Survey Manager app opens \".magdata\" files and converts them to \".csv\" for this app to use it",
         "Survey_Manager_exe_path_VIDEO": "Survey_Manager_exe_path_VIDEO.mp4"
     },
+    "Open Python console at plugin launch": true,
     "Close this window on accept": false
 }

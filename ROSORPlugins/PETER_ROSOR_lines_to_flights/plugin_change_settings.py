@@ -3,15 +3,21 @@ THIS .PY FILE SHOULD BE THE SAME FOR ALL PLUGINS.
 A CHANGE TO THIS .PY IN ONE OF THE PLUGINS SHOULD BE COPPY-PASTED TO ALL THE OTHER ONES
 '''
 
+'''UPDATED: 2025-06-30 By: Sharj'''
+
 import os
 import sys
 import json
-from PyQt5.QtWidgets import (QWidget, QScrollArea, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QLineEdit, QCheckBox, QFileDialog,
-                            QGroupBox, QPushButton, QComboBox, QRadioButton, QSizePolicy, QButtonGroup, QMenu, QDockWidget)
-
+from PyQt5.QtWidgets import QWidget, QScrollArea, \
+    QVBoxLayout, QHBoxLayout, QGridLayout, \
+    QLabel, QLineEdit, QCheckBox, QFileDialog, \
+    QGroupBox, QPushButton, QComboBox, QRadioButton, \
+    QSizePolicy, QButtonGroup, QMenu, \
+    QDockWidget, QMessageBox
 from PyQt5.QtGui import QFont, QIcon, QColor, QPixmap
 from qgis.core import QgsProject, QgsLayerTreeLayer
-from PyQt5.QtCore import Qt, pyqtSignal, QSize, QUrl
+from PyQt5.QtCore import Qt, pyqtSignal, QSize, QUrl, \
+    QTimer
 from PyQt5.Qt import QDesktopServices
 import subprocess
 
@@ -22,6 +28,7 @@ from . import plugin_add_custom_buttons
 from .plugin_settings_suffixes import get_suffixes
 
 import re
+
 
 # disable the mouse wheel scrolling through dropdown values. can lead to unintentional value changing
 class NoScrollQComboBox(QComboBox):
@@ -55,11 +62,6 @@ class Group:
 
     def __repr__(self):
         return f"Group: {self.key}, Children: {self.children}"
-
-
-def get_suffixes():
-    return ['_SELECT_FOLDER', '_SELECT_FILE', '_SELECT_LAYER', '_COMMENT', '_TOOLTIP', '_RADIO', '_VIDEO']
-
 
 def parse_dict(d, suffixes):
     settings = []
@@ -131,24 +133,41 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
         parsed_data = json.loads(data.read())
 
     class DynamicGui(QWidget):
+        # Class Constants
+        HEADER_FONT_SIZE = 13
+        FIELD_FONT_SIZE = 12
+        COMMENT_FONT_SIZE = 10
+        ELLIPSIS_FONT_SIZE = 14
+        SPACER_WIDTH = 40
+        WINDOW_WIDTH_CM = 20
+        WINDOW_HEIGHT_CM = 15
+        WINDOW_OFFSET_FROM_CORNER = 50
+        PLUGIN_ICON_PATH = "plugin_icon.png"
+        VIDEO_ICON_PATH = "vid_icon.png"
+        INTRO_VIDEO_FILE = "intro.mp4"
+        DEBUG_FILENAME = "__debug__.txt"
+
+        HARD_SETTING_LIMITER = ["Open Python console at plugin launch", "Close this window on accept"]
+        FORBIDDEN_CHARACTERS = ["&", "<"]
+
+
         # Add this line to create a new signal
         settings_updated = pyqtSignal(str)
 
         def __init__(self, data, iface):
             super().__init__()
             self.data = data
-            self.header_font_size = 13  # Font size for sections like "Files" and "Settings"
-            self.field_font_size = 12  # Font size for field names
+            self.header_font_size = DynamicGui.HEADER_FONT_SIZE  # Font size for sections like "Files" and "Settings"
             self.field_font = QFont()
-            self.field_font.setPointSize(self.field_font_size)
+            self.field_font.setPointSize(DynamicGui.FIELD_FONT_SIZE)
             self.ellipsis_font = QFont()
-            self.ellipsis_font.setPointSize(14)
+            self.ellipsis_font.setPointSize(DynamicGui.ELLIPSIS_FONT_SIZE)
             self.ellipsis_font.setBold(True)
-            self.comment_font_size = 10  # Font size for comments
-            self.spacer = 40
-            self.width_cm = 20
-            self.height_cm = 15
-            self.offset_from_corner = 50
+            self.comment_font_size = DynamicGui.COMMENT_FONT_SIZE  # Font size for comments
+            self.spacer = DynamicGui.SPACER_WIDTH
+            self.width_cm = DynamicGui.WINDOW_WIDTH_CM
+            self.height_cm = DynamicGui.WINDOW_HEIGHT_CM
+            self.offset_from_corner = DynamicGui.WINDOW_OFFSET_FROM_CORNER
             self.set_icon(os.path.join(plugin_dir, "plugin_icon.png"))  # Set window icon
             self.windowtitle = windowtitle
             self.scrollArea = QScrollArea(self)
@@ -159,10 +178,10 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
             self.mainWidget.setLayout(self.mainLayout)
             self.radio_buttons = {}  # Store radio buttons groups
             self.changes_made = False
-
-            """Sharj"""
+            self.child_visibility_controllers = {}  # New: To track all controllers for each child
+            self.initialized_visibility = False  # New: Flag to manage initial application
             self.iface = iface
-            """Sharj"""
+            self.error_exists = False
 
             self.initUI()
 
@@ -221,72 +240,148 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
                     subprocess.call(
                         ('open', vid_path) if sys.platform == 'darwin' else ('xdg-open', vid_path))
 
-        def initUI(self):
-            # Create a grid layout for the icon and button
-            top_layout = QGridLayout()
+        def show_error_message(self, message):
+            self.error_exists = True
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setText(message)
+            msg.setWindowTitle("Error")
+            msg.exec_()
+            self.close()
 
-            # Create a button for browsing .json files
+
+        def initUI(self):
+
+            # Setup paths for settings and videos
             self.settings_folder_path = os.path.join(plugin_dir, settings_folder)
             self.video_folder_path = os.path.join(plugin_dir, 'tutorial_vids')
-            browse_button = QPushButton("📁 Load previous settings")
-            browse_button_font = QFont()
-            browse_button_font.setPointSize(12)  # Set the font size
-            browse_button.setFont(browse_button_font)  # Apply the font to the button
-            browse_button.clicked.connect(self.browse_for_json)
-            top_layout.addWidget(browse_button, 0, 0, Qt.AlignTop)  # Add the button to the top left corner
 
-            # Add context menu to the browse button
-            self.setContextMenuPolicy(Qt.CustomContextMenu)
-            self.customContextMenuRequested.connect(self.show_context_menu)
-
-            # Load and set the plugin icon at the top
-            icon_path = os.path.join(plugin_dir, "plugin_icon.png")
-            icon_label = QLabel(self)
-            width_px, height_px = plugin_tools.convert_app_cm_to_px(3, 3)
-            icon_pixmap = QPixmap(icon_path).scaled(width_px, height_px, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            icon_label.setPixmap(icon_pixmap)
-            top_layout.addWidget(icon_label, 0, 1, Qt.AlignCenter)  # Add the icon label to the center
-
-            # Create a button with an image icon
-            vid_icon_path = os.path.join(plugin_dir, "vid_icon.png")
-            vid_button = QPushButton()
-            vid_button.setIcon(QIcon(vid_icon_path))
-            vid_button.setIconSize(QSize(41, 41))
-            vid_button.clicked.connect(lambda: self.play_vid(os.path.join(self.video_folder_path, 'intro.mp4')))
-            top_layout.addWidget(vid_button, 0, 2,
-                                 Qt.AlignTop | Qt.AlignRight)  # Add the video button to the top right corner
-
-            # Add a stretch to push the icon to the center
-            top_layout.setColumnStretch(0, 1)
-            top_layout.setColumnStretch(1, 2)
-            top_layout.setColumnStretch(2, 1)
-
-            # Add the top layout to the main layout
-            self.mainLayout.addLayout(top_layout)
-
-            plugin_add_custom_buttons.add_custom_buttons(self, plugin_dir)
+            self._setup_top_panel_widgets()
+            plugin_add_custom_buttons.add_custom_buttons(self, plugin_dir)  # External call
 
             self.settings = get_settings(self.data)
 
+            self._check_for_specific_setting(DynamicGui.HARD_SETTING_LIMITER)
+            self._open_python_console()
             self._create_widgets_recursive(self.settings, self.mainLayout)
 
-            # Create an Accept button and connect it to an action
-            accept_button = QPushButton("Accept")
-            accept_button.clicked.connect(self.on_accept)
+            self._setup_main_window_layout()
+            self._apply_initial_visibilities(self.settings)  # Important for initial state
 
-            # Main layout for the window which will contain the scrollArea and the Accept button
+            if not self.error_exists:
+                self.show()
+
+
+        def _check_for_specific_setting(self, required_settings):
+
+            def get_flattened_settings(settings_list):
+                """Recursively flattens the settings structure into ordered (key, value) pairs"""
+                flattened = []
+
+                for item in settings_list:
+                    if isinstance(item, Group):
+                        flattened.extend(get_flattened_settings(item.children))
+                    elif isinstance(item, Setting):
+                        flattened.append((item.key, item.attributes.get('value')))
+                return flattened
+
+            all_settings = get_flattened_settings(self.settings)
+
+            if len(all_settings) < len(required_settings):
+                error_message = f"JSON must contain at least {len(required_settings)} settings.\n Found only {len(all_settings)}."
+                self.show_error_message(error_message)
+                return
+
+
+            # Get just the last N settings we care about
+            last_settings = all_settings[-len(required_settings):]
+
+            # Check each required setting in order
+            for (expected_setting, (actual_key, actual_value)) in zip(required_settings, last_settings):
+                # Check setting name
+                if actual_key != expected_setting:
+                    error_message = f"'{expected_setting}' must be the {len(required_settings) - required_settings.index(expected_setting)}th last setting.\n Found '{actual_key}' instead."
+                    self.show_error_message(error_message)
+                    return
+                    # raise ValueError(error_message)
+
+                # Check boolean type
+                if not isinstance(actual_value, bool):
+                    error_message = f"'{expected_setting}' must be a boolean value.\n Found {type(actual_value).__name__} instead. "
+                    self.show_error_message(error_message)
+                    return
+                    # raise ValueError(error_message)
+
+            print("Validation passed: Required end settings are correctly positioned")
+
+
+        def _open_python_console(self):
+            # Open Python console on QGIS
+            if self.settings[-2].attributes['value']:
+                # iface.actionShowPythonDialog().trigger()
+                if iface is not None:
+                    python_console = iface.mainWindow().findChild(QDockWidget, "PythonConsole")
+                    if python_console is None or python_console.isVisible() is False:
+                        print(f"Opening Python console")
+                        iface.actionShowPythonDialog().trigger()
+                else:
+                    print("QGIS is not running - cannot open Python console")
+
+        def _setup_top_panel_widgets(self):
+            """Sets up the top panel with browse button, plugin icon, and intro video button."""
+            top_grid_layout = QGridLayout()
+
+            # Browse button
+            browse_button = QPushButton("📁 Load previous settings")
+            browse_button_font = QFont()
+            browse_button_font.setPointSize(12)
+            browse_button.setFont(browse_button_font)
+            browse_button.clicked.connect(self.browse_for_json)
+            top_grid_layout.addWidget(browse_button, 0, 0, Qt.AlignTop)
+
+            # Context menu for the window itself, triggered by right-click anywhere on the window
+            self.setContextMenuPolicy(Qt.CustomContextMenu)
+            self.customContextMenuRequested.connect(self.show_context_menu)
+
+            # Plugin icon
+            icon_label = QLabel(self)
+            width_px, height_px = plugin_tools.convert_app_cm_to_px(3, 3)
+            icon_pixmap = QPixmap(os.path.join(plugin_dir, DynamicGui.PLUGIN_ICON_PATH)).scaled(
+                width_px, height_px, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            icon_label.setPixmap(icon_pixmap)
+            top_grid_layout.addWidget(icon_label, 0, 1, Qt.AlignCenter)
+
+            # Video button
+            vid_button = QPushButton()
+            vid_button.setIcon(QIcon(os.path.join(plugin_dir, DynamicGui.VIDEO_ICON_PATH)))
+            vid_button.setIconSize(QSize(41, 41))
+            vid_button.clicked.connect(
+                lambda: self.play_vid(os.path.join(self.video_folder_path, DynamicGui.INTRO_VIDEO_FILE)))
+            top_grid_layout.addWidget(vid_button, 0, 2, Qt.AlignTop | Qt.AlignRight)
+
+            # Stretch to center the icon
+            top_grid_layout.setColumnStretch(0, 1)
+            top_grid_layout.setColumnStretch(1, 2)
+            top_grid_layout.setColumnStretch(2, 1)
+
+            self.mainLayout.addLayout(top_grid_layout)
+
+
+        def _setup_main_window_layout(self):
+            """Sets up the main window layout including scroll area and accept button."""
             main_window_layout = QVBoxLayout(self)
             main_window_layout.addWidget(self.scrollArea)
+
+            accept_button = QPushButton("Accept")
+            accept_button.clicked.connect(self.on_accept)
             main_window_layout.addWidget(accept_button)
 
             self.setLayout(main_window_layout)
             self.setWindowTitle(self.windowtitle)
-
-            width_px, height_px = plugin_tools.convert_app_cm_to_px \
-                (self.width_cm, self.height_cm)
+            width_px, height_px = plugin_tools.convert_app_cm_to_px(
+                DynamicGui.WINDOW_WIDTH_CM, DynamicGui.WINDOW_HEIGHT_CM)
             self.resize(width_px, height_px)
-            self.move(self.offset_from_corner, self.offset_from_corner)
-            self.show()
+            self.move(DynamicGui.WINDOW_OFFSET_FROM_CORNER, DynamicGui.WINDOW_OFFSET_FROM_CORNER)
 
         def get_available_qgis_layers(self):
             """Retrieve a list of available layer names from the current QGIS project."""
@@ -307,74 +402,92 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
 
             return initial_dir
 
-        """Sharj Modified"""
+
 
         def update_textfield_from_dropdown(self, setting, selected_value):
 
-            #The path delimiters are any garbage QGIS adds in for metadata, having this might break things if the plugins NEED the metadata.
-            #Hopefully any and all plugins don't require the metadata in the path
             path_delimiters = r"[|?]"
             if selected_value == "Original selection":
                 path_from_json = plugin_tools.find_key_in_nested_dict(self.data,
                                                                       setting.key.replace("_SELECT_LAYER", ""))
                 setting.line_edit.setText(path_from_json)
 
-            #Checks for the highlighted layer denoted by QGIS API as "activeLayer()"
-            #Note that it only updates when changing settings (it does not live update as you are click a different layer to highlight, you need to swap to another selection and swap back to update)
             elif selected_value == "Highlighted Layer":
                 layer = self.iface.activeLayer()
                 if layer:
 
-                    #cleans the path to only return the file path and no garbage metadata that might be useful to QGIS
                     cleaned_path = re.split(path_delimiters,layer.source(),1)[0]
                     setting.line_edit.setText(cleaned_path)
 
             else:
-                # Assuming layers have an attribute 'source' for full path; adjust if needed
+
                 layer = next((l for l in QgsProject.instance().mapLayers().values() if l.name() == selected_value),
                              None)
                 if layer:
 
-                    # cleans the path to only return the file path and no garbage metadata that might be useful to QGIS
+
                     cleaned_path = re.split(path_delimiters, layer.source(), 1)[0]
                     setting.line_edit.setText(cleaned_path)
 
+            # Validate path
+            self.validate_path(setting.line_edit.text(), setting.key)
 
-        """Sharj Modified"""
+        def _open_file_dialog(self, setting, dialog_type):
+            """
+            Opens a QFileDialog (file or directory) and updates the line edit.
+            :param setting: The Setting object associated with the line edit.
+            :param dialog_type: 'file', 'layer_file', or 'folder'.
+            """
+            initial_dir = self.get_init_dir(setting)
+            options = QFileDialog.Options()
+            selected_path = ""
+
+            if dialog_type == 'file' or dialog_type == 'layer_file':
+                selected_path, _ = QFileDialog.getOpenFileName(
+                    self, "Select File", initial_dir, "All Files (*);;Text Files (*.txt)", options=options)
+            elif dialog_type == 'folder':
+                selected_path = QFileDialog.getExistingDirectory(
+                    self, "Select Folder", initial_dir, options=options)
+
+            if selected_path:
+                setting.line_edit.setText(selected_path)
 
         def update_textfield_from_file_dialog(self, setting):
-
-            initial_dir = self.get_init_dir(setting)
-
-            options = QFileDialog.Options()
-            file_path, _ = QFileDialog.getOpenFileName(self, "Select File", initial_dir,
-                                                       "All Files (*);;Text Files (*.txt)", options=options)
-            if file_path:  # Only update if filePath is not empty
-                setting.line_edit.setText(file_path)
+            self._open_file_dialog(setting, 'file')
+            self.validate_path(setting.line_edit.text(), setting.key)
 
         def update_textfield_from_layer_file_dialog(self, setting):
-            initial_dir = self.get_init_dir(setting)
-
-            options = QFileDialog.Options()
-            file_path, _ = QFileDialog.getOpenFileName(self, "Select File", initial_dir,
-                                                       "All Files (*);;Text Files (*.txt)", options=options)
-            if file_path:  # Only update if filePath is not empty
-                setting.line_edit.setText(file_path)
+            self._open_file_dialog(setting, 'layer_file')
+            self.validate_path(setting.line_edit.text(), setting.key)
 
         def update_textfield_from_folder_dialog(self, setting):
-            initial_dir = self.get_init_dir(setting)
-            # Open folder dialog
-            folderPath = QFileDialog.getExistingDirectory(self, "Select Folder", initial_dir)
-            if folderPath:  # Only update if folderPath is not empty
-                setting.line_edit.setText(folderPath)
+            self._open_file_dialog(setting, 'folder')
+            self.validate_path(setting.line_edit.text(), setting.key)
 
-        def get_key_of_true(self, original_group):
-            return next((key for key, value in original_group.items() if isinstance(value, bool) and value), None)
+        def validate_path(self, path, setting_key=None):
+            """Validate a path for forbidden characters and reserved names."""
+            if not path:  # Skip validation if path is empty
+                return True
+
+            # Check for forbidden characters
+            for char in self.FORBIDDEN_CHARACTERS:
+                if char in path:
+                    error_msg = f"Path contains forbidden character: '{char}'"
+                    if setting_key:
+                        error_msg += f" (Setting: {setting_key})"
+                    self.show_error_message(error_msg)
+                    raise ValueError(error_msg)
 
         def on_accept(self):
-            console = iface.mainWindow().findChild(QDockWidget, 'PythonConsole')
-            if console is None or not console.isVisible():
-                iface.actionShowPythonDialog().trigger()
+
+            # First validate all path settings
+            for setting in self.settings:
+                if isinstance(setting, Setting):
+                    if any(suffix in setting.key for suffix in ['_SELECT_FILE', '_SELECT_FOLDER', '_SELECT_LAYER']):
+                        path = setting.attributes.get('value', '')
+                        if path and not self.validate_path(path, setting.key):
+                            raise f"improper file path"
+
             newest_file = plugin_tools.get_newest_file_in(plugin_dir=plugin_dir, folder=settings_folder)
             if os.path.normpath(set_curr_file) == os.path.normpath(newest_file):
                 using_newest = True
@@ -399,31 +512,123 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
             else:
                 print("No changes to settings made")
                 self.output_settings_file_path = set_curr_file
+
+
+
+            # Closes window based on last setting
             if self.settings[-1].attributes['value']:
                 self.close()
+
             next_app_stage(self.output_settings_file_path)
 
-        def _create_widgets_recursive(self, settings, parent_layout):
+        def update_checkbox_setting_with_visibility(self, setting, state, controlled_settings, current_group_key=""):
+            # First update the checkbox setting
+            self.update_bool_setting(setting, state)
+
+            # Then handle visibility of controlled settings
+            should_show = (state == Qt.Checked)
+            controlling_parent_identifier = f"checkbox_{current_group_key}_{setting.key}" if current_group_key else f"checkbox_{setting.key}"
+            for path in controlled_settings:
+                self._set_widget_visibility_by_path(path, controlling_parent_identifier, should_show)
+
+
+        def _apply_initial_visibilities(self, settings_list,  current_group_key=""):
+            """Recursively apply initial visibility states based on _CHILDREN and _RADIO controls."""
+            for item in settings_list:
+                if isinstance(item, Setting):
+                    # Checkbox controls
+                    if isinstance(item.attributes.get('value'), bool) and '_CHILDREN' in item.attributes:
+                        controlled_settings = item.attributes['_CHILDREN']
+                        should_show = item.attributes['value']
+                        for path in controlled_settings:
+                            # Pass a unique identifier for this controlling parent
+                            controlling_parent_identifier = f"checkbox_{current_group_key}_{item.key}" if current_group_key else f"checkbox_{item.key}"
+                            self._set_widget_visibility_by_path(path, controlling_parent_identifier, should_show)
+
+                    # Radio button controls
+                    if '_RADIO' in item.attributes:
+                        radio_options = item.attributes['_RADIO']
+                        for option_key, option_value in radio_options.items():
+                            if option_key.endswith('_CHILDREN'):
+                                base_option_key = option_key.replace('_CHILDREN', '')
+                                controlled_settings = option_value
+                                is_active_radio_option = radio_options.get(base_option_key, False)
+                                for path in controlled_settings:
+                                    # Pass a unique identifier for this controlling parent
+                                    controlling_parent_identifier = f"radio_{current_group_key}_{item.key}_{base_option_key}" if current_group_key else f"radio_{item.key}_{base_option_key}"
+                                    self._set_widget_visibility_by_path(path, controlling_parent_identifier, is_active_radio_option)
+
+                elif isinstance(item, Group):
+                    # Pass the group's key for correct path identification
+                    self._apply_initial_visibilities(item.children, item.key)
+
+            # After all initial visibilities are processed, apply them.
+            # This ensures that all controlling parents have registered their state
+            # before any widget's visibility is set.
+            if not self.initialized_visibility and current_group_key == "": # Only run once at the very top level
+                for child_obj_name, controllers in self.child_visibility_controllers.items():
+                    any_parent_is_true = any(controllers.values())
+                    target_widget = self.findChild(QGroupBox, child_obj_name)
+                    if not target_widget:
+                        target_widget = self.findChild(QWidget, child_obj_name)
+                    if target_widget:
+                        target_widget.setVisible(any_parent_is_true)
+                self.initialized_visibility = True # Set the flag after initial application
+
+        def _set_widget_visibility_by_path(self, setting_path, controlling_parent_key, should_show):
+            """
+            Updates the internal visibility state for a widget or groupbox identified by its path,
+            considering all controlling parents.
+            """
+            object_name_to_find = setting_path.replace(" ", "_").replace("/", "_")
+
+            if object_name_to_find not in self.child_visibility_controllers:
+                self.child_visibility_controllers[object_name_to_find] = {}
+
+            # Store the state from the specific controlling parent
+            self.child_visibility_controllers[object_name_to_find][controlling_parent_key] = should_show
+
+            # Check if any of the controlling parents are true
+            any_parent_is_true = any(self.child_visibility_controllers[object_name_to_find].values())
+
+            target_widget = self.findChild(QGroupBox, object_name_to_find)
+            if not target_widget:
+                target_widget = self.findChild(QWidget, object_name_to_find)
+
+            if target_widget:
+                # Apply visibility only during initialization or when live updates
+                # This prevents initial visibility from being overridden before all parents are processed
+                if self.initialized_visibility or controlling_parent_key != "initial": # Use "initial" as a placeholder for initial calls
+                    target_widget.setVisible(any_parent_is_true)
+                    # print(f"Set visibility of '{object_name_to_find}' to {any_parent_is_true} (controlled by {controlling_parent_key})")
+
+
+        def _create_widgets_recursive(self, settings, parent_layout, current_group_key=""):
+            """Recursively creates QWidgets for settings and groups."""
             for item in settings:
                 if isinstance(item, Group):
+                    full_key = f"{current_group_key}/{item.key}" if current_group_key else item.key
                     groupbox = QGroupBox(item.key)
+                    groupbox.setObjectName(full_key.replace(" ", "_").replace("/", "_"))  # Ensure valid object name
                     font = groupbox.font()
-                    font.setPointSize(self.header_font_size)
+                    font.setPointSize(DynamicGui.HEADER_FONT_SIZE)  # Use class constant
                     groupbox.setFont(font)
                     group_layout = QVBoxLayout()
                     groupbox.setLayout(group_layout)
                     parent_layout.addWidget(groupbox)
-                    self._create_widgets_recursive(item.children, group_layout)
+                    self._create_widgets_recursive(item.children, group_layout, full_key)
+
                 elif isinstance(item, Setting):
-                    self._create_setting_widget_area(item, parent_layout)
+                    self._create_setting_widget_area(item, parent_layout, current_group_key)
 
-        def _add_radio_buttons(self, setting, parent_layout):
-            key = setting.key
-            value = setting.attributes['_RADIO']
+        def _add_radio_buttons(self, setting, parent_layout, current_group_key=""):
+            """Adds a group of radio buttons for a setting."""
+            group_key = setting.key
+            radio_options_data = setting.attributes['_RADIO']
 
-            groupbox = QGroupBox(key)
+            groupbox = QGroupBox(group_key)
             font = groupbox.font()
-            font.setPointSize(self.header_font_size)
+            font.setPointSize(DynamicGui.HEADER_FONT_SIZE)  # Use class constant
             groupbox.setFont(font)
             group_layout = QVBoxLayout()
             groupbox.setLayout(group_layout)
@@ -433,183 +638,221 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
             v_layout = QVBoxLayout()
             v_layout.setContentsMargins(0, 0, 0, 0)
 
-            for _keya, _valuea in value.items():
-                self._add_radio_button(setting, key, _keya, _valuea, button_group, v_layout)
+            visibility_controls = {
+                base_name: option_value
+                for option_name, option_value in radio_options_data.items()
+                if option_name.endswith('_CHILDREN')
+                   and (base_name := option_name.replace('_CHILDREN', ''))
+            }
 
-            self.radio_buttons[key] = button_group  # Store the button group
+            for option_label, option_value in radio_options_data.items():
+                if option_label.endswith('_COMMENT'):
+                    self._add_comment(v_layout, option_value)
+                    continue
+                if option_label.endswith('_CHILDREN'):  # Handled by visibility_controls, no widget needed
+                    continue
+
+                # Create and add radio button
+                radio_button = QRadioButton(option_label)
+                radio_button.setChecked(bool(option_value))
+                button_group.addButton(radio_button)
+                v_layout.addWidget(radio_button)
+
+                if option_label in visibility_controls:
+                    controlled_settings = visibility_controls[option_label]
+                    radio_button.toggled.connect(
+                        lambda checked, s=setting, k=option_label, ctrl=controlled_settings,
+                               cgk=current_group_key:  # Pass cgk
+                        self.update_radio_setting_with_visibility(s, k, checked, ctrl, cgk))  # Pass cgk
+                else:
+                    radio_button.toggled.connect(
+                        lambda checked, s=setting, k=option_label:
+                        self.update_radio_setting(s, k, checked))
+
+            self.radio_buttons[group_key] = button_group
             group_layout.addLayout(v_layout)
 
-        def _add_radio_button(self, setting, key, _keya, _valuea, button_group, v_layout):
-            #special case when there is a comment under the radio button:
-            if '_COMMENT' in _keya:
-                self._add_comment(v_layout, _valuea)
-                return
-
-            radioButton = QRadioButton(self)
-            radioButton.setText(f"{_keya}")  # Set the text for the radio button
-            radioButton.setChecked(bool(_valuea))  # Set the checked state based on _valuea
-            radioButton.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)  # Set size policy
-            radioButton.setMinimumHeight(20)  # Adjust minimum height
-            radioButton.setMaximumHeight(20)  # Adjust maximum height
-            radioButton.setObjectName(f"{key}_{_keya}")  # Set the object name for later lookup
-            button_group.addButton(radioButton)
-            v_layout.addWidget(radioButton)
-            radioButton.toggled.connect(lambda checked, s=setting, k=_keya: self.update_radio_setting(s, k, checked))
-
         def update_radio_setting(self, setting, key, checked):
+            """Updates the state of radio buttons within a group."""
             if checked:
                 for k in setting.attributes['_RADIO']:
-                    if not '_COMMENT' in k:
+                    if not k.endswith('_COMMENT') and not k.endswith('_CHILDREN'):
                         setting.attributes['_RADIO'][k] = (k == key)
                 self.changes_made = True
                 print(f"Setting: {setting.key} changed to {setting.attributes['_RADIO']}")
 
+        def update_radio_setting_with_visibility(self, setting, key, checked, controlled_settings, current_group_key=""):
+            # Update the radio button state first
+            self.update_radio_setting(setting, key, checked)
+
+            # Then handle visibility
+            controlling_parent_identifier = f"radio_{current_group_key}_{setting.key}_{key}" if current_group_key else f"radio_{setting.key}_{key}"
+            for setting_path in controlled_settings:
+                self._set_widget_visibility_by_path(setting_path, controlling_parent_identifier, checked)
+
         def _add_comment(self, layout, comment):
-            # Display comments as QLabel
+            """Adds a grey, indented comment label to the layout."""
             comment_layout = QHBoxLayout()
-            spacer_label = QLabel()  # This label will simulate the tabbing
-            spacer_label.setFixedWidth(self.spacer)  # Adjust this value for your desired amount of spacing
+            spacer_label = QLabel()
+            spacer_label.setFixedWidth(DynamicGui.SPACER_WIDTH)  # Use class constant
             comment_label = QLabel(comment)
+            comment_label.setWordWrap(True)
             comment_font = QFont()
-            comment_font.setPointSize(self.comment_font_size)
+            comment_font.setPointSize(DynamicGui.COMMENT_FONT_SIZE)  # Use class constant
             comment_label.setFont(comment_font)
-            # Make the comment appear in grey
             comment_label.setStyleSheet("color: grey;")
             comment_layout.addWidget(spacer_label)
             comment_layout.addWidget(comment_label)
             layout.addLayout(comment_layout)
 
         def update_bool_setting(self, setting, state):
+            """Updates a boolean setting based on checkbox state."""
             setting.attributes['value'] = (state == Qt.Checked)
             self.changes_made = True
             print(f'Setting: {setting.key} changed to {setting.attributes["value"]}')
 
-        def update_text_setting(self, setting, text):
-            update_text = False
+        def _clean_input_text(self, text):
+            """Cleans input text by removing quotes, 'file:///' prefix, and normalizing path separators."""
             if text.startswith("'") and text.endswith("'"):
                 text = text[1:-1]
-                update_text = True
-
-            if text.startswith('"') and text.endswith('"'):
+            elif text.startswith('"') and text.endswith('"'):
                 text = text[1:-1]
-                update_text = True
-
-            """Sharj"""
-            # Gets rid of the "file:///" when someone does copy-paste on a file
             if text.startswith("file:///"):
                 text = text[8:]
-                update_text = True
-
             if '/' in text:
                 text = text.replace('/', os.sep)
-                update_text = True
+            return text
 
-            if update_text:
-                setting.line_edit.setText(text)
-                return
+        def update_text_setting(self, setting, text):
+            """Updates a text setting, attempting to convert to int/float if possible."""
+            cleaned_text = self._clean_input_text(text)
 
+            # Add path validation for path-related fields
+            is_path_field = any(suffix in setting.key for suffix in ['_SELECT_FILE', '_SELECT_FOLDER', '_SELECT_LAYER'])
+
+            if is_path_field and not self.validate_path(cleaned_text, setting.key):
+                # Mark as invalid and don't update the value
+                setting.line_edit.setStyleSheet("QLineEdit { color: red; }")
+                setting.attributes['_is_valid'] = False
+                raise "invalid path"
+
+            # Reset style if it was previously invalid
+            setting.line_edit.setStyleSheet("")
+
+            converted_text = cleaned_text
             try:
-                # Try converting the text to float
-                text = int(text)
+                converted_text = int(cleaned_text)
             except ValueError:
                 try:
-                    # Try converting the text to float
-                    text = float(text)
+                    converted_text = float(cleaned_text)
                 except ValueError:
-                    # If conversion fails, keep it as a string
-                    pass
-                pass
+                    pass  # Keep as string if neither int nor float
 
-            if not setting.attributes['value'] == text or type(setting.attributes['value']) != type(text):
-                setting.attributes['value'] = text
+            if not setting.attributes['value'] == converted_text or type(setting.attributes['value']) != type(
+                    converted_text):
+                setting.attributes['value'] = converted_text
+                setting.attributes['_is_valid'] = True  # Mark as valid
                 self.changes_made = True
                 print(f"Setting: {setting.key} changed to {setting.attributes['value']}")
 
-        def _add_setting_to_setting_area(self, setting, top_layout):
+        def _add_setting_to_setting_area(self, setting, top_layout, current_group_key=""):
+            """Adds a single setting widget (checkbox, radio, or text input) to the provided layout."""
             suffix_list = list(setting.attributes.keys())
-            if '_RADIO' in suffix_list:
-                if 'value' in suffix_list:
-                    raise ValueError(f'.json settings made improperly, cannot have "_RADIO" and "value"')
-                self._add_radio_buttons(setting, top_layout)
-                return
 
-            # boolean setting
-            if isinstance(setting.attributes['value'], bool):
+            # Handle boolean settings (checkboxes)
+            if isinstance(setting.attributes.get('value'), bool):
+                controlled_settings = setting.attributes.get('_CHILDREN', [])
                 checkbox = QCheckBox(setting.key)
                 checkbox.setFont(self.field_font)
                 checkbox.setChecked(setting.attributes['value'])
-                checkbox.stateChanged.connect(lambda state, s=setting: self.update_bool_setting(s, state))
-                top_layout.addWidget(checkbox)
+
+                if controlled_settings:
+                    checkbox.stateChanged.connect(
+                        lambda state, s=setting, ctrl=controlled_settings, cgk=current_group_key:  # Pass cgk
+                        self.update_checkbox_setting_with_visibility(s, state, ctrl, cgk))  # Pass cgk
+                else:
+                    checkbox.stateChanged.connect(
+                        lambda state, s=setting:
+                        self.update_bool_setting(s, state))
+                top_layout.addWidget(checkbox)  # Changed from top_layout to top_horizontal_layout
+                return
+
+            # Handle _RADIO settings
+            if '_RADIO' in suffix_list:
+                if 'value' in suffix_list:
+                    raise ValueError(
+                        f'.json settings improperly made: cannot have "_RADIO" and "value" for setting "{setting.key}"')
+                self._add_radio_buttons(setting, top_layout, current_group_key)
                 return
 
             text_entry_layout = QVBoxLayout()
-            line_edit = plugin_tools.CustomLineEdit(str(setting.attributes['value']))
+
+
+            # --- Handle text-based settings (QLineEdit, possibly with file/folder/layer dialogs) ---
+            value = setting.attributes.get('value', "")
+            line_edit = plugin_tools.CustomLineEdit(str(value))
             line_edit.setFont(self.field_font)
             line_edit.setAcceptDrops(True)
             line_edit.textChanged.connect(lambda text, s=setting: self.update_text_setting(s, text))
             line_edit_label = QLabel(setting.key)
             line_edit_label.setFont(self.field_font)
-            setting.line_edit = line_edit
+            setting.line_edit = line_edit  # Store reference for later access
+
             h_layout = QHBoxLayout()
-            h_layout.setObjectName(f"layout_{setting.key}")
             h_layout.addWidget(line_edit_label)
             h_layout.addWidget(line_edit)
             text_entry_layout.addLayout(h_layout)
             top_layout.addLayout(text_entry_layout)
 
-            if '_SELECT_LAYER' in suffix_list:
-                h_layout = QHBoxLayout()
-                combobox = NoScrollQComboBox()
-                italic_font = QFont()
-                italic_font.setItalic(True)
-                special_buttons = ["Select Layer:", "Original selection", "Highlighted Layer"]
-                for index, special_button in enumerate(special_buttons):
-                    combobox.addItem(special_button)
-                    combobox.setItemData(index, italic_font, Qt.FontRole)
-                    combobox.setItemData(index, QColor("grey"), Qt.ForegroundRole)
+            # Dictionary to map suffixes to their respective dialog functions
+            dialog_handlers = {
+                '_SELECT_FILE': self.update_textfield_from_file_dialog,
+                '_SELECT_FOLDER': self.update_textfield_from_folder_dialog,
+                '_SELECT_LAYER': self.update_textfield_from_layer_file_dialog,
+            }
 
-                for layer_name in self.get_available_qgis_layers():
-                    combobox.addItem(layer_name)
-                combobox.currentTextChanged.connect(
-                    lambda text, k=setting: self.update_textfield_from_dropdown(k, text))
+            # Check for file/folder/layer selection suffixes and add appropriate widgets
+            for suffix, handler_func in dialog_handlers.items():
+                if suffix in suffix_list:
+                    btn_layout = QHBoxLayout()
+                    if suffix == '_SELECT_LAYER':
+                        combobox = NoScrollQComboBox()
+                        italic_font = QFont()
+                        italic_font.setItalic(True)
+                        special_buttons = ["Select Layer:", "Original selection", "Highlighted Layer"]
+                        for index, special_button in enumerate(special_buttons):
+                            combobox.addItem(special_button)
+                            combobox.setItemData(index, italic_font, Qt.FontRole)
+                            combobox.setItemData(index, QColor("grey"), Qt.ForegroundRole)
 
-                h_layout.addWidget(combobox, 1)
-                # Adding a "..." button after the dropdown
-                ellipsis_button = QPushButton("...")
-                ellipsis_button.setFont(self.ellipsis_font)
-                ellipsis_button.clicked.connect(lambda text, k=setting: self.update_textfield_from_layer_file_dialog(k))
-                h_layout.addWidget(ellipsis_button)
-                text_entry_layout.addLayout(h_layout)
-                return
+                        for layer_name in self.get_available_qgis_layers():
+                            combobox.addItem(layer_name)
+                        combobox.currentTextChanged.connect(
+                            lambda text, k=setting: self.update_textfield_from_dropdown(k, text))
+                        btn_layout.addWidget(combobox, 1)
 
-            if '_SELECT_FILE' in suffix_list:
-                h_layout = QHBoxLayout()
-                folder_button = QPushButton("...")
-                folder_button.setFont(self.ellipsis_font)
-                folder_button.clicked.connect(lambda text, k=setting: self.update_textfield_from_file_dialog(k))
-                h_layout.addWidget(folder_button)
-                text_entry_layout.addLayout(h_layout)
-                return
+                    ellipsis_button = QPushButton("...")
+                    ellipsis_button.setFont(self.ellipsis_font)
+                    # Use lambda _ for unused argument from clicked signal
+                    ellipsis_button.clicked.connect(lambda _, k=setting: handler_func(k))
+                    btn_layout.addWidget(ellipsis_button)
+                    text_entry_layout.addLayout(btn_layout)
+                    break  # Assuming only one SELECT type per setting
 
-            if '_SELECT_FOLDER' in suffix_list:
-                h_layout = QHBoxLayout()
-                folder_button = QPushButton("...")
-                folder_button.setFont(self.ellipsis_font)
-                folder_button.clicked.connect(lambda text, k=setting: self.update_textfield_from_folder_dialog(k))
-                h_layout.addWidget(folder_button)
-                text_entry_layout.addLayout(h_layout)
-                return
+
+
 
         def _add_video_to_setting_area(self, top_layout, vid_name):
+            """Adds a video icon button to the provided layout."""
             vid_button = QPushButton()
-            vid_icon_path = os.path.join(plugin_dir, "vid_icon.png")
+            vid_icon_path = os.path.join(plugin_dir, DynamicGui.VIDEO_ICON_PATH)  # Use class constant
             vid_button.setIcon(QIcon(vid_icon_path))
             vid_button.setIconSize(QSize(24, 24))
-            vid_button.setFixedSize(QSize(24, 24))  # Set fixed size to make it square
+            vid_button.setFixedSize(QSize(24, 24))
             vid_button.clicked.connect(lambda: self.play_vid(os.path.join(self.video_folder_path, vid_name)))
             top_layout.addWidget(vid_button)
 
-        def _create_setting_widget_area(self, setting, parent_layout):
+        def _create_setting_widget_area(self, setting, parent_layout, current_group_key=""):
             '''
             |---------|------|
             | SETTING | VID  |
@@ -620,22 +863,37 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
 
             suffix_list = list(setting.attributes.keys())
 
-            # Main layout for the setting widget
-            setting_area_layout = QVBoxLayout()
+            # Create a container widget for the entire setting area
+            setting_area_widget = QWidget()
+            setting_area_layout = QVBoxLayout(setting_area_widget)
+            setting_area_widget.setLayout(setting_area_layout)
 
-            # Horizontal layout for setting and video
-            top_layout = QHBoxLayout()
+            # Fix the spacing and margins to 1 pixel
+            setting_area_layout.setSpacing(1)
+            setting_area_layout.setContentsMargins(1,1,1,1)
 
-            self._add_setting_to_setting_area(setting, top_layout)
+            # Set object name for visibility control (e.g., controlled by _CHILDREN)
+            widget_object_name = f"{current_group_key}/{setting.key}" if current_group_key else setting.key
+            setting_area_widget.setObjectName(widget_object_name.replace(" ", "_").replace("/", "_"))
 
+            # Horizontal layout for the setting input and optional video button
+            top_horizontal_layout = QHBoxLayout()
+
+            # Add the core setting widget
+            self._add_setting_to_setting_area(setting, top_horizontal_layout, current_group_key)
+
+            # Add video button if specified
             if '_VIDEO' in suffix_list:
-                self._add_video_to_setting_area(top_layout, setting.attributes['_VIDEO'])
+                self._add_video_to_setting_area(top_horizontal_layout, setting.attributes['_VIDEO'])
 
-            setting_area_layout.addLayout(top_layout)
+            setting_area_layout.addLayout(top_horizontal_layout)
 
+            # Add comment if specified
             if '_COMMENT' in suffix_list:
                 self._add_comment(setting_area_layout, setting.attributes['_COMMENT'])
 
-            parent_layout.addLayout(setting_area_layout)
+            # Add the complete setting area widget to the parent layout
+            parent_layout.addWidget(setting_area_widget)
+
 
     return DynamicGui(parsed_data, iface)
