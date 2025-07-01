@@ -2,7 +2,9 @@
     "Mandatory Input files": {
         "Select an input type_RADIO": {
             "\u2702\ufe0f Cutter file and an (Un-cut) Line file": true,
-            "\u23d2\u2014\u23d2 A single line file that has already been cut and extended manually": false
+            "\u2702\ufe0f Cutter file and an (Un-cut) Line file_CHILDREN": ["Mandatory Input files/✂\uFE0F Provide the Cutter file and an (Un-cut) Line file"],
+            "\u23d2\u2014\u23d2 A single line file that has already been cut and extended manually": false,
+            "\u23d2\u2014\u23d2 A single line file that has already been cut and extended manually_CHILDREN": ["Mandatory Input files/⏒—⏒ Provide the single line file that has already been cut and extended manually"]
         },
         "\u2702\ufe0f Provide the Cutter file and an (Un-cut) Line file": {
             "Lines file": "C:\\Users\\matte\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_lines_to_flights\\test_data\\cutting_lines_test\\fewer_flt_line.shp",
