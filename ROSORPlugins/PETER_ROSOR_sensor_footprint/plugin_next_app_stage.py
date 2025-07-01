@@ -143,7 +143,41 @@ def plot_3d_with_dsm(
 
     # --- load and subsample IMU/GPS (lat,lon,Alt,Roll,Pitch,Yaw) ---
     df     = pd.read_csv(imu_path, sep='\t').iloc[::sub_sample_rate].reset_index(drop=True)
-    alts   = df['Alt'].values - df['Geoid_Separation'].values
+
+    # --- geoid-separation fallback via EGM96 TIFF ---
+    if 'Geoid_Separation' in df.columns:
+        geoid_sep = df['Geoid_Separation'].values
+    else:
+        # locate the TIFF next to this script
+        geoid_path = os.path.join(os.path.dirname(__file__),
+                                  "convert_ellipsoid_to_ASL_with_EGM96.tif")
+        ds_geo = gdal.Open(geoid_path)
+        if ds_geo is None:
+            plugin_tools.show_error(f"Could not open geoid raster '{geoid_path}', defaulting to zero.")
+            geoid_sep = np.zeros(len(df))
+        else:
+            gt_geo = ds_geo.GetGeoTransform()
+            band_geo = ds_geo.GetRasterBand(1)
+            # build a CRS transform WGS84→geoid-raster CRS
+            src_sr = osr.SpatialReference();
+            src_sr.ImportFromEPSG(4326)
+            tgt_sr = osr.SpatialReference();
+            tgt_sr.ImportFromWkt(ds_geo.GetProjection())
+            tfm_geo = osr.CoordinateTransformation(src_sr, tgt_sr)
+
+            geoid_sep = np.empty(len(df), dtype=float)
+            for i, (lat, lon) in enumerate(zip(df['Lat'], df['Lon'])):
+                # reproject into the geoid TIFF’s CRS
+                xg, yg, _ = tfm_geo.TransformPoint(lat, lon, 0)
+                # compute pixel indices
+                px = int((xg - gt_geo[0]) / gt_geo[1])
+                py = int((yg - gt_geo[3]) / gt_geo[5])
+                try:
+                    geoid_sep[i] = band_geo.ReadAsArray(px, py, 1, 1)[0, 0]
+                except:
+                    geoid_sep[i] = 0.0
+
+    alts   = df['Alt'].values - geoid_sep
     lons   = df['Lon'].values
     lats   = df['Lat'].values
     rolls  = np.deg2rad(df['Roll'].values)
