@@ -40,7 +40,6 @@ def main(settings_path):
     deviation_thresh = settings_dict['acceptable_deviation_from_flightline']
     acceptable_minimum_velocity = settings_dict['acceptable_minimum_velocity']
 
-    do_auto_rename = settings_dict['Auto_rename']
     path_to_2d_flights = settings_dict['Provide_path_to_2d_flights']
     split_data_if_no_match = settings_dict['If no match, split data']
 
@@ -152,9 +151,6 @@ def main(settings_path):
 
     #gui_instance = run_flightline_splitter_gui('yrs', 'yrs')
     #print(gui_instance)
-
-    if not do_auto_rename:
-        path_to_2d_flights = None
 
     noise_detection_params['z_score_smoothing_factor'] = 2 # changing this causes a bug
     # so I'm removing it from the changeable settings

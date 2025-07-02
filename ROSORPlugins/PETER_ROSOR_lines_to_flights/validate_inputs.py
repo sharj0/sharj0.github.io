@@ -350,6 +350,9 @@ def validate_and_process_lines(lines, user_assigned_unique_strip_letters, max_al
             line.continued_line_back = sorted_lines[i - 1] if i > 0 else None
             line.continued_line_front = sorted_lines[i + 1] if i < len(sorted_lines) - 1 else None
 
+            # **new** vertical neighbours within this ParentLineGroup
+            line.up_neighbour   = sorted_lines[i - 1] if i > 0 else None
+            line.down_neighbour = sorted_lines[i + 1] if i < len(sorted_lines) - 1 else None
     # --- SORTING GROUPS & ASSIGNING NEIGHBOURING GROUPS ---
 
     # Sort by the *rotated* centroid-y (same criterion used in assign_strips_to_lines)

@@ -11,7 +11,7 @@ from .loading_functions import (get_source_and_target_crs_from_layer,
                                 extract_line_obj_from_line_layer,
                                 extract_tof_obj_from_tof_layer)
 
-from qgis.core import QgsVectorLayer
+from qgis.core import QgsVectorLayer, QgsFeature, QgsWkbTypes
 
 
 from .qgis_gui import run_qgis_gui
@@ -26,6 +26,7 @@ from .functions import (sort_lines_and_tofs,
                         construct_the_upper_hierarchy,
                         construct_the_lower_hierarchy)
 from .cutting_and_extending_lines import cut_and_extend_lines
+from .filter_lines import filter_lines_by_type
 
 import os
 import numpy as np
@@ -37,7 +38,6 @@ from itertools import compress
 class Save_Pickle():
     def __init__(self):
         pass
-
 
 def make_new_flights(settings_dict):
     plugin_global = Global_Singleton()
@@ -70,8 +70,16 @@ def make_new_flights(settings_dict):
 
     flight_lines_input_layer = QgsVectorLayer(initial_flight_lines_input_path, "initial_flight_lines_input_path", "ogr")
 
-    if flight_lines_input_layer.isValid():
-        lines_source_and_target_crs = get_source_and_target_crs_from_layer(flight_lines_input_layer)
+    #######################################
+    type = flight_settings["name_tie_not_flt"]
+    filtered_layer = filter_lines_by_type(flight_lines_input_layer, type)
+    if filtered_layer.featureCount() == 0:
+        show_error(f"No '{type}' lines found in the input layer.")
+        return
+    ########################################
+
+    if filtered_layer.isValid():
+        lines_source_and_target_crs = get_source_and_target_crs_from_layer(filtered_layer)
     else:
         show_error('selected layer not valid')
 
@@ -80,14 +88,14 @@ def make_new_flights(settings_dict):
               f"'{lines_source_and_target_crs['target_utm_letter']}'")
         reprojected_lines_path = os.path.splitext(initial_flight_lines_input_path)[0] + '_UTM.shp'
 
-        reproject_vector_layer(flight_lines_input_layer,
+        reproject_vector_layer(filtered_layer,
                                reprojected_lines_path,
                                lines_source_and_target_crs['target_crs_epsg_int'])
         flight_lines_path = reprojected_lines_path
         flight_lines_layer = QgsVectorLayer(flight_lines_path, "flight_lines_path", "ogr")
     else:
         flight_lines_path = initial_flight_lines_input_path
-        flight_lines_layer = flight_lines_input_layer
+        flight_lines_layer = filtered_layer
     if not flight_lines_layer.isValid():
         show_error('selected layer not valid')
 

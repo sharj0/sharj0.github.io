@@ -120,19 +120,39 @@ def extract_line_obj_from_line_layer(flight_lines_layer, flight_lines_path):
 
     return lisst, unique_strip_letters
 
+
 def extract_tof_obj_from_tof_layer(tof_points_layer, tof_points_path, show_feedback_popup):
     tof_names = []
     ids = []
     for layer_ind, feature in enumerate(tof_points_layer.getFeatures()):
-        tof_name = feature['NAME'] if 'NAME' in feature.fields().names() else None
+        # First try 'NAME'
+        fields = feature.fields().names()
+        if 'NAME' in fields:
+            tof_name = feature['NAME']
+        else:
+            tof_name = None
+
+        # If still None, try 'Name'
+        if tof_name is None:
+            if 'Name' in fields:
+                tof_name = feature['Name']
+
+        # If still missing, popup
+        if tof_name is None:
+            show_feedback_popup(f"Feature at index {layer_ind} is missing a NAME/Name attribute")
+
         tof_names.append(tof_name)
-        id = feature['id'] if 'id' in feature.fields().names() else None
-        id = id if isinstance(id, int) else None
-        ids.append(id)
+
+        # ID logic unchanged
+        fid = None
+        if 'id' in fields:
+            val = feature['id']
+            if isinstance(val, int):
+                fid = val
+        ids.append(fid)
 
     plugin_global = Global_Singleton()
     plugin_global.has_tof_names = False
-
 
     disp = plugin_global.disp
     use_name = 'layer_ind'

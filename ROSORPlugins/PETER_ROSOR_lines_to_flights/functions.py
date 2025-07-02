@@ -13,6 +13,7 @@ from .new_classes.III_tof_assignment import InitialTOFAssignment, TOFAssignment
 from .new_classes.IIII_quadrant import Quadrant
 from .new_classes.IIIII_flight import Flight
 
+MAX_FLIGHT_SPLIT_DEPTH = 50
 
 def filter_tof_name(tof_name):
     # List of prefixes to remove (in lowercase).
@@ -469,7 +470,7 @@ def split_flight(flight, max_number_of_lines, prefer_even, max_flt_size, flight_
     return flight, right_flight
 
 
-def process_flight(flight, max_number_of_lines, prefer_even, max_flt_size, flight_settings):
+def process_flight(flight, max_number_of_lines, prefer_even, max_flt_size, flight_settings, depth=0):
     """
     Assumes the flight is already assigned to the quadrant.
     If the flight passes validation, it is accepted.
@@ -477,6 +478,13 @@ def process_flight(flight, max_number_of_lines, prefer_even, max_flt_size, fligh
     and generating a right split flight. If the right flight has any lines, it is added to the quadrant
     and then processed recursively (same checks, and possibly further splits).
     """
+    if depth >= MAX_FLIGHT_SPLIT_DEPTH:
+        show_error(
+            "Current max flight size is larger than ferry distance."
+            " Increase max_flt_size"
+        )
+        raise Exception()
+
     if validate_flight(flight, max_number_of_lines, prefer_even, max_flt_size):
         print("accepted")
         return
@@ -486,7 +494,7 @@ def process_flight(flight, max_number_of_lines, prefer_even, max_flt_size, fligh
 
     # Process the right flight (if any) with the same treatment.
     if right_flight.children:
-        process_flight(right_flight, max_number_of_lines, prefer_even, max_flt_size, flight_settings)
+        process_flight(right_flight, max_number_of_lines, prefer_even, max_flt_size, flight_settings, depth=depth+1)
 
 
 def construct_the_lower_hierarchy(survey_area,
@@ -515,15 +523,33 @@ def construct_the_lower_hierarchy(survey_area,
         quadrant.add_child_to_right(prototype_flight)
 
         # Process the prototype flight.
-        process_flight(prototype_flight,
-                       max_number_of_lines_per_flight,
-                       prefer_even_number_of_lines,
-                       max_flt_size,
-                       survey_area.flight_settings)
+        try:
+
+            process_flight(prototype_flight,
+                        max_number_of_lines_per_flight,
+                        prefer_even_number_of_lines,
+                        max_flt_size,
+                        survey_area.flight_settings)
+        except Exception as e:
+            break
 
         for flight in quadrant.children:
             if not hasattr(flight, 'utm_fly_list'):
                 print('unvalidated flight still exists in quadrant')
+        
+    oversized_flights = []
+    for quadrant in survey_area.quadrant_list:
+        for flight in quadrant.children:
+            if hasattr(flight, "generate_drone_path"):
+                path_length = flight.generate_drone_path()
+                if path_length > max_flt_size:
+                    oversized_flights.append((flight, path_length))
+    if oversized_flights:
+        show_error(
+            "One or more flights exceed the maximum allowed flight size.\n"
+            "Increase the maximum flight size or cut the lines.\n"
+        )
+        raise Exception()
 
 class ColorCycler:
     """

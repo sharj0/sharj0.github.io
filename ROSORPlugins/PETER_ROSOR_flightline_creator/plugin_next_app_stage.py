@@ -4,8 +4,8 @@ This is where the substance of the plugin begins. In main()
 '''
 
 import os
+from . import load_data, display_w_ties, display_no_ties
 from . import plugin_load_settings, plugin_tools
-from . import display_w_ties, display_no_ties
 from .functions import \
     get_name, \
     get_crs,\
@@ -27,16 +27,21 @@ from .output_to_kml import \
     output_swaths_to_kml, \
     line_geometries_to_kml,\
     save_kml_polygon
+from .create_images import *
 
 import time
-from qgis.core import QgsGeometry, QgsWkbTypes, QgsVectorLayer, QgsProcessing, QgsFeature
+from qgis.core import QgsGeometry, QgsWkbTypes, QgsVectorLayer, QgsProcessing, QgsFeature, QgsProject, QgsReadWriteContext, QgsRectangle
 from  qgis import processing
+from qgis.utils import iface
+from qgis.PyQt.QtWidgets import QProgressBar
+from qgis.PyQt.QtCore import *
 import numpy as np
 
 def main(settings_file_path):
     # load settings and allow for the re-naming of settings with a conversion step between the .json name and the internal code
     settings_dict = plugin_load_settings.run(settings_file_path)
     poly_file = settings_dict['Polygon_file']
+    og_poly_file = poly_file
     poly_buffer_distance = settings_dict['Polygon_buffer_distance']
     place_output_folder_into = settings_dict['Output_folder']
     Convert_to_specific_crs = settings_dict['Convert_to_specific_crs']
@@ -67,6 +72,14 @@ def main(settings_file_path):
 
     output_swaths = False
     output_swaths = ouput_lidar or ouput_ortho or ouput_none
+
+    i = 0
+    progressMessageBar = iface.messageBar().createMessage("Loading...")
+    progress = QProgressBar()
+    progress.setMaximum(2)
+    progress.setAlignment(Qt.AlignVCenter)
+    progressMessageBar.layout().addWidget(progress)
+    iface.messageBar().pushWidget(progressMessageBar)
 
     if not os.path.exists(poly_file):
         message = f"File does not not exist: " \
@@ -249,3 +262,58 @@ def main(settings_file_path):
         if open_KML_files_when_complete:
             os.startfile(combined_kml_path)
             print('done loading kmls')
+
+        print_layouts_dir = os.path.join(out_folder_path, "auto_screenshots")
+        os.makedirs(print_layouts_dir, exist_ok=True)
+
+        try:
+            project = QgsProject.instance()
+            set_project_crs_to_layer(poly_layer)
+            time.sleep(5)
+            og_poly = os.path.basename(og_poly_file).split('.')[0]
+            new_poly = os.path.basename(poly_out_path).split('.')[0]
+            new_lines = os.path.basename(lines_out_path).split('.')[0]
+            if output_swaths:
+                swath_lines = os.path.basename(swaths_out_path).split('.')[0]
+            always_visible = [og_poly, 'Google Hybrid', new_poly, new_lines]
+
+            layer_jobs = [("LINES", lines_out_path),]
+            if output_swaths:
+                layer_jobs.append(("SWATHS", swaths_out_path))
+            zoom_vertex = get_polygon_vertex(buffered_layer, which="bottom-left")
+            zoom_factor = compute_zoom_factor_from_spacing(flight_line_spacing)
+
+            for label, path in layer_jobs:
+                layer = show_only(path, always_visible)
+                full_ext = layer.extent()
+
+                for zoomed, factor, suffix in ((False, None, ""), (True, zoom_factor, "_ZOOM"),):
+                    layout_name = f"{pure_name}{version}_{label}{suffix}"
+                    if zoomed:
+                        ext = make_zoom_extent_around_point(zoom_vertex, full_ext, factor)
+                    else:
+                        ext = full_ext
+                    print(f"Exporting {label}{' zoomed' if zoomed else ''} layout image...")
+                    layout = create_print_layout(iface, layout_name=layout_name, extent=ext)
+                    out_png = os.path.join(print_layouts_dir, f"{pure_name}{version}_{label}{suffix}.png")
+                    export_as_image(layout, out_png)
+                    progress.setValue(1)
+
+            if output_swaths:
+                always_visible.append(swath_lines)
+            template_layers = show_only(poly_out_path, always_visible)
+            template_layout_name = f"{pure_name}{version}_TEMPLATE"
+            poly_layer_obj = QgsProject.instance().mapLayersByName(new_poly)[0]
+            template_extent = poly_layer_obj.extent()
+            template_layout = create_print_layout(iface, layout_name=template_layout_name, extent=template_extent)
+            template_path = os.path.join(print_layouts_dir, f"{template_layout_name}.qpt")
+            template_layout.saveAsTemplate(template_path, QgsReadWriteContext())
+            print(f"Template print layout saved to: {template_path}")
+
+            progress.setValue(2)
+            print("? All layout images exported successfully.")
+            iface.messageBar().clearWidgets()
+
+        except Exception as e:
+            print(f"??  Could not create/export one or more layout images: {e}")
+            iface.messageBar().clearWidgets()

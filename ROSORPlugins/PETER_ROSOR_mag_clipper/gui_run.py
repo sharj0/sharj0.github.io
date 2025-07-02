@@ -212,22 +212,35 @@ def get_continuous_sections(inds):
 def get_acceptable_box(line_to_points, flight_lines, thresh, mag_x, mag_y):
     mask_whole = np.zeros_like(mag_x).astype(bool)
     box_list = []
+    
     for line_num, indices in line_to_points.items():
-        flight_line = LineString(flight_lines[line_num])
+        # Instead of using the flight line coordinates (which only have 2 points),
+        # use the actual data points that belong to this flight line
+        line_x = mag_x[indices['start']:indices['end']]
+        line_y = mag_y[indices['start']:indices['end']]
+        
+        # Create a LineString from the actual data points
+        if len(line_x) > 1:
+            line_coords = list(zip(line_x, line_y))
+            flight_line = LineString(line_coords)
+        else:
+            # If only one point, create a small buffer around it
+            flight_line = Point(line_x[0], line_y[0])
 
-        # Create a buffer around the flight line
+        # Create a buffer around the actual flight path
         buffered = flight_line.buffer(thresh)
         exterior_coords = buffered.exterior.coords
         box_list.append(exterior_coords)
 
         mask_local = []
-        for x, y in zip(mag_x[indices['start']: indices['end']],mag_y[indices['start']: indices['end']]):
+        for x, y in zip(mag_x[indices['start']:indices['end']], mag_y[indices['start']:indices['end']]):
             point = Point(x, y)
-            if buffered.contains(point):
+            if buffered.covers(point):
                 mask_local.append(False)
             else:
                 mask_local.append(True)
-        mask_whole[indices['start']: indices['end']] = mask_local
+        mask_whole[indices['start']:indices['end']] = mask_local
+    
     return mask_whole, box_list
 
 def get_close_points_and_line_indices(flight_lines, mag_x, mag_y, thresh):
@@ -263,6 +276,31 @@ def get_close_points_and_line_indices(flight_lines, mag_x, mag_y, thresh):
 
     sort_ind = np.argsort(closest_point_indices)
     return np.array(closest_point_indices)[sort_ind], np.array(line_indices)[sort_ind], np.array(fl_point_indices)[sort_ind]
+
+from scipy.spatial import cKDTree
+def get_close_points_and_line_indices_optimized(flight_lines, mag_x, mag_y, thresh):
+    coords = np.column_stack((mag_x, mag_y))
+    tree = cKDTree(coords)
+
+    closest_point_indices = []
+    line_indices = []
+    fl_point_indices = []
+
+    for line_idx, line in enumerate(flight_lines):
+        for fl_point_idx, fl_point in enumerate(line):
+            indices = tree.query_ball_point(fl_point, r=thresh)
+            if indices:
+                continuous_sections = get_continuous_sections(np.array(indices))
+                for section in continuous_sections:
+                    min_idx = section[np.argmin(np.linalg.norm(coords[section] - fl_point, axis=1))]
+                    closest_point_indices.append(min_idx)
+                    line_indices.append(line_idx)
+                    fl_point_indices.append(fl_point_idx)
+
+    sort_idx = np.argsort(closest_point_indices)
+    return (np.array(closest_point_indices)[sort_idx],
+            np.array(line_indices)[sort_idx],
+            np.array(fl_point_indices)[sort_idx])
 
 def determine_line_start_end(closest_indices, line_indices, fl_point_ind) -> dict:
     #[12145, 9527, 12598, 686, 1266, 1342, 8557, 9026, 9124, 15216, 15888, 4608, 1987, 5056, 7675] [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3] [0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1]
@@ -418,6 +456,26 @@ def detect_and_eliminate_overlaps(line_to_points):
 
     return non_overlapping_lines
 
+def detect_and_eliminate_overlaps_optimized(line_to_points):
+    # Step 1: Convert to sorted list of (line_index, start, end)
+    sorted_lines = sorted(
+        line_to_points.items(),
+        key=lambda item: (item[1]['start'], item[1]['end'] - item[1]['start'])
+    )
+
+    non_overlapping_lines = {}
+    last_accepted_end = -1
+
+    # Step 2: Sweep through sorted list and add non-overlapping ranges
+    for line_index, indices in sorted_lines:
+        start, end = indices['start'], indices['end']
+        if start > last_accepted_end:
+            non_overlapping_lines[line_index] = {'start': start, 'end': end}
+            last_accepted_end = end  # Update the end marker
+
+    return non_overlapping_lines
+
+
 def debug_ranges(line_to_points):
     import matplotlib.pyplot as plt
 
@@ -544,6 +602,107 @@ def get_acceptable_velocity(line_to_points, acceptable_minimum_velocity, elapsed
 
     return mask_too_slow
 
+def get_mag_data_extent(utme, utmn):
+    minx, maxx = utme.min(), utme.max()
+    miny, maxy = utmn.min(), utmn.max()
+    return minx, miny, maxx, maxy
+
+
+def filter_lines_by_extent(flight_lines, extent):
+    # Only keep lines that have both start and end points within the extent
+    minx, miny, maxx, maxy = extent
+    kept = {}
+    new_idx = 0
+    for orig_idx, line in enumerate(flight_lines):
+        (x1, y1), (x2, y2) = line[0], line[-1]
+        if (minx <= x1 <= maxx and miny <= y1 <= maxy and
+            minx <= x2 <= maxx and miny <= y2 <= maxy):
+            kept[new_idx] = (orig_idx, np.array(line))
+            new_idx += 1
+    return kept
+
+
+def sample_data_on_lines(lines_dict, utme, utmn, dist_thresh):
+    """
+    For each line in lines_dict, sample magnetometer points within dist_thresh of each segment point.
+    Returns three arrays: closest_indices, line_indices, fl_point_ind.
+    line_indices and fl_point_ind are references to the new_index in lines_dict.
+    """
+    coords = np.column_stack((utme.values, utmn.values))
+    tree = cKDTree(coords)
+
+    closest_inds = []
+    line_inds = []
+    pt_inds = []
+
+    for new_idx, (orig_idx, line_pts) in lines_dict.items():
+        for pt_idx, pt in enumerate(line_pts):
+            # find all data points within threshold
+            hits = tree.query_ball_point(pt, r=dist_thresh)
+            if hits:
+                # choose nearest
+                nearest = min(hits, key=lambda i: np.linalg.norm(coords[i] - pt))
+                closest_inds.append(nearest)
+                line_inds.append(new_idx)
+                pt_inds.append(pt_idx)
+
+    # sort by closest point index to keep consistency
+    sort_order = np.argsort(closest_inds)
+    return (np.array(closest_inds)[sort_order],
+            np.array(line_inds)[sort_order],
+            np.array(pt_inds)[sort_order])
+
+
+def compute_line_coverage(closest_inds, line_inds, lines_dict):
+    """
+    Calculate coverage fraction for each line: ratio of unique sampled points to total line_points.
+    Returns dict: {new_idx: coverage_fraction}
+    """
+    coverage = {}
+    hits_by_line = {}
+
+    for idx, line_idx in enumerate(line_inds):
+        hits_by_line.setdefault(line_idx, set()).add(idx)
+
+    for line_idx, (_, line_pts) in lines_dict.items():
+        total = len(line_pts)
+        hit_count = len(hits_by_line.get(line_idx, ()))
+        coverage[line_idx] = hit_count / total if total > 0 else 0.0
+    return coverage
+
+
+def filter_lines_by_coverage(lines_dict, coverage, threshold):
+    return {ln: lines_dict[ln] for ln, cov in coverage.items() if cov >= threshold}
+
+
+def process_flight_lines(flight_lines, utme, utmn,
+                         dist_thresh, coverage_thresh,
+                         filter_dir_thresh,
+                         determine_fn):
+
+    # 1. Filter by mag data extent
+    extent = get_mag_data_extent(utme, utmn)
+    lines_in_extent = filter_lines_by_extent(flight_lines, extent)
+
+    # 2. Sample data onto each line
+    closest_inds, line_inds, pt_inds = sample_data_on_lines(
+        lines_in_extent, utme, utmn, dist_thresh
+    )
+
+    # 3. Compute coverage and filter lines
+    coverage = compute_line_coverage(closest_inds, line_inds, lines_in_extent)
+    lines_kept = filter_lines_by_coverage(lines_in_extent, coverage, coverage_thresh)
+
+    # 4. Re-sample to only kept lines
+    mask = np.isin(line_inds, list(lines_kept.keys()))
+    closest_inds = closest_inds[mask]
+    line_inds = line_inds[mask]
+    pt_inds = pt_inds[mask]
+
+    # 5. Determine start/end pairs
+    line_to_points = determine_fn(closest_inds, line_inds, pt_inds)
+
+    return closest_inds, line_inds, pt_inds, line_to_points
 
 def gui_run(df,
             flight_lines,
@@ -565,13 +724,18 @@ def gui_run(df,
     dialog.setWindowTitle("QaQc and clip the magnetic data")
     dialog_layout = QVBoxLayout(dialog)
 
-    closest_indices, line_indices, fl_point_ind = get_close_points_and_line_indices(flight_lines, df['UTME'], df['UTMN'], line_detection_threshold)
-    line_to_points = determine_line_start_end(closest_indices, line_indices, fl_point_ind)
-    line_to_points = detect_and_eliminate_overlaps(line_to_points)
+    extent = get_mag_data_extent(df['UTME'], df['UTMN'])
+    lines_in_extent = filter_lines_by_extent(flight_lines, extent)
 
-    #debug_ranges(line_to_points)
-
-    line_to_points = remove_lines_with_multiple_primary_directions(line_to_points, df['UTME'], df['UTMN'], filter_lines_direction_thresh)
+    closest_indices, line_indices, fl_point_ind, line_to_points = process_flight_lines(
+        flight_lines,
+        df['UTME'],
+        df['UTMN'],
+        line_detection_threshold,
+        0.75,
+        filter_lines_direction_thresh,
+        determine_line_start_end
+    )
 
     do_detect_duplicate_lines = False
     if detect_duplicate_lines(line_to_points) and do_detect_duplicate_lines:
@@ -587,18 +751,28 @@ def gui_run(df,
         load_csv_data_to_qgis(export_file_path, set_symbols_and_colors = False)
         return False, retval, None
 
-    mask_outside_box, box_coords_list = get_acceptable_box(line_to_points, flight_lines, deviation_thresh, df['UTME'], df['UTMN'])
+    line_to_points = re_name_line_numbers(line_to_points)
+    renamed_lines_dict = {
+        new_idx: lines_in_extent[orig_idx][1]
+        for new_idx, (orig_idx, _) in enumerate(lines_in_extent.items())
+    }
+
+    mask_outside_box, box_coords_list = get_acceptable_box(line_to_points, renamed_lines_dict, deviation_thresh, df['UTME'], df['UTMN'])
 
     mask_too_slow = get_acceptable_velocity(line_to_points, acceptable_minimum_velocity, df['elapsed_time_minutes'], df['UTME'], df['UTMN'])
 
-    local_grid_line_names = [grid_line_names[key] for key in line_to_points.keys()]
+    local_grid_line_names = [
+        grid_line_names[orig_idx]
+        for new_idx, (orig_idx, _) in enumerate(lines_in_extent.items())
+    ]
 
     """↓↓ Sharj's Addition ↓↓"""
-    local_flightline_UTM_pairs = [flight_lines[key] for key in line_to_points.keys()]
+    local_flightline_UTM_pairs = [
+        lines_in_extent[orig_idx][1]
+        for new_idx, (orig_idx, _) in enumerate(lines_in_extent.items())
+    ]
     local_flightline_lkm, total_flightline_lkm = flightline_lkm(local_flightline_UTM_pairs)
     """↑↑ Sharj's Addition ↑↑"""
-
-    line_to_points = re_name_line_numbers(line_to_points)
 
     # use this info to assign flightlines in the df
     df['Flightline'] = -1  # Initialize all values to -1

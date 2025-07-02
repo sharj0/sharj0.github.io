@@ -12,7 +12,8 @@ from qgis.core import (
 
 import os
 import xml.etree.ElementTree as ET
-
+from xml.dom import minidom
+import json
 from qgis.core import (
     QgsVectorFileWriter,
     QgsFeature,
@@ -196,87 +197,247 @@ class PluginCanvasGui(QgsMapTool):
         project.layerTreeRoot().insertLayer(0, nodeLayer)  # insert it at index 0 → top of list
         return nodeLayer
 
-
-    def save_shp_or_kml(self, geoms, out_path, out_layer_name, target_epsg_code, flight_color, save_shp=True):
+    def save_kml(self, geom, out_path, flight, main_epsg_int):
         """
-        Saves the provided geometries to either a shapefile or a KML file.
+        Saves the provided geometry to a KML file, then injects a CDATA-wrapped
+        JSON description containing flight metadata (neighbours, children, etc.).
 
         Parameters:
-          geoms: List of QgsGeometry objects.
-          out_path: Full path (including filename) for the output.
-          out_layer_name: Name of the output layer.
-          target_epsg_code: The CRS as a string (e.g. "EPSG:4326").
-          flight_color: A color string in KML format (aabbggrr, e.g., "fff0a1d0").
-          save_shp: If True, saves as shapefile; otherwise as KML.
+          geom: QgsGeometry object.
+          out_path: Full path (including filename) for the output KML.
+          flight: flight object with attributes long_output_name, color,
+                  left_neighbour, right_neighbour, and children list.
+          main_epsg_int: CRS integer (e.g. 32613).
         """
+        # build the CRS string
+        main_crs = f"EPSG:{main_epsg_int}"
+
+        # 1) ensure the output folder exists
+        os.makedirs(os.path.dirname(out_path), exist_ok=True)
+
+        # 2) write a basic single-feature KML
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = "KML"
+        options.fileEncoding = "UTF-8"
+
+        layer = QgsVectorLayer(f"LineString?crs={main_crs}", flight.long_output_name, "memory")
+        dp = layer.dataProvider()
+        layer.startEditing()
+        feat = QgsFeature()
+        feat.setGeometry(geom)
+        dp.addFeatures([feat])
+        layer.commitChanges()
+
+        QgsVectorFileWriter.writeAsVectorFormatV3(
+            layer,
+            out_path,
+            QgsCoordinateTransformContext(),
+            options
+        )
+
+        coords = []
+        if geom.isMultipart():
+            multi = geom.asMultiPolyline()
+            for part in multi:
+                for pt in part:
+                    coords.append({"x": pt.x(), "y": pt.y()})
+        else:
+            line_pts = geom.asPolyline()
+            for pt in line_pts:
+                coords.append({"x": pt.x(), "y": pt.y()})
+
+        # 3) assemble the metadata dict
+        meta = {
+            "flight_name": flight.long_output_name,
+            "epsg": main_epsg_int,
+            "left_neighbor": getattr(flight.left_neighbour, "long_output_name", None),
+            "right_neighbor": getattr(flight.right_neighbour, "long_output_name", None),
+            "tof": {
+                "name": str(flight.tof_assignment.tof),
+                "x":    flight.tof_assignment.tof.x,
+                "y":    flight.tof_assignment.tof.y
+            },
+            "flight_coords": coords,
+            "children": []
+        }
+
+        for line in flight.children:
+            geom_line = {
+                "start_x": line.start.x,
+                "start_y": line.start.y,
+                "end_x": line.end.x,
+                "end_y": line.end.y
+            }
+            neigh = {
+                "left": getattr(line.left_neighbour, "grid_name", None),
+                "right": getattr(line.right_neighbour, "grid_name", None),
+                "up": getattr(line.up_neighbour, "grid_name", None),
+                "down": getattr(line.down_neighbour, "grid_name", None),
+            }
+            meta["children"].append({
+                "line_name": str(line.grid_name),
+                "neighbors": neigh,
+                "geometry": geom_line
+            })
+
+        # 4) parse + inject CDATA-JSON + update color tags
+        try:
+            doc = minidom.parse(out_path)
+            placemarks = doc.getElementsByTagName("Placemark")
+
+            for pm in placemarks:
+                # remove any existing <description>
+                for old in pm.getElementsByTagName("description"):
+                    pm.removeChild(old)
+
+                # new <description><![CDATA[ ...json... ]]></description>
+                desc = doc.createElement("description")
+                cdata = doc.createCDATASection(json.dumps(meta, indent=2))
+                desc.appendChild(cdata)
+
+                # try to insert it right before the geometry node
+                geom_node = None
+                for tag in ("LineString", "Polygon", "Point", "MultiGeometry"):
+                    elems = pm.getElementsByTagName(tag)
+                    if elems:
+                        geom_node = elems[0]
+                        break
+                if geom_node:
+                    pm.insertBefore(desc, geom_node)
+                else:
+                    pm.appendChild(desc)
+
+                # update any <color> child
+                for color_elem in pm.getElementsByTagName("color"):
+                    if color_elem.firstChild:
+                        color_elem.firstChild.nodeValue = flight.color
+                    else:
+                        color_elem.appendChild(doc.createTextNode(flight.color))
+
+                # -- **reformat coordinates** so each coord-triplet is on its own line
+                for coord_elem in pm.getElementsByTagName("coordinates"):
+                    txt = coord_elem.firstChild.nodeValue or ""
+                    parts = txt.strip().split()
+                    # add a leading and trailing newline
+                    new_txt = "\n" + "\n".join(parts) + "\n"
+                    coord_elem.firstChild.nodeValue = new_txt
+
+            # write back out (toxml with encoding returns bytes)
+            xml_bytes = doc.toxml(encoding="utf-8")
+            with open(out_path, "wb") as f:
+                f.write(xml_bytes)
+
+            print("KML metadata and color elements updated.")
+        except Exception as e:
+            print(f"Error injecting JSON CDATA into KML: {e}")
+
+
+    def save_kml_old(self, geom, out_path, flight, main_epsg_int):
+        """
+        Saves the provided geomety to a KML file.
+
+        Parameters:
+          geom: QgsGeometry object.
+          out_path: Full path (including filename) for the output.
+          flight obj
+        """
+        '''
+        FOR CHAT GPT
+        long output name examples. these are the names of the flights and also the names of the kml files
+        
+        survey_area.flight_list[15].long_output_name
+        Out[20]: 'tof_6_flt_1_2.97km.kml'
+        survey_area.flight_list[16].long_output_name
+        Out[21]: 'tof_6_flt_2_3.01km.kml'
+        survey_area.flight_list[17].long_output_name
+        Out[22]: 'tof_6_flt_3_3.05km.kml'
+        survey_area.flight_list[18].long_output_name
+        Out[23]: 'tof_8_flt_16_2.97km.kml'
+        survey_area.flight_list[19].long_output_name
+        Out[24]: 'tof_8_flt_17_2.92km.kml'
+        survey_area.flight_list[20].long_output_name
+        Out[25]: 'tof_8_flt_18_2.88km.kml'
+        ^this is for other time this func is called
+        
+        flight.long_output_name
+        Out[33]: 'tof_8_flt_16_2.97km.kml'
+        flight.left_neighbour.long_output_name
+        Out[34]: 'tof_6_flt_3_3.05km.kml'
+        flight.right_neighbour.long_output_name
+        Out[35]: 'tof_8_flt_17_2.92km.kml'
+        
+        main_crs
+        Out[50]: 'EPSG:32613'
+        
+        flight.children
+        Out[36]: [Line-33] # there are usually more than one
+        
+        flight.children[0].start.x
+        Out[42]: 320525.98457968136
+        flight.children[0].start.y
+        Out[43]: 4235527.165916944
+        flight.children[0].end.x
+        Out[44]: 319455.5989698029
+        flight.children[0].end.y
+        Out[45]: 4234884.013356795
+        
+        
+        # what follows is the unique line name you should use. 
+        right now its an integer, but you should save it as string in case we change how we use it in the future
+        flight.children[0].grid_name 
+        400101
+        flight.right_neighbour.children[0].grid_name 
+        400301
+        
+        I'm using simple default line names here but make sure to use line.up_neighbour.grid_name ....grid_name ..grid_name
+        line = flight.children[0]
+        line.up_neighbour
+        Out[4]: Line-6
+        line.down_neighbour # in this case it does not have a down_neighbour so leave empty, or what ever kml uses as "None"
+        line.right_neighbour
+        Out[6]: Line-34
+        line.left_neighbour
+        Out[7]: Line-32
+        '''
+        main_crs = f"EPSG:{main_epsg_int}"
+        out_layer_name = flight.long_output_name
+        flight_color = flight.color
+
         # Ensure the directory exists.
         os.makedirs(os.path.dirname(out_path), exist_ok=True)
 
         options = QgsVectorFileWriter.SaveVectorOptions()
-        options.driverName = "ESRI Shapefile" if save_shp else "KML"
+        options.driverName = "KML"
         options.fileEncoding = "UTF-8"
 
         # Create an in-memory layer for LineStrings.
-        layer = QgsVectorLayer(f"LineString?crs={target_epsg_code}", out_layer_name, "memory")
+        layer = QgsVectorLayer(f"LineString?crs={main_crs}", out_layer_name, "memory")
         dp = layer.dataProvider()
         layer.startEditing()
-        for geom in geoms:
-            feat = QgsFeature()
-            feat.setGeometry(geom)
-            dp.addFeatures([feat])
+        feat = QgsFeature()
+        feat.setGeometry(geom)
+        dp.addFeatures([feat])
         layer.commitChanges()
 
         QgsVectorFileWriter.writeAsVectorFormatV3(layer, out_path, QgsCoordinateTransformContext(), options)
 
-        if not save_shp:
-            # For KML: Update the color in the KML file to match flight_color.
-            try:
-                tree = ET.parse(out_path)
-                root = tree.getroot()
-                namespaces = {'kml': 'http://www.opengis.net/kml/2.2'}
+        try:
+            tree = ET.parse(out_path)
+            root = tree.getroot()
+            namespaces = {'kml': 'http://www.opengis.net/kml/2.2'}
 
-                for color_elem in root.findall(".//kml:color", namespaces):
-                    color_elem.text = flight_color
+            for color_elem in root.findall(".//kml:color", namespaces):
+                color_elem.text = flight_color
 
-                # Write the modified KML.
-                ET.register_namespace('', "http://www.opengis.net/kml/2.2")
-                tree.write(out_path, xml_declaration=True, encoding='utf-8', method='xml')
-                print("KML color elements updated.")
-            except Exception as e:
-                print(f"Error updating KML colors: {e}")
-        else:
-            # For shapefiles, create a companion QML style file so that QGIS shows the correct color.
-            # Convert the KML color (aabbggrr) into a QML color (#RRGGBB).
-            if len(flight_color) == 8:
-                red = flight_color[6:8]
-                green = flight_color[4:6]
-                blue = flight_color[2:4]
-                qml_color = f"#{red}{green}{blue}"
-            else:
-                qml_color = "#000000"
+            # Write the modified KML.
+            ET.register_namespace('', "http://www.opengis.net/kml/2.2")
+            tree.write(out_path, xml_declaration=True, encoding='utf-8', method='xml')
+            print("KML color elements updated.")
+        except Exception as e:
+            print(f"Error updating KML colors: {e}")
 
-            qml_content = f'''<?xml version="1.0" encoding="UTF-8"?>
-    <qgis styleCategories="AllStyleCategories" version="3.0">
-      <renderer-v2 type="singleSymbol">
-        <symbols>
-          <symbol alpha="1" type="line" name="line">
-            <layer pass="0" class="SimpleLine" locked="0">
-              <prop k="color" v="{qml_color}"/>
-              <prop k="width" v="0.26"/>
-            </layer>
-          </symbol>
-        </symbols>
-      </renderer-v2>
-      <labeling/>
-    </qgis>
-    '''
-            qml_path = os.path.splitext(out_path)[0] + ".qml"
-            with open(qml_path, "w", encoding="utf-8") as f:
-                f.write(qml_content)
-            print(f"QML style file saved to {qml_path}")
 
-    def save(self, save_as_shp: bool = False):
-
+    def save(self):
         '''---- FLIGHT LENGTH CHECK ----'''
         max_flt_size = self.root.flight_settings.get("max_flight_size", None)
         if max_flt_size is not None:
@@ -334,9 +495,8 @@ class PluginCanvasGui(QgsMapTool):
         flights_2D_folder = os.path.join(output_package_folder,
                                         f'2D_kml_{tie_or_flt_string}s_for_'+self.root.main_input_name)
         os.makedirs(flights_2D_folder, exist_ok=True)
-        target_epsg = self.root.global_crs_target.get('target_crs_epsg_int', 4326)
-        target_crs = f"EPSG:{target_epsg}"
-        file_ext = ".shp" if save_as_shp else ".kml"
+        main_epsg_int = self.root.global_crs_target.get('target_crs_epsg_int')
+        file_ext = ".kml"
         for tof in self.root.TOF_list:
             # ---------- 1) Collect exportable flights first -------------
             flights_to_save = []
@@ -366,13 +526,11 @@ class PluginCanvasGui(QgsMapTool):
                 if not out_path.lower().endswith(file_ext):
                     out_path += file_ext
 
-                self.save_shp_or_kml(
-                    [geom],
+                self.save_kml(
+                    geom,
                     out_path,
-                    flight.long_output_name,
-                    target_crs,
-                    flight.color,
-                    save_shp=save_as_shp
+                    flight,
+                    main_epsg_int,
                 )
 
             '''---- COPY OUTPUT_STYLE.QML ----'''

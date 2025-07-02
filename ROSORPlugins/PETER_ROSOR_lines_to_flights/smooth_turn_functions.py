@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Arc
 
 arr = np.array
+MAX_DEPTH = 10
 
 def less_360(inp):
     return np.mod(inp, 360)
@@ -337,7 +338,14 @@ def get_distance(p1, p2):
     return np.hypot(p1[0] - p2[0], p1[1] - p2[1])
 
 def flt_end(utm_fly_list, start_coord, start_ang, end_coord,
-                        turn_segment_length, og_turn_diameter, turn_diameter):
+                        turn_segment_length, og_turn_diameter, turn_diameter, depth=0):
+    
+    if depth >= MAX_DEPTH:
+        raise ValueError(
+            f"Cannot create smooth end-turn from {start_coord} to {end_coord}: "
+            f"reached maximum recursion depth ({MAX_DEPTH})."
+        )
+
     left_tc, right_tc = get_turn_centres(start_coord, start_ang + 180, turn_diameter)
     tangent_point, turn_ang, turn_ang = choose_best_tangent_point(left_tc, right_tc, end_coord, turn_diameter,
                                                                   start_ang + 180, start_coord, flight_start=False)
@@ -351,10 +359,17 @@ def flt_end(utm_fly_list, start_coord, start_ang, end_coord,
     else:
         turn_diameter *= 1.2
         flt_end(utm_fly_list, start_coord, start_ang, end_coord, turn_segment_length,
-                            og_turn_diameter, turn_diameter)
+                            og_turn_diameter, turn_diameter, depth=depth+1)
 
 def flt_beginning(utm_fly_list, start_coord, end_coord, end_ang,
-                              turn_segment_length, og_turn_diameter, turn_diameter):
+                              turn_segment_length, og_turn_diameter, turn_diameter, depth=0):
+    
+    if depth > MAX_DEPTH:
+        raise ValueError(
+            f"Cannot create smooth turn from {start_coord} to {end_coord}: "
+            f"reached maximum recursion depth ({MAX_DEPTH})."
+        )
+
     left_tc, right_tc = get_turn_centres(end_coord,end_ang,turn_diameter)
     tangent_point, tc, turn_ang = choose_best_tangent_point(left_tc, right_tc,
                                                             start_coord, turn_diameter,
@@ -370,7 +385,7 @@ def flt_beginning(utm_fly_list, start_coord, end_coord, end_ang,
     else:
         turn_diameter *= 1.2
         flt_beginning(utm_fly_list, start_coord, end_coord, end_ang, turn_segment_length,
-                                  og_turn_diameter, turn_diameter)
+                                  og_turn_diameter, turn_diameter, depth=depth+1)
 
 def between_lines(utm_fly_list, start_coord, start_ang, end_coord, end_ang,
                               turn_segment_length, turn_diameter):

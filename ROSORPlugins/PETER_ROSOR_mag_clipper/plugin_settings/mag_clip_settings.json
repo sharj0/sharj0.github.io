@@ -9,7 +9,6 @@
         "Flight_lines_file_path_VIDEO": "Flight_lines_file_path.mp4"
     },
     "Auto_renaming": {
-        "Auto_rename": false,
         "Provide_path_to_2d_flights": "C:\\Users\\Sharj\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\PETER_ROSOR_mag_clipper\\test_data\\2d_mag_flights",
         "Provide_path_to_2d_flights_COMMENT": "This will rename the clean csvs to match the names of the provided kml flights",
         "Provide_path_to_2d_flights_SELECT_FOLDER": "true",
@@ -26,9 +25,9 @@
         "Y_axis_display_range_override_VIDEO": "Y_axis_display_range_override_VIDEO.mp4",
         "Line Detection": {
             "line_detection_threshold": 20.0,
-            "line_detection_threshold_COMMENT": "The area at the end of each flightline that helps determine which flightline the data belongs to",
+            "line_detection_threshold_COMMENT": "Defines the radius (in meters) around each flightline point to determine which data points belong to the flightline",
             "filter_out_lines_based_on_direction_thresh_percent": 40.0,
-            "filter_out_lines_based_on_direction_thresh_percent_COMMENT": "Usually 80%. Line is kept if its flying in the same direction 80% of the time. Otherwise rejected."
+            "filter_out_lines_based_on_direction_thresh_percent_COMMENT": "Percentage of points required to fly in the same direction for a flightline to be accepted. Lines are rejected if less than this percentage."
         },
         "acceptable_deviation_from_flightline": 5.0,
         "acceptable_deviation_from_flightline_COMMENT": "Distance in meters that the mag can fly off-course and not be marked",
