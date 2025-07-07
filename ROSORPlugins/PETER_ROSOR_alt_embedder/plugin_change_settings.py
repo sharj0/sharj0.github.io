@@ -3,6 +3,8 @@ THIS .PY FILE SHOULD BE THE SAME FOR ALL PLUGINS.
 A CHANGE TO THIS .PY IN ONE OF THE PLUGINS SHOULD BE COPPY-PASTED TO ALL THE OTHER ONES
 '''
 
+'''UPDATED: 2025-07-07 By: Sharj'''
+
 import os
 import sys
 import json
@@ -229,6 +231,97 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
             # Create a button for browsing .json files
             self.settings_folder_path = os.path.join(plugin_dir, settings_folder)
             self.video_folder_path = os.path.join(plugin_dir, 'tutorial_vids')
+
+            self._setup_top_panel_widgets()
+            plugin_add_custom_buttons.add_custom_buttons(self, plugin_dir)  # External call
+
+            self.settings = get_settings(self.data)
+
+            self._check_for_specific_setting(DynamicGui.HARD_SETTING_LIMITER)
+            self._open_python_console()
+            self._create_widgets_recursive(self.settings, self.mainLayout)
+
+            self._setup_main_window_layout()
+            self._apply_initial_visibilities(self.settings)  # Important for initial state
+
+            if not self.error_exists:
+                self.show()
+
+
+        def _check_for_specific_setting(self, required_settings):
+
+            def get_flattened_settings(settings_list):
+                """Recursively flattens the settings structure into ordered (key, value) pairs"""
+                flattened = []
+
+                for item in settings_list:
+                    if isinstance(item, Group):
+                        flattened.extend(get_flattened_settings(item.children))
+                    elif isinstance(item, Setting):
+                        flattened.append((item.key, item.attributes.get('value')))
+                return flattened
+
+            all_settings = get_flattened_settings(self.settings)
+
+            if len(all_settings) < len(required_settings):
+                error_message = f"JSON must contain at least {len(required_settings)} settings.\n Found only {len(all_settings)}."
+                self.show_error_message(error_message)
+                return
+
+
+            # Get just the last N settings we care about
+            last_settings = all_settings[-len(required_settings):]
+
+            # Check each required setting in order
+            for (expected_setting, (actual_key, actual_value)) in zip(required_settings, last_settings):
+                # Check setting name
+                if actual_key != expected_setting:
+                    error_message = f"'{expected_setting}' must be the {len(required_settings) - required_settings.index(expected_setting)}th last setting.\n Found '{actual_key}' instead."
+                    self.show_error_message(error_message)
+                    return
+                    # raise ValueError(error_message)
+
+                # Check boolean type
+                if not isinstance(actual_value, bool):
+                    error_message = f"'{expected_setting}' must be a boolean value.\n Found {type(actual_value).__name__} instead. "
+                    self.show_error_message(error_message)
+                    return
+                    # raise ValueError(error_message)
+
+            print("Validation passed: Required end settings are correctly positioned")
+
+
+        def _open_python_console(self):
+            # Open Python console on QGIS
+            if self.settings[-2].attributes['value']:
+                # iface.actionShowPythonDialog().trigger()
+                if iface is not None:
+                    python_console = iface.mainWindow().findChild(QDockWidget, "PythonConsole")
+                    if python_console is None or python_console.isVisible() is False:
+
+                        # Need to temporarily make window on top
+                        self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
+                        self.show()
+
+                        iface.actionShowPythonDialog().trigger()
+
+                        print(f"Opening Python console")
+
+                        QTimer.singleShot(500, self._remove_on_top_flag)
+
+                else:
+                    print("QGIS is not running - cannot open Python console")
+
+        def _remove_on_top_flag(self):
+            """Remove the stay-on-top flag after the console has opened"""
+            self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
+            self.show()
+
+        def _setup_top_panel_widgets(self):
+            """Sets up the top panel with browse button, plugin icon, and intro video button."""
+            top_grid_layout = QGridLayout()
+
+            # Browse button
             browse_button = QPushButton("📁 Load previous settings")
             browse_button_font = QFont()
             browse_button_font.setPointSize(12)  # Set the font size

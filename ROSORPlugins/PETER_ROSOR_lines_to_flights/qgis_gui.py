@@ -317,13 +317,6 @@ def run_qgis_gui(iface, survey_area):
     survey_crs = QgsCoordinateReferenceSystem("EPSG:" + str(target_epsg))
     project_crs = QgsProject.instance().crs()
 
-    ''' \\\ TEST /// '''
-    flight = survey_area.flight_list[18]
-    print(flight)
-
-
-    ''' /// TEST \\\ '''
-
     if project_crs.authid() != survey_crs.authid():
         message = (f"CRS mismatch: Project CRS is {project_crs.authid()}, "
                    f"but survey area CRS is {survey_crs.authid()}. \n\nSwitching project CRS "
