@@ -328,13 +328,18 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
                         self.show()
 
                         iface.actionShowPythonDialog().trigger()
+
                         print(f"Opening Python console")
 
-                        # Remove the stay on top flag
-                        self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
-                        self.show()
+                        QTimer.singleShot(500, self._remove_on_top_flag)
+
                 else:
                     print("QGIS is not running - cannot open Python console")
+
+        def _remove_on_top_flag(self):
+            """Remove the stay-on-top flag after the console has opened"""
+            self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
+            self.show()
 
         def _setup_top_panel_widgets(self):
             """Sets up the top panel with browse button, plugin icon, and intro video button."""
