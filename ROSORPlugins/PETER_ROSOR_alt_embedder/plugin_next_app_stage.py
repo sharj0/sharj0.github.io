@@ -32,7 +32,8 @@ from .package_output import (
     lat_lon_UAValt_turnRad_to_DJI_wp_kmz,
     lat_lon_to_DJI_with_P1_corridor_kmz,
     lat_lon_UAValt_turnRad_heading_to_DJI_with_P1_wp_kmz,
-    lat_lon_UAValt_to_mp_wp)
+    lat_lon_UAValt_to_mp_wp,
+    lat_lon_UAValt_to_altaX_QGC_Plan)
 from . import plugin_load_settings
 import numpy as np
 import sys
@@ -68,7 +69,7 @@ def main(settings_file_path):
     # load settings and allow for the re-naming of settings with a conversion step between the .json name and the internal code
     settings_dict = plugin_load_settings.run(settings_file_path)
 
-    run_file_not_folder = settings_dict['🗏  A single 2D flight file']
+    run_file_not_folder = settings_dict['🗏  A singe 2D flight file']
     waypoint_folder = settings_dict['📂 2D flights folder']
     input_waypoint_file = settings_dict['🗏 2D flight file']
 
@@ -93,6 +94,8 @@ def main(settings_file_path):
     create_mag_flight = settings_dict['DJI Mag or Lidar Flight']
     create_ortho_photo_waypoint_flight = settings_dict['DJI Ortho Photo Flight']
     create_as_mission_planner_waypoints = settings_dict['Ardupilot 3D Waypoints']
+    #create_as_PX4_waypoints = settings_dict['PX4 3D Waypoints']
+    altaX_QGC_Plan = settings_dict['AltaX QGC Plan']
 
     auto_accept = settings_dict['No manual checking']
     manually_remove_noise = settings_dict["Manually remove noise"]
@@ -423,6 +426,13 @@ def main(settings_file_path):
                                     lats=new_waypoints.T[11],
                                     lons=new_waypoints.T[12],
                                     UAValtAsls=new_waypoints.T[10])
+
+        if altaX_QGC_Plan:
+            lat_lon_UAValt_to_altaX_QGC_Plan(output_file_path=new_waypoint_filepath,
+                                             lats=new_waypoints.T[11],
+                                             lons=new_waypoints.T[12],
+                                             UAValtAsls=new_waypoints.T[10],
+                                             heading=new_waypoints.T[7])
 
         if create_ortho_photo_corridor_flight:
             lat_lon_to_DJI_with_P1_corridor_kmz(output_file_path=new_waypoint_filepath,

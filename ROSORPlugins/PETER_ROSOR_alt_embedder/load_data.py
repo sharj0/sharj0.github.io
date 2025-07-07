@@ -166,15 +166,16 @@ def clear_directory(directory_path):
     Parameters:
     directory_path (str): The path to the directory to clear.
     """
-    for filename in os.listdir(directory_path):
-        file_path = os.path.join(directory_path, filename)
-        try:
-            if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)
-            elif os.path.isdir(file_path):
-                shutil.rmtree(file_path)
-        except Exception as e:
-            print(f'Failed to delete {file_path}. Reason: {e}')
+    print(f'Not deleting old files. Add code to not have to create them in the first place')
+    #for filename in os.listdir(directory_path):
+    #    file_path = os.path.join(directory_path, filename)
+    #    try:
+    #        if os.path.isfile(file_path) or os.path.islink(file_path):
+    #            os.unlink(file_path)
+    #        elif os.path.isdir(file_path):
+    #            shutil.rmtree(file_path)
+    #    except Exception as e:
+    #        print(f'Failed to delete {file_path}. Reason: {e}')
 
 def waypoints(waypoint_path, target_epsg=32609):
     # Identify file type based on extension

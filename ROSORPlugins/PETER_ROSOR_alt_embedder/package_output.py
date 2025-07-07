@@ -1,8 +1,7 @@
 from pathlib import Path
-import os
 import shutil
-
-
+import json
+import numpy as np
 import os
 
 def lat_lon_UAValt_to_mp_wp(output_file_path,
@@ -43,6 +42,137 @@ def lat_lon_UAValt_to_mp_wp(output_file_path,
             else:
                 line = (
                     f'{i+1}\t0\t{alt_mode_num}\t16\t0\t0\t0\t0\t'
+                    f'{lat}\t{lon}\t{alt}\t1\n'
+                )
+            file.write(line)
+
+    print('output_to')
+    print(output_file_path)
+
+
+def lat_lon_UAValt_to_altaX_QGC_Plan(output_file_path,
+                                     lats, lons, UAValtAsls, heading,
+                                     cruiseSpeed=5,
+                                     firmwareType=12,
+                                     hoverSpeed=5,
+                                     vehicleType=2):
+    """
+    Produce a .plan almost identical in structure to your sample.
+
+    Parameters
+    ----------
+    output_file_path : str
+        Path to write the .plan file (will be given .plan extension).
+    lats, lons : sequence of float
+    UAValtAsls : sequence of float
+    heading : sequence of float
+        Per-waypoint yaw, in degrees (clockwise from north).
+    """
+    # 1) Normalize extension & ensure dir exists
+    if output_file_path.endswith(('.kmz', '.kml')):
+        output_file_path = output_file_path[:-4]
+    if not output_file_path.endswith('.plan'):
+        output_file_path += '.plan'
+    os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
+
+    # 2) Build base plan dict with insertion order matching your sample
+    plan = {
+        "fileType": "Plan",
+        "geoFence": {"circles": [], "polygons": [], "version": 2},
+        "groundStation": "QGroundControl",
+        "mission": {
+            "cruiseSpeed": cruiseSpeed,
+            "firmwareType": firmwareType,
+            "hoverSpeed": hoverSpeed,
+            "items": [],
+            "plannedHomePosition": [float(lats[0]), float(lons[0]), float(UAValtAsls[0])],
+            "vehicleType": vehicleType,
+            "version": 2
+        },
+        "rallyPoints": {"points": [], "version": 2},
+        "version": 1
+    }
+
+    heading_cw_of_Ns_off_by_one = (heading - 90) * -1
+
+    # 3) Compute yaw list so first WP has yaw=0
+    yaws = np.concatenate(([0.0], np.array(heading_cw_of_Ns_off_by_one, float)[:-1]))
+
+    # 4) Populate each SimpleItem
+    for idx, (lat, lon, alt, yaw_deg) in enumerate(zip(lats, lons, UAValtAsls, yaws), start=1):
+        item = {
+            "AMSLAltAboveTerrain": None,
+            "Altitude": float(alt),
+            "AltitudeMode": 2,
+            "autoContinue": True,
+            "command": 16,
+            "doJumpId": idx,
+            "frame": 0,
+            "params": [
+                0,  # hold time
+                0,  # acceptance radius
+                0,  # pass through
+                float(yaw_deg),  # yaw at WP
+                float(lat),
+                float(lon),
+                float(alt)
+            ],
+            "type": "SimpleItem"
+        }
+        plan["mission"]["items"].append(item)
+
+    # 5) Write JSON
+    with open(output_file_path, 'w', encoding='utf-8') as f:
+        json.dump(plan, f, indent=4)
+
+    print(f"Wrote QGC .plan → {output_file_path}")
+
+def lat_lon_UAValt_to_PX4_wp(output_file_path,
+                            lats, lons, UAValtAsls, heading):
+
+    heading_cw_of_Ns_off_by_one = (heading - 90) * -1
+
+    heading_cw_of_Ns = np.concatenate(([0], heading_cw_of_Ns_off_by_one[:-1]))
+
+    if len(lats) > 600:
+        raise ValueError("can't do more than 600 mission planner waypoints (650 with a safe buffer)")
+
+    # 1) strip off .kmz / .kml
+    if output_file_path.endswith('.kmz') or output_file_path.endswith('.kml'):
+        output_file_path = output_file_path[:-4]
+
+    # 2) split into dir + base
+    dirpath, base = os.path.split(output_file_path)
+
+    # 3) DO NOT remove 'RTH' and anything after it
+    #if 'RTH' in base:
+    #    base = base.split('RTH', 1)[0]
+
+    # add under_score:
+    base+='_'
+
+    # 4) append the waypoint count
+    base = f"{base}len_{len(lats)}"
+
+    # 5) rebuild full path with .waypoints
+    output_file_path = os.path.join(dirpath, base + '.waypoints')
+
+    # make sure directory exists
+    os.makedirs(dirpath, exist_ok=True)
+
+    with open(output_file_path, 'w') as file:
+        file.write('QGC WPL 110\n')
+        # alt_mode_num 0-abs 3-rel 10-terrain
+        alt_mode_num = 0
+        for i, (lat, lon, alt, heading_cw_of_N) in enumerate(zip(lats, lons, UAValtAsls, heading_cw_of_Ns)):
+            if i == 0:
+                line = (
+                    f'{i}\t1\t0\t16\t0\t0\t0\t0\t{lat}\t{lon}\t410\t1\n'
+                    f'{i+1}\t0\t{alt_mode_num}\t16\t0\t0\t0\t{heading_cw_of_N}\t{lat}\t{lon}\t{alt}\t1\n'
+                )
+            else:
+                line = (
+                    f'{i+1}\t0\t{alt_mode_num}\t16\t0\t0\t0\t{heading_cw_of_N}\t'
                     f'{lat}\t{lon}\t{alt}\t1\n'
                 )
             file.write(line)
