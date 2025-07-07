@@ -3,7 +3,7 @@ THIS .PY FILE SHOULD BE THE SAME FOR ALL PLUGINS.
 A CHANGE TO THIS .PY IN ONE OF THE PLUGINS SHOULD BE COPPY-PASTED TO ALL THE OTHER ONES
 '''
 
-'''UPDATED: 2025-06-30 By: Sharj'''
+'''UPDATED: 2025-07-07 By: Sharj'''
 
 import os
 import sys
@@ -322,10 +322,24 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
                 if iface is not None:
                     python_console = iface.mainWindow().findChild(QDockWidget, "PythonConsole")
                     if python_console is None or python_console.isVisible() is False:
-                        print(f"Opening Python console")
+
+                        # Need to temporarily make window on top
+                        self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
+                        self.show()
+
                         iface.actionShowPythonDialog().trigger()
+
+                        print(f"Opening Python console")
+
+                        QTimer.singleShot(500, self._remove_on_top_flag)
+
                 else:
                     print("QGIS is not running - cannot open Python console")
+
+        def _remove_on_top_flag(self):
+            """Remove the stay-on-top flag after the console has opened"""
+            self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
+            self.show()
 
         def _setup_top_panel_widgets(self):
             """Sets up the top panel with browse button, plugin icon, and intro video button."""

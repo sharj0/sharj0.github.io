@@ -1,5 +1,5 @@
 <plugins>
-  <pyqgis_plugin name=".ROSOR Waypoint Altitude Embedder" version="1.2025.6.30.1">
+  <pyqgis_plugin name=".ROSOR Waypoint Altitude Embedder" version="1.2025.7.7.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_alt_embedder/plugin_icon.png</icon>
@@ -10,7 +10,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Base Mag QAQC" version="1.2025.6.30.1">
+  <pyqgis_plugin name=".ROSOR Base Mag QAQC" version="1.2025.7.7.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_base_mag_qaqc/plugin_icon.png</icon>
@@ -30,7 +30,7 @@
   </pyqgis_plugin>
 
 
-  <pyqgis_plugin name=".ROSOR Mag Clipper" version="1.2025.7.7.1">
+  <pyqgis_plugin name=".ROSOR Mag Clipper" version="1.2025.7.7.2">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_mag_clipper/plugin_icon.png</icon>
@@ -40,7 +40,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Slope Analyzer" version="1.2025.6.30.1">
+  <pyqgis_plugin name=".ROSOR Slope Analyzer" version="1.2025.7.7.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_slope_analyser/plugin_icon.png</icon>
@@ -49,7 +49,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Import CSVs" version="1.2025.6.30.1">
+  <pyqgis_plugin name=".ROSOR Import CSVs" version="1.2025.7.7.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_import_csv/plugin_icon.png</icon>
@@ -59,7 +59,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Import KMLs" version="1.2025.6.30.1">
+  <pyqgis_plugin name=".ROSOR Import KMLs" version="1.2025.7.7.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_import_kml/plugin_icon.png</icon>
@@ -69,7 +69,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Plugin Template" version="1.2025.6.30.1">
+  <pyqgis_plugin name=".ROSOR Plugin Template" version="1.2025.7.7.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_plugin_template/plugin_icon.png</icon>
@@ -78,7 +78,7 @@
     <experimental>True</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Tile Maker" version="1.2025.6.30.1">
+  <pyqgis_plugin name=".ROSOR Tile Maker" version="1.2025.7.7.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_tile_maker/plugin_icon.png</icon>
@@ -87,7 +87,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Ortho Photo Merger" version="1.2025.6.30.1">
+  <pyqgis_plugin name=".ROSOR Ortho Photo Merger" version="1.2025.7.7.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_Ortho_Photo_Merger/plugin_icon.png</icon>
@@ -96,7 +96,7 @@
     <experimental>True</experimental>
   </pyqgis_plugin>
     
-  <pyqgis_plugin name=".ROSOR Geotiff offset editor" version="1.2025.6.30.1">
+  <pyqgis_plugin name=".ROSOR Geotiff offset editor" version="1.2025.7.7.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_geotiff_offset_editor/plugin_icon.png</icon>
@@ -105,7 +105,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Import LAS" version="1.2025.6.30.1">
+  <pyqgis_plugin name=".ROSOR Import LAS" version="1.2025.7.7.1">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_import_las/plugin_icon.png</icon>
@@ -114,7 +114,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Lines to Flights" version="1.2025.7.7.1">
+  <pyqgis_plugin name=".ROSOR Lines to Flights" version="1.2025.7.7.2">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_lines_to_flights/plugin_icon.png</icon>
@@ -123,7 +123,7 @@
     <experimental>False</experimental>
   </pyqgis_plugin>
 
-  <pyqgis_plugin name=".ROSOR Sensor Footprint" version="1.2025.7.7.1">
+  <pyqgis_plugin name=".ROSOR Sensor Footprint" version="1.2025.7.7.2">
     <qgis_minimum_version>3.0.0</qgis_minimum_version>
     <author_name>Pyotyr Young and Sharjeel Awon</author_name>
     <icon>https://sharj0.github.io/ROSORPlugins/PETER_ROSOR_sensor_footprint/plugin_icon.png</icon>
