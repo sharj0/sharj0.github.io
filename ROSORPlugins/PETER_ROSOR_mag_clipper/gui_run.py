@@ -209,25 +209,15 @@ def get_continuous_sections(inds):
     continuous_sections = [list(section) for section in continuous_sections]
     return continuous_sections
 
-def get_acceptable_box(line_to_points, flight_lines, thresh, mag_x, mag_y):
+def get_acceptable_box(line_to_points, renamed_lines_dict, thresh, mag_x, mag_y):
     mask_whole = np.zeros_like(mag_x).astype(bool)
     box_list = []
     
     for line_num, indices in line_to_points.items():
-        # Instead of using the flight line coordinates (which only have 2 points),
-        # use the actual data points that belong to this flight line
-        line_x = mag_x[indices['start']:indices['end']]
-        line_y = mag_y[indices['start']:indices['end']]
-        
-        # Create a LineString from the actual data points
-        if len(line_x) > 1:
-            line_coords = list(zip(line_x, line_y))
-            flight_line = LineString(line_coords)
-        else:
-            # If only one point, create a small buffer around it
-            flight_line = Point(line_x[0], line_y[0])
+        # Use the renamed lines dictionary to get the original straight flight line
+        flight_line = LineString(renamed_lines_dict[line_num])
 
-        # Create a buffer around the actual flight path
+        # Create a buffer around the straight flight line
         buffered = flight_line.buffer(thresh)
         exterior_coords = buffered.exterior.coords
         box_list.append(exterior_coords)
@@ -303,9 +293,8 @@ def get_close_points_and_line_indices_optimized(flight_lines, mag_x, mag_y, thre
             np.array(fl_point_indices)[sort_idx])
 
 def determine_line_start_end(closest_indices, line_indices, fl_point_ind) -> dict:
-    #[12145, 9527, 12598, 686, 1266, 1342, 8557, 9026, 9124, 15216, 15888, 4608, 1987, 5056, 7675] [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3] [0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1]
     lines, counts = np.unique(line_indices, return_counts=True)
-    sorted_line_to_points = {}  # Initialize result dictionary
+    sorted_line_to_points = {}
     for line_ind, count in zip(lines, counts):
         bool_line_indices = line_indices == line_ind
         cand_closest_indices = closest_indices[bool_line_indices]
@@ -605,11 +594,10 @@ def get_acceptable_velocity(line_to_points, acceptable_minimum_velocity, elapsed
 def get_mag_data_extent(utme, utmn):
     minx, maxx = utme.min(), utme.max()
     miny, maxy = utmn.min(), utmn.max()
-    return minx, miny, maxx, maxy
+    return minx-5, miny-5, maxx+5, maxy+5
 
 
 def filter_lines_by_extent(flight_lines, extent):
-    # Only keep lines that have both start and end points within the extent
     minx, miny, maxx, maxy = extent
     kept = {}
     new_idx = 0
@@ -619,6 +607,9 @@ def filter_lines_by_extent(flight_lines, extent):
             minx <= x2 <= maxx and miny <= y2 <= maxy):
             kept[new_idx] = (orig_idx, np.array(line))
             new_idx += 1
+        else:
+            # print(f"Line {orig_idx} excluded: {(x1, y1), (x2, y2)}")
+            pass
     return kept
 
 
@@ -750,12 +741,25 @@ def gui_run(df,
         print(mesage)
         load_csv_data_to_qgis(export_file_path, set_symbols_and_colors = False)
         return False, retval, None
+    
+    original_line_mapping = {}
+    for i, (orig_line_idx, _) in enumerate(line_to_points.items()):
+        original_line_mapping[i] = orig_line_idx
 
     line_to_points = re_name_line_numbers(line_to_points)
     renamed_lines_dict = {
         new_idx: lines_in_extent[orig_idx][1]
         for new_idx, (orig_idx, _) in enumerate(lines_in_extent.items())
     }
+
+    renamed_lines_dict = {}
+    for new_idx in line_to_points.keys():
+        orig_line_idx = original_line_mapping[new_idx]
+        # Find the corresponding flight line coordinates from lines_in_extent
+        for extent_idx, (_, line_coords) in lines_in_extent.items():
+            if extent_idx == orig_line_idx:
+                renamed_lines_dict[new_idx] = line_coords
+                break
 
     mask_outside_box, box_coords_list = get_acceptable_box(line_to_points, renamed_lines_dict, deviation_thresh, df['UTME'], df['UTMN'])
 
