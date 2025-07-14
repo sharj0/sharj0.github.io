@@ -644,21 +644,40 @@ def sample_data_on_lines(lines_dict, utme, utmn, dist_thresh):
             np.array(pt_inds)[sort_order])
 
 
-def compute_line_coverage(closest_inds, line_inds, lines_dict):
-    """
-    Calculate coverage fraction for each line: ratio of unique sampled points to total line_points.
-    Returns dict: {new_idx: coverage_fraction}
-    """
+def compute_line_coverage(line_to_points, utme, utmn, flight_lines_dict, dist_thresh):
     coverage = {}
-    hits_by_line = {}
-
-    for idx, line_idx in enumerate(line_inds):
-        hits_by_line.setdefault(line_idx, set()).add(idx)
-
-    for line_idx, (_, line_pts) in lines_dict.items():
-        total = len(line_pts)
-        hit_count = len(hits_by_line.get(line_idx, ()))
-        coverage[line_idx] = hit_count / total if total > 0 else 0.0
+    
+    for line_idx, indices in line_to_points.items():
+        if line_idx not in flight_lines_dict:
+            continue
+            
+        orig_idx, flight_line_coords = flight_lines_dict[line_idx]
+        
+        # Get magnetometer data points for this line segment
+        mag_start_idx = indices['start']
+        mag_end_idx = indices['end']
+        
+        # Total magnetometer points in this segment
+        total_mag_points = mag_end_idx - mag_start_idx + 1
+        
+        # Get the actual mag coordinates for this segment
+        mag_x = utme.iloc[mag_start_idx:mag_end_idx+1].values
+        mag_y = utmn.iloc[mag_start_idx:mag_end_idx+1].values
+        
+        # Create flight line as LineString for distance calculation
+        from shapely.geometry import LineString, Point
+        flight_line = LineString(flight_line_coords)
+        
+        # Count how many mag points are within threshold distance of flight line
+        points_near_line = 0
+        for x, y in zip(mag_x, mag_y):
+            point = Point(x, y)
+            if flight_line.distance(point) <= dist_thresh:
+                points_near_line += 1
+        
+        coverage[line_idx] = points_near_line / total_mag_points if total_mag_points > 0 else 0.0
+        print(f"  Line {line_idx} (orig {orig_idx}): {points_near_line}/{total_mag_points} mag points within {dist_thresh}m = {coverage[line_idx]:.3f} coverage")
+    
     return coverage
 
 
@@ -675,25 +694,22 @@ def process_flight_lines(flight_lines, utme, utmn,
     extent = get_mag_data_extent(utme, utmn)
     lines_in_extent = filter_lines_by_extent(flight_lines, extent)
 
-    # 2. Sample data onto each line
+    # 2. Sample data onto each line (to find start/end points)
     closest_inds, line_inds, pt_inds = sample_data_on_lines(
         lines_in_extent, utme, utmn, dist_thresh
     )
 
-    # 3. Compute coverage and filter lines
-    coverage = compute_line_coverage(closest_inds, line_inds, lines_in_extent)
-    lines_kept = filter_lines_by_coverage(lines_in_extent, coverage, coverage_thresh)
-
-    # 4. Re-sample to only kept lines
-    mask = np.isin(line_inds, list(lines_kept.keys()))
-    closest_inds = closest_inds[mask]
-    line_inds = line_inds[mask]
-    pt_inds = pt_inds[mask]
-
-    # 5. Determine start/end pairs
+    # 3. Determine start/end pairs first
     line_to_points = determine_fn(closest_inds, line_inds, pt_inds)
+    
+    # 4. Compute coverage using actual magnetometer data points
+    coverage = compute_line_coverage(line_to_points, utme, utmn, lines_in_extent, dist_thresh)
+    
+    # 5. Filter lines by coverage
+    lines_kept = {ln: data for ln, data in line_to_points.items() 
+                  if coverage.get(ln, 0.0) >= coverage_thresh}
 
-    return closest_inds, line_inds, pt_inds, line_to_points
+    return closest_inds, line_inds, pt_inds, lines_kept
 
 def gui_run(df,
             flight_lines,
