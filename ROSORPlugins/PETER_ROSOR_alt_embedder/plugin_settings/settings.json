@@ -2,7 +2,9 @@
     "Input_files": {
         "Open either folder or file_RADIO": {
             "\ud83d\udcc2 All 2D flights in a folder": true,
-            "\ud83d\uddcf  A singe 2D flight file": false
+            "\ud83d\udcc2 All 2D flights in a folder_CHILDREN": ["Input_files/\uD83D\uDCC2 2D flights folder"],
+            "\ud83d\uddcf  A singe 2D flight file": false,
+            "\ud83d\uddcf  A singe 2D flight file_CHILDREN": ["Input_files/\uD83D\uDDCF 2D flight file"]
         },
         "\ud83d\udcc2 2D flights folder": "G:\\Shared drives\\Rosor\\2024 - 2025\\Projects\\2501-45-dm-ventures-guyana\\3.Planning\\Making Flights\\NEW_Mag_flights\\test\\TOFs_clipped_RDPd",
         "\ud83d\udcc2 2D flights folder_SELECT_FOLDER": "true",
@@ -62,5 +64,6 @@
         "No manual checking": false,
         "No manual checking_COMMENT": "Checking this will disable plotting the results for manual review"
     },
+    "Open Python console at plugin launch": true,
     "Close this window on accept": true
 }
