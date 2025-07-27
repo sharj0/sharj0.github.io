@@ -2,7 +2,7 @@ import os
 import shutil
 
 # file_to_spread = r"C:\Users\pyoty\Documents\GitHub\test_braaahnch\sharj0.github.io\ROSORPlugins\PETER_ROSOR_alt_embedder\plugin_settings_suffixes.py"
-file_to_spread = r"D:\Github_Repos\sharj0.github.io\ROSORPlugins\PETER_ROSOR_flightline_creator\plugin_change_settings.py"
+file_to_spread = r"C:\Users\Sharj\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\PETER_ROSOR_lines_to_flights\plugin_change_settings.py"
 
 def replace_file_in_all_plugins(file_to_spread,
                                 plugin_prefix='PETER_ROSOR_',

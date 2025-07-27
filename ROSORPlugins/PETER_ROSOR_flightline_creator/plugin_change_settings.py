@@ -3,7 +3,7 @@ THIS .PY FILE SHOULD BE THE SAME FOR ALL PLUGINS.
 A CHANGE TO THIS .PY IN ONE OF THE PLUGINS SHOULD BE COPPY-PASTED TO ALL THE OTHER ONES
 '''
 
-'''UPDATED: 2025-07-07 By: Sharj'''
+'''UPDATED: 2025-07-27 By: Sharj'''
 
 import os
 import sys
@@ -745,9 +745,7 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
             is_path_field = any(suffix in setting.key for suffix in ['_SELECT_FILE', '_SELECT_FOLDER', '_SELECT_LAYER'])
 
             if is_path_field and not self.validate_path(cleaned_text, setting.key):
-                # Mark as invalid and don't update the value
                 setting.line_edit.setStyleSheet("QLineEdit { color: red; }")
-                setting.attributes['_is_valid'] = False
                 raise "invalid path"
 
             # Reset style if it was previously invalid
@@ -765,7 +763,6 @@ def change_settings(set_curr_file, next_app_stage, settings_folder, skip=False, 
             if not setting.attributes['value'] == converted_text or type(setting.attributes['value']) != type(
                     converted_text):
                 setting.attributes['value'] = converted_text
-                setting.attributes['_is_valid'] = True  # Mark as valid
                 self.changes_made = True
                 print(f"Setting: {setting.key} changed to {setting.attributes['value']}")
 
