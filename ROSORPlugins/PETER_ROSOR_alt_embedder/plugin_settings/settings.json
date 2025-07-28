@@ -33,7 +33,8 @@
         "DJI Ortho Photo Flight": false,
         "DJI Ortho Photo Flight_COMMENT": "The drone will face the camera down and trigger 1/s. (.kmz)",
         "Ardupilot 3D Waypoints": true,
-        "Ardupilot 3D Waypoints_COMMENT": "Output file will be for Ardupilot type drone (.waypoints)"
+        "Ardupilot 3D Waypoints_COMMENT": "Output file will be for Ardupilot type drone (.waypoints)",
+        "AltaX QGC Plan": false
     },
     "Settings": {
         "flight_speed": 8,
@@ -62,7 +63,9 @@
         "open_layer_upon_completion": true,
         "open_layer_upon_completion_COMMENT": "Open layer in QGIS after processing is done",
         "No manual checking": false,
-        "No manual checking_COMMENT": "Checking this will disable plotting the results for manual review"
+        "No manual checking_COMMENT": "Checking this will disable plotting the results for manual review",
+        "Manually remove noise": false,
+        "Detect noise distance": 100.0
     },
     "Open Python console at plugin launch": true,
     "Close this window on accept": true

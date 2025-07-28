@@ -1,10 +1,15 @@
 import matplotlib.pyplot as plt
 from shapely.geometry import Point, MultiPolygon, Polygon
 from shapely.ops import unary_union
-import numpy as np
 from matplotlib.widgets import RectangleSelector, Button
 import time
 from PyQt5.QtWidgets import QMessageBox, QDialog, QVBoxLayout, QLabel, QApplication
+
+import sys
+import os
+import numpy as np
+
+
 
 # PROFILER CHUNK 1/3 START ////////////////////////////////////////////////////////////////////////////////////
 #import cProfile
@@ -35,8 +40,7 @@ def create_buffered_polygon(x_coords, y_coords, buffer):
     return polygons[0]
 
 
-from shapely.geometry import Polygon
-import numpy as np
+
 
 
 def buffer_points_new(x_list, y_list, buffer):
@@ -362,7 +366,7 @@ def run(grnd_x, grnd_y, grnd_buffer, grnd_nodata_value,
                 )
                 outer_buff = np.array(merged_buffer.exterior.xy)
         elif manually_remove_noise:
-            from sklearn.cluster import DBSCAN
+            from .plugin_3rd_party_libs.sklearn.cluster import DBSCAN
             db = DBSCAN(eps=detect_noise_distance, min_samples=5).fit(np.column_stack((surf_x, surf_y)))
             labels = db.labels_  # length Ns
             noise_mask = (labels == -1)  # True for noisy points
